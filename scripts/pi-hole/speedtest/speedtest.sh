@@ -319,10 +319,26 @@ else
     mdebug "share_url: '$share_url'"
 fi
 
+# Test for custom db location
+if [[ "${#SPEEDTEST_DB}" > 0 ]]; then
+    db_location=${SPEEDTEST_DB};
+else
+    db_location="/etc/pihole/speedtest.db"
+fi
+
+# Default maxdays
+maxdays=365
+# Test for maxdays
+if [[ "${SPEEDTEST_MAXDAYS}" =~ ^[0-9]+$ ]]; then
+  if [[ "${SPEEDTEST_MAXDAYS}" -ge 1 ]]; then
+    maxdays=${SPEEDTEST_MAXDAYS};
+  fi
+fi
 
 # Output CSV results
 sep="$quote$sep$quote"
 printf "$quote$start$sep$stop$sep$from$sep$from_ip$sep$server$sep$server_dist$sep$server_ping$sep$download$sep$upload$sep$share_url$quote\n"
 
 ##Save SQLITE3
-sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', '${from}', '${from_ip}', '${server}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
+sqlite3 $db_location  "insert into speedtest values (NULL, '${start}', '${stop}', '${from}', '${from_ip}', '${server}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
+sqlite3 $db_location  "DELETE FROM speedtest WHERE start_time <= date('now','-$maxdays day');"
