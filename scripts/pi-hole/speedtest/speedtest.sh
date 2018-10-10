@@ -320,7 +320,7 @@ else
 fi
 
 # Test for custom db location
-if [[ "${#SPEEDTEST_DB}" > 0 ]]; then
+if [[ "${#SPEEDTEST_DB}" -gt 0 ]]; then
     db_location=${SPEEDTEST_DB};
 else
     db_location="/etc/pihole/speedtest.db"
