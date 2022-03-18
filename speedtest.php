@@ -15,52 +15,6 @@ $token = $_SESSION['token'];
 
 $showing = "";
 
-$speedtestDB = "/etc/pihole/speedtest.db";
-
-if(!empty($_GET['csv'])){
-    convertToCSV($speedtestDB);
-    exit;
-}
-
-
-function convertToCSV($speedtestDB){
-
-    header("Content-type: text/csv");
-    header("Content-Disposition: attachment; filename=filename.csv");
-    header("Pragma: no-cache");
-    header("Expires: 0");
-
-        // Connect to DB
-    $conn = new PDO('sqlite:'.$speedtestDB);
-
-    // Query
-    $query = $conn->query("SELECT * FROM speedtest");
-
-    // Fetch the first row
-    $row = $query->fetch(PDO::FETCH_ASSOC);
-
-    // If no results are found, echo a message and stop
-    if ($row == false){
-        echo "No results";
-        exit;
-    }
-
-    // Print the titles using the first line
-    print_titles($row);
-    // Iterate over the results and print each one in a line
-    while ($row != false) {
-        // Print the line
-    echo implode( ",", array_values($row)) . "\n";
-        // Fetch the next line
-    $row = $query->fetch(PDO::FETCH_ASSOC);
-    }
-
-}
-
-function print_titles($row){
-    echo implode( ",", array_keys($row)) . "\n";
-}
-
 ?>
 <!-- Send PHP info to JS -->
 <div id="token" hidden><?php echo $token ?></div>
@@ -92,7 +46,7 @@ function print_titles($row){
     <div class="col-md-12">
       <div class="box" id="recent-queries">
         <div class="box-header with-border">
-          <h3 class="box-title">Recent Speedtests <?php echo $showing; ?></h3>
+          <h3 class="box-title">Recent Speedtests <?php echo $showing; ?>, <a href="/admin/api.php?csv-export=1">Export as CSV</a></h3> 
         </div>
         <!-- /.box-header -->
         <div class="box-body">
