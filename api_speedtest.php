@@ -151,13 +151,13 @@ if(!empty($_GET['csv-export'])){
 
 function exportData(){
 
+    // time for filename
+    $time = date('Y-m-d-H-i-s');
+
     header("Content-type: text/csv");
     header("Content-Disposition: attachment; filename=speedtest-export-$time.csv");
     header("Pragma: no-cache");
     header("Expires: 0");
-
-    // time for filename
-    $time = date('Y-m-d-H-i-s');
 
     // DB Location
     $speedtestDB = "/etc/pihole/speedtest.db";
