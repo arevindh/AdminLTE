@@ -143,3 +143,52 @@ function getSpeedData24hrs($dbSpeedtest){
 
     return $dataFromSpeedDB;
 }
+
+if(!empty($_GET['csv-export'])){
+    exportData();
+    exit;
+}
+
+function exportData(){
+
+    // time for filename
+    $time = date('Y-m-d-H-i-s');
+
+    header("Content-type: text/csv");
+    header("Content-Disposition: attachment; filename=speedtest-export-$time.csv");
+    header("Pragma: no-cache");
+    header("Expires: 0");
+
+    // DB Location
+    $speedtestDB = "/etc/pihole/speedtest.db";
+
+    // Connect to DB
+    $conn = new PDO('sqlite:'.$speedtestDB);
+
+    // Query
+    $query = $conn->query("SELECT * FROM speedtest");
+
+    // Fetch the first row
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+
+    // If no results are found, echo a message and stop
+    if ($row == false){
+        echo "No results";
+        exit;
+    }
+
+    // Print the titles using the first line
+    print_titles($row);
+    // Iterate over the results and print each one in a line
+    while ($row != false) {
+        // Print the line
+    echo implode( ",", array_values($row)) . "\n";
+        // Fetch the next line
+    $row = $query->fetch(PDO::FETCH_ASSOC);
+    }
+
+}
+
+function print_titles($row){
+    echo implode( ",", array_keys($row)) . "\n";
+}
