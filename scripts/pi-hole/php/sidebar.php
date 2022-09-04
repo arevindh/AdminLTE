@@ -79,6 +79,7 @@
                         <i class="fa fa-fw menu-icon fa-file-alt"></i> <span>Query Log</span>
                     </a>
                 </li>
+                <!-- Speedtest log -->
                 <li class="menu-analysis<?php if ($scriptname === 'queries.php') { ?> active<?php } ?>">
                     <a href="speedtest.php">
                         <i class="fa fa-fw menu-icon fa-tachometer-alt"></i> <span>Speedtest Log</span>
