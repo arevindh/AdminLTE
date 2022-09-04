@@ -26,9 +26,9 @@ function handleAjaxError(xhr, textStatus, error) {
   if (textStatus === "timeout") {
     alert("The server took too long to send the data.");
   } else if (xhr.responseText.indexOf("Connection refused") >= 0) {
-    alert("An error occured while loading the data: Connection refused. Is FTL running?");
+    alert("An error occurred while loading the data: Connection refused. Is FTL running?");
   } else {
-    alert("An unknown error occured while loading the data.\n" + xhr.responseText);
+    alert("An unknown error occurred while loading the data.\n" + xhr.responseText);
   }
   $("#all-queries_processing").hide();
   tableApi.clear();

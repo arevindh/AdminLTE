@@ -358,7 +358,7 @@ function getForwardDestinations()
     return $destinations;
 }
 
-// Check for existance of variable
+// Check for existence of variable
 // and test it only if it exists
 function istrue(&$argument)
 {
