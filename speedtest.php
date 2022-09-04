@@ -5,7 +5,7 @@
 *
 *    This file is copyright under the latest version of the EUPL.
 *    Please see LICENSE file for your rights under this license. */
-require "scripts/pi-hole/php/header.php";
+require 'scripts/pi-hole/php/header.php';
 
 // Generate CSRF token
 if (empty($_SESSION['token'])) {
@@ -13,11 +13,11 @@ if (empty($_SESSION['token'])) {
 }
 $token = $_SESSION['token'];
 
-$showing = "";
+$showing = '';
 
 ?>
 <!-- Send PHP info to JS -->
-<div id="token" hidden><?php echo $token ?></div>
+<div id="token" hidden><?php echo $token; ?></div>
 
 
 <!--
@@ -93,7 +93,7 @@ $showing = "";
 <!-- /.row -->
 
 <?php
-require "scripts/pi-hole/php/footer.php";
+require 'scripts/pi-hole/php/footer.php';
 ?>
 
 <script src="scripts/vendor/moment.min.js"></script>

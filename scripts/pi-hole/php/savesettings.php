@@ -578,35 +578,34 @@ if (isset($_POST['field'])) {
 
             break;
 
-
-        case "speedtest":
-
-            if (isset($_POST["speedtestmode"])) {
-                exec('sudo pihole -a -sm ' . trim($_POST["speedtestmode"]));
+        case 'speedtest':
+            if (isset($_POST['speedtestmode'])) {
+                exec('sudo pihole -a -sm '.trim($_POST['speedtestmode']));
             }
 
-            if (isset($_POST["speedtestschedule"])) {
-                exec('sudo pihole -a -s ' . trim($_POST["speedtestschedule"]));
+            if (isset($_POST['speedtestschedule'])) {
+                exec('sudo pihole -a -s '.trim($_POST['speedtestschedule']));
             }
 
-            if (isset($_POST["clearspeedtests"])) {
-                if (trim($_POST["clearspeedtests"]) == "yes")
+            if (isset($_POST['clearspeedtests'])) {
+                if (trim($_POST['clearspeedtests']) == 'yes') {
                     exec('sudo pihole -a -sc');
+                }
             }
 
-            if (isset($_POST["speedtestserver"]) && is_numeric($_POST["speedtestserver"])) {
-                exec('sudo pihole -a -ss ' . trim($_POST["speedtestserver"]));
+            if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
+                exec('sudo pihole -a -ss '.trim($_POST['speedtestserver']));
             }
 
-            if (isset($_POST["speedtestdays"])) {
-                exec('sudo pihole -a -sd ' .trim( $_POST["speedtestdays"]));
+            if (isset($_POST['speedtestdays'])) {
+                exec('sudo pihole -a -sd '.trim($_POST['speedtestdays']));
             }
 
-            $success .= "The Speedtest settings have been updated";
+            $success .= 'The Speedtest settings have been updated';
             break;
         default:
             // Option not found
-            $error = "Invalid option";
+            $error = 'Invalid option';
     }
 }
 

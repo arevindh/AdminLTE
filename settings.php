@@ -196,7 +196,7 @@ if (isset($setupVars['API_QUERY_LOG_SHOW'])) {
 ?>
 
 <?php
-if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'api', 'privacy', 'teleporter',"speedtest"))) {
+if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'api', 'privacy', 'teleporter', 'speedtest'))) {
     $tab = $_GET['tab'];
 } else {
     $tab = 'sysadmin';
@@ -224,8 +224,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                 <li role="presentation"<?php if ($tab === 'teleporter') { ?> class="active"<?php } ?>>
                     <a href="#teleporter" aria-controls="teleporter" aria-expanded="<?php echo $tab === 'teleporter' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Teleporter</a>
                 </li>
-                <li role="presentation"<?php if($tab === "speedtest"){ ?> class="active"<?php } ?>>
-                    <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === "speedtest" ? "true" : "false"; ?>" role="tab" data-toggle="tab">Speedtest</a>
+                <li role="presentation"<?php if ($tab === 'speedtest') { ?> class="active"<?php } ?>>
+                    <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === 'speedtest' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Speedtest</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -1465,44 +1465,40 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <?php
 
                 // Fix for select for not population on save
-                if(isset($setupVars["SPEEDTESTSCHEDULE"]))
-                {
-                    $speedtestshedule = $setupVars["SPEEDTESTSCHEDULE"];
-                }else {
-                    $speedtestshedule  = false;
+                if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
+                    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+                } else {
+                    $speedtestshedule = false;
                 }
 
-                if(isset($setupVars["SPEEDTEST_CHART_DAYS"]))
-                {
-                    $speedtestdays = $setupVars["SPEEDTEST_CHART_DAYS"];
-                }else {
-                    $speedtestdays  = "official";
+                if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+                    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
+                } else {
+                    $speedtestdays = 'official';
                 }
 
-                if(isset($setupVars["SPEEDTEST_SERVER"]))
-                {
-                    $speedtestserver = $setupVars["SPEEDTEST_SERVER"];
-                }else {
-                    $speedtestserver  = "";
+                if (isset($setupVars['SPEEDTEST_SERVER'])) {
+                    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
+                } else {
+                    $speedtestserver = '';
                 }
 
-                if(isset($setupVars["SPEEDTEST_MODE"]))
-                {
-                    $speedtestmode = $setupVars["SPEEDTEST_MODE"];
-                }else {
-                    $speedtestmode  = "python";
+                if (isset($setupVars['SPEEDTEST_MODE'])) {
+                    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
+                } else {
+                    $speedtestmode = 'python';
                 }
-                ?>
+?>
 
 
                 <!-- ######################################################### Speedtest ######################################################### -->
-                <div id="speedtest" class="tab-pane fade<?php if($tab === "speedtest"){ ?> in active<?php } ?>">
+                <div id="speedtest" class="tab-pane fade<?php if ($tab === 'speedtest') { ?> in active<?php } ?>">
 
                     <div class="row">
                         <div class="col-md-12">
                             <form role="form" method="post">
                                 <input type="hidden" name="field" value="speedtest">
-                                <input type="hidden" name="token" value="<?php echo $token ?>">
+                                <input type="hidden" name="token" value="<?php echo $token; ?>">
                                 <div class="box box-warning">
                                     <div class="box-header with-border">
 
@@ -1516,23 +1512,23 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <div class="form-group col-md-6">
                                                     <label>Speedtest Schedule</label>
                                                     <select name="speedtestschedule" class="form-control" >
-                                                        <option value="0" <?php if($speedtestshedule == 0) {?> selected <?php } ?>>Disabled</option>
-                                                        <option value="1" <?php if($speedtestshedule == 1) {?> selected <?php } ?>>Every 1 Hour</option>
-                                                        <option value="2" <?php if($speedtestshedule == 2) {?> selected <?php } ?>>Every 2 Hours</option>
-                                                        <option value="4" <?php if($speedtestshedule == 4) {?> selected <?php } ?>>Every 4 Hours</option>
-                                                        <option value="6" <?php if($speedtestshedule == 6) {?> selected <?php } ?>>Every 6 Hours</option>
-                                                        <option value="12" <?php if($speedtestshedule == 12) {?> selected <?php } ?>>Every 12 Hours</option>
-                                                        <option value="24" <?php if($speedtestshedule == 24) {?> selected <?php } ?>>Every 24 Hours</option>
+                                                        <option value="0" <?php if ($speedtestshedule == 0) {?> selected <?php } ?>>Disabled</option>
+                                                        <option value="1" <?php if ($speedtestshedule == 1) {?> selected <?php } ?>>Every 1 Hour</option>
+                                                        <option value="2" <?php if ($speedtestshedule == 2) {?> selected <?php } ?>>Every 2 Hours</option>
+                                                        <option value="4" <?php if ($speedtestshedule == 4) {?> selected <?php } ?>>Every 4 Hours</option>
+                                                        <option value="6" <?php if ($speedtestshedule == 6) {?> selected <?php } ?>>Every 6 Hours</option>
+                                                        <option value="12" <?php if ($speedtestshedule == 12) {?> selected <?php } ?>>Every 12 Hours</option>
+                                                        <option value="24" <?php if ($speedtestshedule == 24) {?> selected <?php } ?>>Every 24 Hours</option>
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Speedtest Display Range</label>
                                                     <select name="speedtestdays" class="form-control" >
-                                                        <option value="1" <?php if($speedtestdays == 1) {?> selected <?php } ?>>1 Day</option>
-                                                        <option value="2" <?php if($speedtestdays == 2) {?> selected <?php } ?>>2 Days</option>
-                                                        <option value="4" <?php if($speedtestdays == 4) {?> selected <?php } ?>>4 Days</option>
-                                                        <option value="7" <?php if($speedtestdays == 7) {?> selected <?php } ?>>7 Days</option>
-                                                        <option value="30" <?php if($speedtestdays == 30) {?> selected <?php } ?>>30 Days</option>
+                                                        <option value="1" <?php if ($speedtestdays == 1) {?> selected <?php } ?>>1 Day</option>
+                                                        <option value="2" <?php if ($speedtestdays == 2) {?> selected <?php } ?>>2 Days</option>
+                                                        <option value="4" <?php if ($speedtestdays == 4) {?> selected <?php } ?>>4 Days</option>
+                                                        <option value="7" <?php if ($speedtestdays == 7) {?> selected <?php } ?>>7 Days</option>
+                                                        <option value="30" <?php if ($speedtestdays == 30) {?> selected <?php } ?>>30 Days</option>
                                                     </select>
                                                 </div>
                                                 <h4>Custom Speedtest server </h4>
@@ -1542,7 +1538,9 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                     <div class="form-group">
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" name="speedtestserver" value="<?php if($speedtestserver) { echo $speedtestserver; } ?>"  placeholder="Keep this blank to autoselect" />
+                                                            <input type="number" class="form-control" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>"  placeholder="Keep this blank to autoselect" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1559,8 +1557,8 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <div class="form-group col-md-12">
                                                     <label>Speedtest Mode</label>
                                                     <select name="speedtestmode" class="form-control" >
-                                                        <option value="official" <?php if($speedtestmode == "official") {?> selected <?php } ?>>Official CLI</option>
-                                                        <option value="python" disabled <?php if($speedtestmode == "python") {?> selected <?php } ?>>Python</option>
+                                                        <option value="official" <?php if ($speedtestmode == 'official') {?> selected <?php } ?>>Official CLI</option>
+                                                        <option value="python" disabled <?php if ($speedtestmode == 'python') {?> selected <?php } ?>>Python</option>
                                                     </select>
                                                 </div>
 
