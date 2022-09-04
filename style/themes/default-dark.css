@@ -632,12 +632,12 @@ input[type="password"]::-webkit-caps-lock-indicator {
   border-color: rgb(120, 127, 133);
 }
 
-.speedtest-upload{
+.speedtest-upload {
   background-color: #f54f4f;
 }
-.speedtest-download{
+.speedtest-download {
   background-color: #2ca1e6;
 }
-.speedtest-ping{
+.speedtest-ping {
   background-color: #10f793;
 }

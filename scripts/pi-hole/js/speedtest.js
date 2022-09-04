@@ -1,19 +1,18 @@
 $(function () {
-  var speedlabels = []
+  var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
   var speeddata = [];
   var serverPing = [];
 
   function updateSpeedTestData() {
-
     function formatDate(itemdate) {
       return moment(itemdate).format("Do HH:mm");
     }
 
     $.ajax({
       url: "api.php?getSpeedData24hrs&PHP",
-      dataType: "json"
+      dataType: "json",
     }).done(function (results) {
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
@@ -55,7 +54,7 @@ $(function () {
           borderColor: downloadColor,
           borderWidth: 1,
           cubicInterpolationMode: "monotone",
-          yAxisID: "y-axis-1"
+          yAxisID: "y-axis-1",
         },
         {
           label: "Upload Mbps",
@@ -64,7 +63,7 @@ $(function () {
           fill: false,
           borderColor: uploadColor,
           borderWidth: 1,
-          yAxisID: "y-axis-1"
+          yAxisID: "y-axis-1",
         },
         {
           label: "Ping ms",
@@ -74,16 +73,16 @@ $(function () {
           borderColor: pingColor,
           borderWidth: 1,
           borderDash: [5, 5],
-          yAxisID: "y-axis-2"
-        }
-      ]
+          yAxisID: "y-axis-2",
+        },
+      ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       legend: {
         display: true,
-        position: 'bottom'
+        position: "bottom",
       },
       scales: {
         yAxes: [
@@ -94,7 +93,7 @@ $(function () {
             id: "y-axis-1",
             ticks: {
               // min: 0,
-              fontColor: ticksColor
+              fontColor: ticksColor,
             },
             gridLines: {
               color: gridColor,
@@ -107,19 +106,19 @@ $(function () {
             id: "y-axis-2",
             ticks: {
               // min: 0,
-              fontColor: ticksColor
+              fontColor: ticksColor,
             },
             gridLines: {
               color: gridColor,
             },
-          }
+          },
         ],
         xAxes: [
           {
             // type :'time',
             display: true,
             scaleLabel: {
-              display: true
+              display: true,
             },
             gridLines: {
               color: gridColor,
@@ -130,19 +129,18 @@ $(function () {
               maxTicksLimit: 10,
               maxRotation: 0,
               minRotation: 0,
-              fontColor: ticksColor
-            }
-          }
-        ]
+              fontColor: ticksColor,
+            },
+          },
+        ],
       },
       tooltips: {
         enabled: true,
         mode: "x-axis",
-        intersect: false
-      }
-    }
+        intersect: false,
+      },
+    },
   });
 
   updateSpeedTestData();
-
 });

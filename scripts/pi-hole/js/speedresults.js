@@ -10,7 +10,7 @@ function escapeRegex(text) {
   var map = {
     "(": "\\(",
     ")": "\\)",
-    ".": "\\."
+    ".": "\\.",
   };
   return text.replace(/[().]/g, function (m) {
     return map[m];
@@ -68,7 +68,7 @@ $(document).ready(function () {
           } else {
             return data;
           }
-        }
+        },
       },
       {
         render: function (data, type, full, meta) {
@@ -77,7 +77,7 @@ $(document).ready(function () {
           } else {
             return data;
           }
-        }
+        },
       },
       null,
       null,
@@ -90,15 +90,15 @@ $(document).ready(function () {
         render: function (data, type, full, meta) {
           data = '<a target="_blank" href="' + data + '"> View Result</a>';
           return data;
-        }
-      }
+        },
+      },
     ],
 
     columnDefs: [
       {
         targets: [0, 2],
-        visible: false
-      }
-    ]
+        visible: false,
+      },
+    ],
   });
 });
