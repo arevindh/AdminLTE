@@ -4,11 +4,9 @@
  *
  *  This file is copyright under the latest version of the EUPL.
  *  Please see LICENSE file for your rights under this license. */
-var tableApi;
+/* global moment:false */
 
-function refreshData() {
-  tableApi.ajax.url("api.php?getAllSpeedTestData&_=" + Date.now()).load();
-}
+var tableApi;
 
 function handleAjaxError(xhr, textStatus, _error) {
   if (textStatus === "timeout") {
@@ -18,14 +16,13 @@ function handleAjaxError(xhr, textStatus, _error) {
   } else {
     alert("An unknown error occurred while loading the data.\n" + xhr.responseText);
   }
+
   $("#all-queries_processing").hide();
   tableApi.clear();
   tableApi.draw();
 }
 
 $(document).ready(function () {
-  var status;
-
   // Do we want to filter queries?
   var GETDict = {};
   location.search

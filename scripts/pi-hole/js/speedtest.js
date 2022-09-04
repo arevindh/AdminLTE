@@ -1,8 +1,9 @@
+/* global Chart:false, moment:false */
+
 $(function () {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
-  var speeddata = [];
   var serverPing = [];
 
   function updateSpeedTestData() {
@@ -24,7 +25,6 @@ $(function () {
         }
       });
       speedChart.update();
-      speeddata = results;
     });
   }
 
