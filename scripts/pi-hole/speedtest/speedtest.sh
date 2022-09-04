@@ -41,7 +41,6 @@
 ### Copyright: 2014-2017 Henrik Bengtsson
 ### License: GPL (>= 2.1) (https://www.gnu.org/licenses/gpl.html)
 
-
 readonly setupVars="/etc/pihole/setupVars.conf"
 
 source "${setupVars}"
@@ -65,19 +64,19 @@ log=/tmp/$user/speedtest-csv.log
 function mecho() { echo "$@" 1>&2; }
 function mdebug() {
     if [[ $debug == true ]]; then
-	mecho "[DEBUG] $@";
+        mecho "[DEBUG] $@"
     fi
 }
 function str_extract() {
     pattern=$1
     # Extract
-    res=`grep "$pattern" $log | sed "s/$pattern//g"`
+    res=$(grep "$pattern" $log | sed "s/$pattern//g")
     # Drop trailing '...'
-    res=`echo $res | sed 's/[.][.][.]//g'`
-    # WORKAROUND: Drop stray preceeding '.' (Issue #19)
-    res=`echo $res | sed 's/^[.]*//g'`
+    res=$(echo $res | sed 's/[.][.][.]//g')
+    # WORKAROUND: Drop stray proceeding '.' (Issue #19)
+    res=$(echo $res | sed 's/^[.]*//g')
     # Trim
-    res=`echo $res | sed 's/^ *//g' | sed 's/ *$//g'`
+    res=$(echo $res | sed 's/^ *//g' | sed 's/ *$//g')
     echo $res
 }
 
@@ -100,19 +99,19 @@ opts=
 while [[ $# > 0 ]]; do
     opt=$1
     if [[ "$opt" == "--header" ]]; then
-	header=true
+        header=true
     elif [[ "$opt" == "--header-units" ]]; then
-	header_units=true
+        header_units=true
     elif [[ "$opt" == "--no-header-units" ]]; then
-	header_units=false
+        header_units=false
     elif [[ "$opt" == "--retry" ]]; then
-	retry=true
+        retry=true
     elif [[ "$opt" == "--quote" ]]; then
-	quote=$2
-	shift
+        quote=$2
+        shift
     elif [[ "$opt" == "--sep" ]]; then
-	sep=$2
-	shift
+        sep=$2
+        shift
     elif [[ "$1" == "--share" ]]; then
         share=true
     elif [[ "$1" == "--no-share" ]]; then
@@ -130,7 +129,7 @@ while [[ $# > 0 ]]; do
     elif [[ "$1" == "--help" ]]; then
         help=true
     else
-	opts="$opts $1"
+        opts="$opts $1"
     fi
     shift
 done
@@ -140,7 +139,7 @@ if [[ $share == true ]]; then
 fi
 
 # Trim
-opts=`echo $opts | sed 's/^ *//g' | sed 's/ *$//g'`
+opts=$(echo $opts | sed 's/^ *//g' | sed 's/ *$//g')
 
 if [[ -n "$SPEEDTEST_CSV_SKIP" ]]; then
     mdebug "\$SPEEDTEST_CSV_SKIP => --last"
@@ -168,13 +167,13 @@ fi
 if [[ $help == true ]]; then
     SPEEDTEST_CLI_VERSION=$(speedtest-cli --version 2>&1)
     if [[ $? -ne 0 ]]; then
-	SPEEDTEST_CLI_VERSION="<PLEASE INSTALL>"
+        SPEEDTEST_CLI_VERSION="<PLEASE INSTALL>"
     fi
     PYTHON_VERSION=$(python --version 2>&1)
     if [[ $? -ne 0 ]]; then
-	PYTHON_VERSION="<PLEASE INSTALL>"
+        PYTHON_VERSION="<PLEASE INSTALL>"
     else
-	PYTHON_VERSION=${PYTHON_VERSION/Python /}
+        PYTHON_VERSION=${PYTHON_VERSION/Python /}
     fi
     grep "^###" $0 | grep -v "^####" | cut -b 5- | sed "s/{{SPEEDTEST_CSV_VERSION}}/${SPEEDTEST_CSV_VERSION}/" | sed "s/{{SPEEDTEST_CLI_VERSION}}/${SPEEDTEST_CLI_VERSION}/" | sed "s/{{PYTHON_VERSION}}/${PYTHON_VERSION}/"
     exit 0
@@ -211,25 +210,25 @@ else
     else
         # Query Speedtest
         # Test for no-pre-allocate
-        pre_allocate=`speedtest-cli --help | grep "no-pre-allocate"| wc -l`
+        pre_allocate=$(speedtest-cli --help | grep "no-pre-allocate" | wc -l)
         if [[ "${pre_allocate}" -ge 1 ]]; then
             opts="$opts --no-pre-allocate"
         fi
 
         # Test for custom server
         if [[ "${SPEEDTEST_SERVER}" =~ ^[0-9]+$ ]]; then
-          if [[ "${SPEEDTEST_SERVER}" -ge 1 ]]; then
-            # echo "Using custom server $SPEEDTEST_SERVER"
-            opts="$opts --server $SPEEDTEST_SERVER"
-          fi
+            if [[ "${SPEEDTEST_SERVER}" -ge 1 ]]; then
+                # echo "Using custom server $SPEEDTEST_SERVER"
+                opts="$opts --server $SPEEDTEST_SERVER"
+            fi
         fi
 
         cmd="speedtest-cli $opts"
         # echo $cmd
         # exit
         mdebug "Querying Speedtest using '$cmd'"
-        $cmd > $log
-	      status=$?
+        $cmd >$log
+        status=$?
         mdebug "Exit code: $status"
     fi
 
@@ -238,8 +237,8 @@ else
     last=$(tail -c 2 /tmp/$user/speedtest-csv.log)
 
     # temp fix for failed run
-    if [[ $last  != "g" ]]; then
-        echo "Connection Failed";
+    if [[ $last != "g" ]]; then
+        echo "Connection Failed"
         if [ $retry = false ]; then
             echo "Retry after 30 sec  "
             sleep 30
@@ -249,21 +248,21 @@ else
         else
             echo "Retry failed aborting"
         fi
-        exit;
+        exit
     fi
 
     # Was speedtest-cli successful?
     if [[ $status -ne 0 ]]; then
-	mecho "ERROR: '$cmd' failed (exit code $status)."
-	mecho $(cat /tmp/$user/speedtest-csv.log > /tmp/csv-error.log)
-	exit $status
+        mecho "ERROR: '$cmd' failed (exit code $status)."
+        mecho $(cat /tmp/$user/speedtest-csv.log >/tmp/csv-error.log)
+        exit $status
     fi
 
     # Raw results
     if [[ $debug == true ]]; then
-      mdebug "Raw results"
-      bfr=$(cat $log | tr '\n' '~')
-      echo "[DEBUG] - ${bfr}" | sed 's/~/\n[DEBUG] - /g' | head -n -1 1>&2;
+        mdebug "Raw results"
+        bfr=$(cat $log | tr '\n' '~')
+        echo "[DEBUG] - ${bfr}" | sed 's/~/\n[DEBUG] - /g' | head -n -1 1>&2
     fi
 
     # Parse
@@ -280,19 +279,19 @@ else
     download=$(str_extract "Download: ")
     upload=$(str_extract "Upload: ")
     if [[ $share == true ]]; then
-	share_url=$(str_extract "Share results: ")
+        share_url=$(str_extract "Share results: ")
     else
-	share_url=
+        share_url=
     fi
 
     # Standardize units?
     if [[ $standardize == true ]]; then
-	## Mbits/s -> Mbit/s
+        ## Mbits/s -> Mbit/s
         mdebug "Standardize to Mbit/s"
         download=$(echo $download | sed 's/Mbits/Mbit/')
         upload=$(echo $upload | sed 's/Mbits/Mbit/')
 
-	## commas to periods
+        ## commas to periods
         mdebug "Standardize to periods (not commas)"
         download=$(echo $download | sed 's/,/./')
         upload=$(echo $upload | sed 's/,/./')
@@ -319,10 +318,9 @@ else
     mdebug "share_url: '$share_url'"
 fi
 
-
 # Output CSV results
 sep="$quote$sep$quote"
 printf "$quote$start$sep$stop$sep$from$sep$from_ip$sep$server$sep$server_dist$sep$server_ping$sep$download$sep$upload$sep$share_url$quote\n"
 
 ##Save SQLITE3
-sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', '${from}', '${from_ip}', '${server}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
+sqlite3 /etc/pihole/speedtest.db "insert into speedtest values (NULL, '${start}', '${stop}', '${from}', '${from_ip}', '${server}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"

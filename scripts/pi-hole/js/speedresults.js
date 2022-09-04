@@ -4,40 +4,25 @@
  *
  *  This file is copyright under the latest version of the EUPL.
  *  Please see LICENSE file for your rights under this license. */
+/* global moment:false */
+
 var tableApi;
 
-function escapeRegex(text) {
-  var map = {
-    "(": "\\(",
-    ")": "\\)",
-    ".": "\\."
-  };
-  return text.replace(/[().]/g, function (m) {
-    return map[m];
-  });
-}
-
-function refreshData() {
-  tableApi.ajax.url("api.php?getAllSpeedTestData&_=" + Date.now()).load();
-  //    updateSessionTimer();
-}
-
-function handleAjaxError(xhr, textStatus, error) {
+function handleAjaxError(xhr, textStatus, _error) {
   if (textStatus === "timeout") {
     alert("The server took too long to send the data.");
   } else if (xhr.responseText.indexOf("Connection refused") >= 0) {
-    alert("An error occured while loading the data: Connection refused. Is FTL running?");
+    alert("An error occurred while loading the data: Connection refused. Is FTL running?");
   } else {
-    alert("An unknown error occured while loading the data.\n" + xhr.responseText);
+    alert("An unknown error occurred while loading the data.\n" + xhr.responseText);
   }
+
   $("#all-queries_processing").hide();
   tableApi.clear();
   tableApi.draw();
 }
 
 $(document).ready(function () {
-  var status;
-
   // Do we want to filter queries?
   var GETDict = {};
   location.search
@@ -62,22 +47,14 @@ $(document).ready(function () {
     columns: [
       null,
       {
-        render: function (data, type, full, meta) {
-          if (type === "display") {
-            return moment(data).format("Y-MM-DD HH:mm:ss z");
-          } else {
-            return data;
-          }
-        }
+        render: function (data, type, _full, _meta) {
+          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+        },
       },
       {
-        render: function (data, type, full, meta) {
-          if (type === "display") {
-            return moment(data).format("Y-MM-DD HH:mm:ss z");
-          } else {
-            return data;
-          }
-        }
+        render: function (data, type, _full, _meta) {
+          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+        },
       },
       null,
       null,
@@ -87,18 +64,18 @@ $(document).ready(function () {
       null,
       null,
       {
-        render: function (data, type, full, meta) {
+        render: function (data, _type, _full, _meta) {
           data = '<a target="_blank" href="' + data + '"> View Result</a>';
           return data;
-        }
-      }
+        },
+      },
     ],
 
     columnDefs: [
       {
         targets: [0, 2],
-        visible: false
-      }
-    ]
+        visible: false,
+      },
+    ],
   });
 });
