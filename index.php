@@ -101,7 +101,7 @@ require_once 'scripts/pi-hole/php/gravity.php';
 
 ?>
 
-<?php if ($speedtestshedule) { ?>
+<?php if ($auth && $speedtestshedule) { ?>
     <div class="row">
         <div class="col-md-12">
             <div class="box" id="queries-over-time">
