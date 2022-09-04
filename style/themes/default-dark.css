@@ -636,8 +636,8 @@ input[type="password"]::-webkit-caps-lock-indicator {
   background-color: #f54f4f;
 }
 .speedtest-download{
- background-color: #2ca1e6;
+  background-color: #2ca1e6;
 }
 .speedtest-ping{
-background-color: #10f793;
+  background-color: #10f793;
 }

@@ -227,7 +227,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                 <li role="presentation"<?php if($tab === "speedtest"){ ?> class="active"<?php } ?>>
                     <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === "speedtest" ? "true" : "false"; ?>" role="tab" data-toggle="tab">Speedtest</a>
                 </li>
-                
             </ul>
             <div class="tab-content">
                 <!-- ######################################################### System admin ######################################################### -->
@@ -1552,7 +1551,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <div class="form-group col-md-12">
 
                                                     <div class="form-group">
-                                                            <input type="checkbox"  name="clearspeedtests" id="clearspeedtests" value="yes"/> 
+                                                            <input type="checkbox"  name="clearspeedtests" id="clearspeedtests" value="yes"/>
                                                             <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
                                                     </div>
                                                 </div>

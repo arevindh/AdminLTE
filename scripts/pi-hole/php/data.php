@@ -120,111 +120,106 @@
     }
     function getAllSpeedTestData($dbSpeedtest)
     {
-      $data = getSpeedTestData($dbSpeedtest,-1);
-      if($data['errr'])
-        return [];
-      $newarr = array();
-      foreach ($data as  $array) {
-          array_push($newarr,array_values($array));
-      }
-        return  array('data' => $newarr );
+        $data = getSpeedTestData($dbSpeedtest,-1);
+        if($data['errr']){
+            return [];
+        }
+        $newarr = array();
+        foreach ($data as  $array) {
+            array_push($newarr,array_values($array));
+        }
+            return  array('data' => $newarr );
     }
 
     function getLastSpeedtestResult($dbSpeedtest){
-            if(!file_exists($dbSpeedtest)){
-                // create db of not exists
-                exec('sudo pihole -a -sn');
-                return array();
+        if(!file_exists($dbSpeedtest)){
+            // create db of not exists
+            exec('sudo pihole -a -sn');
+            return array();
+        }
+
+        $db = new SQLite3($dbSpeedtest);
+        if(!$db) {
+            return array("error"=>"Unable to open DB");
+        } else {
+            // return array("status"=>"success");
+        }
+
+        $sql ="SELECT * from speedtest order by id DESC limit 1";
+
+        $dbResults = $db->query($sql);
+
+        $dataFromSpeedDB= array();
+
+
+        if(!empty($dbResults)){
+            while($row = $dbResults->fetchArray(SQLITE3_ASSOC) ) {
+                array_push($dataFromSpeedDB, $row);
             }
-
-            $db = new SQLite3($dbSpeedtest);
-            if(!$db) {
-                return array("error"=>"Unable to open DB");
-            } else {
-                // return array("status"=>"success");
-            }
-
-            $curdate = date('Y-m-d H:i:s');
-            $date = new DateTime();
-            // $date->modify('-'.$durationdays.' day');
-            $start_date =$date->format('Y-m-d H:i:s');
-
-            $sql ="SELECT * from speedtest order by id DESC limit 1";
-
-            $dbResults = $db->query($sql);
-
-            $dataFromSpeedDB= array();
-
-
-            if(!empty($dbResults)){
-                while($row = $dbResults->fetchArray(SQLITE3_ASSOC) ) {
-                    array_push($dataFromSpeedDB, $row);
-                }
-                return($dataFromSpeedDB);
-            }
-            else{
-                return array("error"=>"No Results");
-            }
-            $db->close();
+            return($dataFromSpeedDB);
+        }
+        else{
+            return array("error"=>"No Results");
+        }
+        $db->close();
     }
 
     function getSpeedTestData($dbSpeedtest,$durationdays="1")
     {
-            if(!file_exists($dbSpeedtest)){
-                // create db of not exists
-                exec('sudo pihole -a -sn');
-                return array();
-            }
-            $db = new SQLite3($dbSpeedtest);
-            if(!$db) {
-                return array("error"=>"Unable to open DB");
-            } else {
-                // return array("status"=>"success");
-            }
+        if(!file_exists($dbSpeedtest)){
+            // create db of not exists
+            exec('sudo pihole -a -sn');
+            return array();
+        }
+        $db = new SQLite3($dbSpeedtest);
+        if(!$db) {
+            return array("error"=>"Unable to open DB");
+        } else {
+            // return array("status"=>"success");
+        }
 
-            $curdate = date('Y-m-d H:i:s');
-            $date = new DateTime();
-            $date->modify('-'.$durationdays.' day');
-            $start_date =$date->format('Y-m-d H:i:s');
+        $curdate = date('Y-m-d H:i:s');
+        $date = new DateTime();
+        $date->modify('-'.$durationdays.' day');
+        $start_date =$date->format('Y-m-d H:i:s');
 
-            if($durationdays == -1)
-            {
-                $sql ="SELECT * from speedtest order by id asc";
+        if($durationdays == -1)
+        {
+            $sql ="SELECT * from speedtest order by id asc";
+        }
+        else{
+            $sql ="SELECT * from speedtest where start_time between '${start_date}' and  '${curdate}'  order by id asc;";
+        }
+
+        $dbResults = $db->query($sql);
+
+        $dataFromSpeedDB= array();
+
+
+        if(!empty($dbResults)){
+            while($row = $dbResults->fetchArray(SQLITE3_ASSOC) ) {
+                array_push($dataFromSpeedDB, $row);
             }
-            else{
-              $sql ="SELECT * from speedtest where start_time between '${start_date}' and  '${curdate}'  order by id asc;";
-            }
-
-            $dbResults = $db->query($sql);
-
-            $dataFromSpeedDB= array();
-
-
-            if(!empty($dbResults)){
-                while($row = $dbResults->fetchArray(SQLITE3_ASSOC) ) {
-                  array_push($dataFromSpeedDB, $row);
-                }
-                return($dataFromSpeedDB);
-            }
-            else{
-               return array("error"=>"No Results");
-            }
-            $db->close();
+            return($dataFromSpeedDB);
+        }
+        else{
+            return array("error"=>"No Results");
+        }
+        $db->close();
     }
 
 
     function getSpeedData24hrs($dbSpeedtest){
-      global $log, $setupVars;
-      if(isset($setupVars["SPEEDTEST_CHART_DAYS"]))
-      {
-        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest,$setupVars["SPEEDTEST_CHART_DAYS"]);
-      }
-      else{
-        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest);
-      }
+        global $log, $setupVars;
+        if(isset($setupVars["SPEEDTEST_CHART_DAYS"]))
+        {
+            $dataFromSpeedDB = getSpeedTestData($dbSpeedtest,$setupVars["SPEEDTEST_CHART_DAYS"]);
+        }
+        else{
+            $dataFromSpeedDB = getSpeedTestData($dbSpeedtest);
+        }
 
-
-      return $dataFromSpeedDB;
+        return $dataFromSpeedDB;
     }
 
 
@@ -518,7 +513,7 @@
                 }
             }
 
-           // print_r([$time->getTimestamp(),$_GET["from"],$_GET["until"]]);
+            // print_r([$time->getTimestamp(),$_GET["from"],$_GET["until"]]);
 
             $exploded = explode(" ", trim($query));
             $domain = $exploded[count($exploded)-3];
@@ -572,26 +567,26 @@
                 }
 
                 if($orderBy == "orderByClientDomainTime"){
-                  $allQueries['data'][hasHostName($client)][$domain][$time->format('Y-m-d T H:i:s')] = $status;
+                    $allQueries['data'][hasHostName($client)][$domain][$time->format('Y-m-d T H:i:s')] = $status;
                 }elseif ($orderBy == "orderByClientTimeDomain"){
-                  $allQueries['data'][hasHostName($client)][$time->format('Y-m-d T H:i:s')][$domain] = $status;
+                    $allQueries['data'][hasHostName($client)][$time->format('Y-m-d T H:i:s')][$domain] = $status;
                 }elseif ($orderBy == "orderByTimeClientDomain"){
-                  $allQueries['data'][$time->format('Y-m-d T H:i:s')][hasHostName($client)][$domain] = $status;
+                    $allQueries['data'][$time->format('Y-m-d T H:i:s')][hasHostName($client)][$domain] = $status;
                 }elseif ($orderBy == "orderByTimeDomainClient"){
-                  $allQueries['data'][$time->format('Y-m-d T H:i:s')][$domain][hasHostName($client)] = $status;
+                    $allQueries['data'][$time->format('Y-m-d T H:i:s')][$domain][hasHostName($client)] = $status;
                 }elseif ($orderBy == "orderByDomainClientTime"){
-                  $allQueries['data'][$domain][hasHostName($client)][$time->format('Y-m-d T H:i:s')] = $status;
+                    $allQueries['data'][$domain][hasHostName($client)][$time->format('Y-m-d T H:i:s')] = $status;
                 }elseif ($orderBy == "orderByDomainTimeClient"){
-                  $allQueries['data'][$domain][$time->format('Y-m-d T H:i:s')][hasHostName($client)] = $status;
+                    $allQueries['data'][$domain][$time->format('Y-m-d T H:i:s')][hasHostName($client)] = $status;
                 }else{
-                  array_push($allQueries['data'], array(
-                    $time->format('Y-m-d T H:i:s'),
-                    $type,
-                    $domain,
-                    hasHostName($client),
-                    $status,
+                    array_push($allQueries['data'], array(
+                        $time->format('Y-m-d T H:i:s'),
+                        $type,
+                        $domain,
+                        hasHostName($client),
+                        $status,
                     ""
-                  ));
+                    ));
                 }
             }
         }
@@ -931,4 +926,3 @@
         }
         return $var;
     }
-?>

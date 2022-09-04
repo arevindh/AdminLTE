@@ -37,7 +37,7 @@ $(function () {
   var uploadColor = $(".speedtest-upload").css("background-color");
   var downloadColor = $(".speedtest-download").css("background-color");
   var pingColor = $(".speedtest-ping").css("background-color");
-  
+
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
