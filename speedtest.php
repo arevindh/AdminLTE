@@ -7,35 +7,11 @@
 *    Please see LICENSE file for your rights under this license. */
 require 'scripts/pi-hole/php/header_authenticated.php';
 
-$showing = '';
-
 ?>
-<!-- Send PHP info to JS -->
-<div id="token" hidden><?php echo $token; ?></div>
-
-
-<!--
-<div class="row">
-    <div class="col-md-12">
-        <button class="btn btn-info margin-bottom pull-right">Refresh Data</button>
-    </div>
+<!-- Title -->
+<div class="page-header">
+    <h1>Speedetest</h1>
 </div>
--->
-
-<!-- Alerts -->
-<div id="alInfo" class="alert alert-info alert-dismissible fade in" role="alert" hidden="true">
-    <button type="button" class="close" data-hide="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Adding <span id="alDomain"></span> to the <span id="alList"></span>...
-</div>
-<div id="alSuccess" class="alert alert-success alert-dismissible fade in" role="alert" hidden="true">
-    <button type="button" class="close" data-hide="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Success!
-</div>
-<div id="alFailure" class="alert alert-danger alert-dismissible fade in" role="alert" hidden="true">
-    <button type="button" class="close" data-hide="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    Failure! Something went wrong.<span id="err"></span>
-</div>
-
 <div class="row">
     <div class="col-md-12">
         <div class="box" id="recent-queries">
