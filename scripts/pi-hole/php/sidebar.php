@@ -79,6 +79,11 @@
                         <i class="fa fa-fw menu-icon fa-file-alt"></i> <span>Query Log</span>
                     </a>
                 </li>
+                <li class="menu-analysis<?php if ($scriptname === 'queries.php') { ?> active<?php } ?>">
+                    <a href="speedtest.php">
+                        <i class="fa fa-fw menu-icon fa-tachometer-alt"></i> <span>Speedtest Log</span>
+                    </a>
+                </li>
                 <!-- Long-term database -->
                 <li class="menu-analysis treeview<?php if ($scriptname === 'db_queries.php' || $scriptname === 'db_lists.php' || $scriptname === 'db_graph.php') { ?> active<?php } ?>">
                     <a href="#">
