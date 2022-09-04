@@ -6,7 +6,6 @@
  *  Please see LICENSE file for your rights under this license. */
 var tableApi;
 
-
 function refreshData() {
   tableApi.ajax.url("api.php?getAllSpeedTestData&_=" + Date.now()).load();
 }
@@ -52,12 +51,12 @@ $(document).ready(function () {
       null,
       {
         render: function (data, type, _full, _meta) {
-          return (type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data)
+          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
         },
       },
       {
         render: function (data, type, _full, _meta) {
-          return (type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data)
+          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
         },
       },
       null,
