@@ -603,10 +603,8 @@ if (isset($_POST['field'])) {
 
             $success .= 'The Speedtest settings have been updated';
             break;
-
         default:
             // Option not found
-
             $error = 'Invalid option';
     }
 }
