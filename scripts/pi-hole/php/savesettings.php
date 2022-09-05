@@ -580,19 +580,19 @@ if (isset($_POST['field'])) {
 
         case 'speedtest':
             if (isset($_POST['speedtestmode'])) {
-                pihole_execute('-a -sm '.$_POST['speedtestmode']);
+                pihole_execute('-a -sm '.trim($_POST['speedtestmode']));
             } else {
                 // # code...
             }
 
             if (isset($_POST['speedtestschedule'])) {
-                pihole_execute('-a -s '.$_POST['speedtestschedule']);
+                pihole_execute('-a -s '.trim($_POST['speedtestschedule']));
             } else {
                 // # code...
             }
 
             if (isset($_POST['clearspeedtests'])) {
-                if ($_POST['clearspeedtests'] == 'yes') {
+                if (trim($_POST['clearspeedtests']) == 'yes') {
                     pihole_execute('-a -sc');
                 }
             } else {
@@ -600,13 +600,13 @@ if (isset($_POST['field'])) {
             }
 
             if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
-                pihole_execute('-a -ss '.$_POST['speedtestserver']);
+                pihole_execute('-a -ss '.trim($_POST['speedtestserver']));
             } else {
                 pihole_execute('-a -ss');
             }
 
             if (isset($_POST['speedtestdays'])) {
-                pihole_execute('-a -sd '.$_POST['speedtestdays']);
+                pihole_execute('-a -sd '.trim($_POST['speedtestdays']));
             }
 
             $success .= 'The Speedtest settings have been updated';
