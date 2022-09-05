@@ -581,22 +581,16 @@ if (isset($_POST['field'])) {
         case 'speedtest':
             if (isset($_POST['speedtestmode'])) {
                 pihole_execute('-a -sm '.trim($_POST['speedtestmode']));
-            } else {
-                // # code...
             }
 
             if (isset($_POST['speedtestschedule'])) {
                 pihole_execute('-a -s '.trim($_POST['speedtestschedule']));
-            } else {
-                // # code...
             }
 
             if (isset($_POST['clearspeedtests'])) {
                 if (trim($_POST['clearspeedtests']) == 'yes') {
                     pihole_execute('-a -sc');
                 }
-            } else {
-                // # code...
             }
 
             if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
