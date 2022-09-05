@@ -206,8 +206,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
     <div class="col-md-12">
         <div class="nav-tabs-custom">
             <ul class="nav nav-tabs" role="tablist">
-                <li role="presentation"<?php if ($tab === 'sysadmin') { ?> class="active"<?php } ?>>
-                    <a href="#sysadmin" aria-controls="sysadmin" aria-expanded="<?php echo $tab === 'sysadmin' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">System</a>
+                <li role="presentation"<?php if($tab === "sysadmin"){ ?> class="active"<?php } ?>>
+                    <a href="#sysadmin" aria-controls="sysadmin" aria-expanded="<?php echo $tab === "sysadmin" ? "true" : "false"; ?>" role="tab" data-toggle="tab">System</a>
                 </li>
                 <li role="presentation"<?php if ($tab === 'dns') { ?> class="active"<?php } ?>>
                     <a href="#dns" aria-controls="dns" aria-expanded="<?php echo $tab === 'dns' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">DNS</a>

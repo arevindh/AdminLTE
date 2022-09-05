@@ -183,11 +183,11 @@ require_once 'scripts/pi-hole/php/gravity.php';
 </div>
 
 <?php
-if ($boxedlayout) {
-    $tablelayout = 'col-md-6';
-} else {
-    $tablelayout = 'col-md-6 col-lg-6';
-} ?>
+    if ($boxedlayout) {
+        $tablelayout = 'col-md-6';
+    } else {
+        $tablelayout = 'col-md-6 col-lg-6';
+    } ?>
 <div class="row">
     <div class="<?php echo $tablelayout; ?>">
         <div class="box" id="domain-frequency">
@@ -200,9 +200,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Domain</th>
-                                <th>Hits</th>
-                                <th>Frequency</th>
+                            <th>Domain</th>
+                            <th>Hits</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -229,9 +229,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Domain</th>
-                                <th>Hits</th>
-                                <th>Frequency</th>
+                            <th>Domain</th>
+                            <th>Hits</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -260,9 +260,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Requests</th>
-                                <th>Frequency</th>
+                            <th>Client</th>
+                            <th>Requests</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -289,9 +289,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Requests</th>
-                                <th>Frequency</th>
+                            <th>Client</th>
+                            <th>Requests</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
