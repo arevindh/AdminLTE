@@ -1558,7 +1558,6 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                     <label>Speedtest Mode</label>
                                                     <select name="speedtestmode" class="form-control" >
                                                         <option value="official" <?php if ($speedtestmode == 'official') {?> selected <?php } ?>>Official CLI</option>
-                                                        <option value="python" disabled <?php if ($speedtestmode == 'python') {?> selected <?php } ?>>Python</option>
                                                     </select>
                                                 </div>
 
