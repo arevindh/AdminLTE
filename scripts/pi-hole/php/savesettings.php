@@ -580,14 +580,41 @@ if (isset($_POST['field'])) {
 
         case 'speedtest':
             if (isset($_POST['speedtestmode'])) {
-                exec('sudo pihole -a -sm '.trim($_POST['speedtestmode']));
+                pihole_execute('-a -sm '.$_POST['speedtestmode']);
+            } else {
+                // # code...
             }
 
             if (isset($_POST['speedtestschedule'])) {
-                exec('sudo pihole -a -s '.trim($_POST['speedtestschedule']));
+                pihole_execute('-a -s '.$_POST['speedtestschedule']);
+            } else {
+                // # code...
             }
+
+            if (isset($_POST['clearspeedtests'])) {
+                if ($_POST['clearspeedtests'] == 'yes') {
+                    pihole_execute('-a -sc');
+                }
+            } else {
+                // # code...
+            }
+
+            if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
+                pihole_execute('-a -ss '.$_POST['speedtestserver']);
+            } else {
+                pihole_execute('-a -ss');
+            }
+
+            if (isset($_POST['speedtestdays'])) {
+                pihole_execute('-a -sd '.$_POST['speedtestdays']);
+            }
+
+            $success .= 'The Speedtest settings have been updated';
+            break;
+
         default:
             // Option not found
+
             $error = 'Invalid option';
     }
 }
