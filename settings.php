@@ -196,7 +196,7 @@ if (isset($setupVars['API_QUERY_LOG_SHOW'])) {
 ?>
 
 <?php
-if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'api', 'privacy', 'teleporter'))) {
+if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'api', 'privacy', 'teleporter', 'speedtest'))) {
     $tab = $_GET['tab'];
 } else {
     $tab = 'sysadmin';
@@ -223,6 +223,9 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                 </li>
                 <li role="presentation"<?php if ($tab === 'teleporter') { ?> class="active"<?php } ?>>
                     <a href="#teleporter" aria-controls="teleporter" aria-expanded="<?php echo $tab === 'teleporter' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Teleporter</a>
+                </li>
+                <li role="presentation"<?php if ($tab === 'speedtest') { ?> class="active"<?php } ?>>
+                    <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === 'speedtest' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Speedtest</a>
                 </li>
             </ul>
             <div class="tab-content">
@@ -615,15 +618,15 @@ readStaticLeasesFile();
                                             <div class="col-md-12">
                                                 <table id="DHCPLeasesTable" class="table table-striped table-bordered nowrap" width="100%">
                                                     <thead>
-                                                        <tr>
-                                                            <th>MAC address</th>
-                                                            <th>IP address</th>
-                                                            <th>Hostname</th>
-                                                            <td></td>
-                                                        </tr>
+                                                    <tr>
+                                                        <th>MAC address</th>
+                                                        <th>IP address</th>
+                                                        <th>Hostname</th>
+                                                        <td></td>
+                                                    </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($dhcp_leases as $lease) { ?>
+                                                    <?php foreach ($dhcp_leases as $lease) { ?>
                                                         <tr data-placement="auto" data-container="body" data-toggle="tooltip"
                                                             title="Lease type: IPv<?php echo $lease['type']; ?><br/>Remaining lease time: <?php echo $lease['TIME']; ?><br/>DHCP UID: <?php echo $lease['clid']; ?>">
                                                             <td id="MAC"><?php echo $lease['hwaddr']; ?></td>
@@ -638,7 +641,7 @@ readStaticLeasesFile();
                                                                 </button>
                                                             </td>
                                                         </tr>
-                                                        <?php } ?>
+                                                    <?php } ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -664,7 +667,7 @@ readStaticLeasesFile();
                                                     </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <?php foreach ($dhcp_static_leases as $lease) { ?>
+                                                    <?php foreach ($dhcp_static_leases as $lease) { ?>
                                                         <tr>
                                                             <td><?php echo $lease['hwaddr']; ?></td>
                                                             <td data-order="<?php echo bin2hex(inet_pton($lease['IP'])); ?>"><?php echo $lease['IP']; ?></td>
@@ -677,7 +680,7 @@ readStaticLeasesFile();
                                                                 <?php } ?>
                                                             </td>
                                                         </tr>
-                                                        <?php } ?>
+                                                    <?php } ?>
                                                     </tbody>
                                                     <tfoot style="display: table-row-group">
                                                         <tr>
@@ -1066,7 +1069,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                         </div>
                                         <div class="row">
                                             <div class="col-md-12">
-                                            <h4>Query Log</h4>
+                                                <h4>Query Log</h4>
                                             </div>
                                         </div>
                                         <div class="row">
@@ -1444,17 +1447,130 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                             </div>
                         </div>
                         <?php } else { ?>
-                        <div class="col-lg-12">
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Teleporter</h3>
-                                </div>
-                                <div class="box-body">
-                                    <p>The PHP extension <code>Phar</code> is not loaded. Please ensure it is installed and loaded if you want to use the Pi-hole teleporter.</p>
+                            <div class="col-lg-12">
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Teleporter</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <p>The PHP extension <code>Phar</code> is not loaded. Please ensure it is installed and loaded if you want to use the Pi-hole teleporter.</p>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
                         <?php } ?>
+                    </div>
+                </div>
+
+                <!-- ######################################################### Speedtest ######################################################### -->
+                <?php
+
+                // Fix for select for not population on save
+                if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
+                    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+                } else {
+                    $speedtestshedule = false;
+                }
+
+                if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+                    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
+                } else {
+                    $speedtestdays = 'official';
+                }
+
+                if (isset($setupVars['SPEEDTEST_SERVER'])) {
+                    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
+                } else {
+                    $speedtestserver = '';
+                }
+
+                if (isset($setupVars['SPEEDTEST_MODE'])) {
+                    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
+                } else {
+                    $speedtestmode = 'python';
+                }
+?>
+
+
+                <!-- ######################################################### Speedtest ######################################################### -->
+                <div id="speedtest" class="tab-pane fade<?php if ($tab === 'speedtest') { ?> in active<?php } ?>">
+
+                    <div class="row">
+                        <div class="col-md-12">
+                            <form role="form" method="post">
+                                <input type="hidden" name="field" value="speedtest">
+                                <input type="hidden" name="token" value="<?php echo $token; ?>">
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+
+                                        <h3 class="box-title">Speedtest settings</h3>
+
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <h4>Speedtest</h4>
+                                                <div class="form-group col-md-6">
+                                                    <label>Speedtest Schedule</label>
+                                                    <select name="speedtestschedule" class="form-control" >
+                                                        <option value="0" <?php if ($speedtestshedule == 0) {?> selected <?php } ?>>Disabled</option>
+                                                        <option value="1" <?php if ($speedtestshedule == 1) {?> selected <?php } ?>>Every 1 Hour</option>
+                                                        <option value="2" <?php if ($speedtestshedule == 2) {?> selected <?php } ?>>Every 2 Hours</option>
+                                                        <option value="4" <?php if ($speedtestshedule == 4) {?> selected <?php } ?>>Every 4 Hours</option>
+                                                        <option value="6" <?php if ($speedtestshedule == 6) {?> selected <?php } ?>>Every 6 Hours</option>
+                                                        <option value="12" <?php if ($speedtestshedule == 12) {?> selected <?php } ?>>Every 12 Hours</option>
+                                                        <option value="24" <?php if ($speedtestshedule == 24) {?> selected <?php } ?>>Every 24 Hours</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label>Speedtest Display Range</label>
+                                                    <select name="speedtestdays" class="form-control" >
+                                                        <option value="1" <?php if ($speedtestdays == 1) {?> selected <?php } ?>>1 Day</option>
+                                                        <option value="2" <?php if ($speedtestdays == 2) {?> selected <?php } ?>>2 Days</option>
+                                                        <option value="4" <?php if ($speedtestdays == 4) {?> selected <?php } ?>>4 Days</option>
+                                                        <option value="7" <?php if ($speedtestdays == 7) {?> selected <?php } ?>>7 Days</option>
+                                                        <option value="30" <?php if ($speedtestdays == 30) {?> selected <?php } ?>>30 Days</option>
+                                                    </select>
+                                                </div>
+                                                <h4>Custom Speedtest server </h4>
+
+                                                <div class="form-group col-md-12">
+                                                    <p > <span class="text-danger"> Expert only!!!</span>. Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank"> here</a></p>
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">Speedtest.net Server</div>
+                                                            <input type="number" class="form-control" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>"  placeholder="Keep this blank to autoselect" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <h4>Flush Speedtest history </h4>
+                                                <div class="form-group col-md-12">
+
+                                                    <div class="form-group">
+                                                            <input type="checkbox"  name="clearspeedtests" id="clearspeedtests" value="yes"/>
+                                                            <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
+                                                    </div>
+                                                </div>
+                                                <h4>Speedtest Mode (Beta)</h4>
+                                                <div class="form-group col-md-12">
+                                                    <label>Speedtest Mode</label>
+                                                    <select name="speedtestmode" class="form-control" >
+                                                        <option value="official" <?php if ($speedtestmode == 'official') {?> selected <?php } ?>>Official CLI</option>
+                                                    </select>
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="box-footer clearfix">
+                                        <button type="submit" class="btn btn-primary pull-right">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>

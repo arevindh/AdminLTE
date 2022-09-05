@@ -291,3 +291,13 @@ td.highlight {
   border-color: #337ab7;
   color: #fff;
 }
+
+.speedtest-upload {
+  background-color: #ff6384;
+}
+.speedtest-download {
+  background-color: #3c8dbc;
+}
+.speedtest-ping {
+  background-color: #00aa60;
+}

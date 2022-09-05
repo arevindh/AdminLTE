@@ -97,9 +97,9 @@ if (!is_readable($versionsfile)) {
 
 // URLs for the links
 $coreUrl = 'https://github.com/pi-hole/pi-hole/releases';
-$webUrl = 'https://github.com/pi-hole/AdminLTE/releases';
+$webUrl = 'https://github.com/arevindh/AdminLTE/releases';
 $ftlUrl = 'https://github.com/pi-hole/FTL/releases';
-$dockerUrl = 'https://github.com/pi-hole/docker-pi-hole/releases';
+$dockerUrl = 'https://github.com/arevindh/docker-pi-hole/releases';
 
 // Version strings
 // If "vDev" show branch/commit, else show link

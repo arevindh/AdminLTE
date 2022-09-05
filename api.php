@@ -188,6 +188,7 @@ if (isset($_GET['enable']) && $auth) {
 
 // Other API functions
 require 'api_FTL.php';
+require 'api_speedtest.php';
 
 header('Content-type: application/json');
 if (isset($_GET['jsonForceObject'])) {

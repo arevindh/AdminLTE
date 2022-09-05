@@ -16,6 +16,9 @@ require_once 'scripts/pi-hole/php/gravity.php';
 <span class="queries-blocked"></span>
 <span class="graphs-grid"></span>
 <span class="graphs-ticks"></span>
+<span class="speedtest-upload"></span>
+<span class="speedtest-download"></span>
+<span class="speedtest-ping"></span>
 <!-- Small boxes (Stat box) -->
 <div class="row">
     <div class="col-lg-3 col-sm-6">
@@ -90,6 +93,35 @@ require_once 'scripts/pi-hole/php/gravity.php';
         </div>
     </div>
 </div>
+<?php
+// If the user is logged in, then we show the more detailed index page.
+// Even if we would include them here anyhow, there would be nothing to
+// show since the API will respect the privacy of the user if he defines
+// a password
+
+?>
+
+<?php if ($auth && $speedtestshedule) { ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box" id="queries-over-time">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
+                </div>
+                <div class="box-body">
+                    <div class="chart">
+                        <canvas id="speedtestChart" width="800" height="240"></canvas>
+                    </div>
+                </div>
+                <div class="overlay">
+                    <i class="fa fa-refresh fa-spin"></i>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
+<?php }  ?>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box" id="clients">
@@ -283,3 +315,7 @@ require_once 'scripts/pi-hole/php/gravity.php';
 <?php
 require 'scripts/pi-hole/php/footer.php';
 ?>
+
+<script src="scripts/pi-hole/js/index.js"></script>
+<script src="scripts/pi-hole/js/speedtest.js"></script>
+<script src="scripts/vendor/moment.min.js"></script>
