@@ -148,7 +148,7 @@ $piholeFTLConf = piholeFTLConfig();
 
 require 'header.php';
 ?>
-<body class="hold-transition sidebar-mini<?php if ($boxedlayout) { ?> layout-boxed<?php } ?><?php if ($auth) { ?> logged-in<?php } ?>">
+<body class="<?php echo $theme; ?> hold-transition sidebar-mini<?php if ($boxedlayout) { ?> layout-boxed<?php } ?><?php if ($auth) { ?> logged-in<?php } ?>">
 <noscript>
     <!-- JS Warning -->
     <div>
