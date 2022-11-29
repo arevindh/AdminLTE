@@ -15,9 +15,9 @@ function nointernet(){
 
 
 if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-    /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
+    /usr/bin/speedtest -s $serverid --json --share > /tmp/speedtest.log || nointernet
 else
-    /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
+    /usr/bin/speedtest --json --share > /tmp/speedtest.log || nointernet
 fi
 
 # sed 's/,/./g' fix for those regions use , instead of .
@@ -25,14 +25,14 @@ fi
 FILE=/tmp/speedtest.log
 if [[ -f "$FILE" ]]; then
     stop=$(date +"%Y-%m-%d %H:%M:%S")
-    download=`cat /tmp/speedtest.log| jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g' `
-    upload=`cat /tmp/speedtest.log| jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g'`
+    download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
+    upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
-    isp=`cat /tmp/speedtest.log| jq -r '.isp'`
-    server_ip=`cat /tmp/speedtest.log| jq -r '.server.ip'`
-    from_ip=`cat /tmp/speedtest.log| jq -r '.interface.externalIp'`
-    server_ping=`cat /tmp/speedtest.log| jq -r '.ping.latency'`
-    share_url=`cat /tmp/speedtest.log| jq -r '.result.url'`
+    isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
+    server_ip=`cat /tmp/speedtest.log| jq -r '.server.host'`
+    from_ip=`cat /tmp/speedtest.log| jq -r '.client.ip'`
+    server_ping=`cat /tmp/speedtest.log| jq -r '.ping'`
+    share_url=`cat /tmp/speedtest.log| jq -r '.share'`
     server_dist=0
 
     rm /tmp/speedtest.log
@@ -47,4 +47,3 @@ if [[ -f "$FILE" ]]; then
 
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', '${isp}', '${from_ip}', '${server_name}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
 fi
-
