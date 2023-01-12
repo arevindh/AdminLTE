@@ -10,7 +10,7 @@ require 'scripts/pi-hole/php/header_authenticated.php';
 ?>
 <!-- Title -->
 <div class="page-header">
-    <h1>Speedetest</h1>
+    <h1>Speedtest</h1>
 </div>
 <div class="row">
     <div class="col-md-12">
