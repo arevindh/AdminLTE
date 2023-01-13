@@ -33,111 +33,96 @@ $(function () {
     updateSpeedTestData();
   }, 6000);
 
-  var uploadColor = $(".speedtest-upload").css("background-color");
-  var downloadColor = $(".speedtest-download").css("background-color");
-  var pingColor = $(".speedtest-ping").css("background-color");
-
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedtestChart");
+  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: utils.getGraphType(),
     data: {
       labels: speedlabels,
       datasets: [
         {
           label: "Download Mbps",
           data: downloadspeed,
-          backgroundColor: downloadColor,
-          fill: false,
-          borderColor: downloadColor,
-          borderWidth: 1,
-          cubicInterpolationMode: "monotone",
-          yAxisID: "y-axis-1",
         },
         {
           label: "Upload Mbps",
           data: uploadspeed,
-          backgroundColor: uploadColor,
-          fill: false,
-          borderColor: uploadColor,
-          borderWidth: 1,
-          yAxisID: "y-axis-1",
         },
         {
           label: "Ping ms",
           data: serverPing,
-          backgroundColor: pingColor,
-          fill: false,
-          borderColor: pingColor,
-          borderWidth: 1,
-          borderDash: [5, 5],
-          yAxisID: "y-axis-2",
         },
       ],
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      legend: {
-        display: true,
-        position: "bottom",
+      interaction: {
+        mode: "nearest",
+        axis: "x",
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+          yAlign: "bottom",
+        }
       },
       scales: {
-        yAxes: [
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "left",
-            id: "y-axis-1",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+        yAxes: {
+          stacked: true,
+          beginAtZero: true,
+          ticks: {
+            color: ticksColor,
+            precision: 0,
           },
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "right",
-            id: "y-axis-2",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+          grid: {
+            color: gridColor,
+            drawBorder: false,
           },
-        ],
-        xAxes: [
-          {
-            // type :'time',
-            display: true,
-            scaleLabel: {
-              display: true,
+        },
+        xAxes: {
+          type: "time",
+          stacked: true,
+          offset: false,
+          time: {
+            unit: "day",
+            displayFormats: {
+              day: "Do HH:mm",
             },
-            gridLines: {
-              color: gridColor,
-              zeroLineColor: gridColor,
-            },
-            ticks: {
-              // autoSkip: true,
-              maxTicksLimit: 10,
-              maxRotation: 0,
-              minRotation: 0,
-              fontColor: ticksColor,
-            },
+            tooltipFormat: "Do HH:mm",
+            minUnit: "hour",
+            min: moment().subtract(24, "hours"),
+            max: moment(),
+            stepSize: 1,
           },
-        ],
+          grid: {
+            color: gridColor,
+            offset: false,
+            drawBorder: false,
+          },
+          ticks: {
+            color: ticksColor,
+          },
+        },
       },
-      tooltips: {
-        enabled: true,
-        mode: "x-axis",
-        intersect: false,
+      elements: {
+        line: {
+          borderWidth: 0,
+          spanGaps: false,
+          fill: true,
+        },
+        point: {
+          radius: 0,
+          hoverRadius: 5,
+          hitRadius: 5,
+        },
       },
     },
   });
