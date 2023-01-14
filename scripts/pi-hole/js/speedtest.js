@@ -126,7 +126,6 @@ $(function () {
         "y-axis-2": {
           type: "linear",
           position: "right",
-          offset: true,
         },
       },
     },
