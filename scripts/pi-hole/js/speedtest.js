@@ -1,6 +1,6 @@
 /* global Chart:false, moment:false */
 
-$(function (bar = false) {
+$(function () {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -38,7 +38,7 @@ $(function (bar = false) {
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: bar ? "bar" : "line",
+    type: "line",
     data: {
       labels: speedlabels,
       datasets: [
@@ -127,9 +127,6 @@ $(function (bar = false) {
           type: "linear",
           position: "right",
           offset: true,
-          grid: {
-            drawOnChartArea: false, // only want the grid lines for one axis to show up
-          },
         },
       },
     },
