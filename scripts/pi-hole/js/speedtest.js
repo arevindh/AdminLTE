@@ -1,7 +1,6 @@
 /* global Chart:false, moment:false */
 
-// speedOverTimeLineChart
-$(function () {
+$(function (line = true) {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -37,23 +36,37 @@ $(function () {
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
+  var speedChartctx = document.getElementById("speedOverTime");
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: utils.getGraphType(),
+    type: line ? "line" : "bar",
     data: {
       labels: speedlabels,
       datasets: [
         {
           label: "Download Mbps",
           data: downloadspeed,
+          backgroundColor: "rgba(0, 123, 255, 0.5)",
+          borderColor: "rgba(0, 123, 255, 1)",
+          borderWidth: 1,
+          cubicInterpolationMode: "monotone",
+          yAxisID: "y-axis-1",
         },
         {
           label: "Upload Mbps",
           data: uploadspeed,
+          backgroundColor: "rgba(40, 167, 69, 0.5)",
+          borderColor: "rgba(40, 167, 69, 1)",
+          borderWidth: 1,
+          yAxisID: "y-axis-1",
         },
         {
           label: "Ping ms",
           data: serverPing,
+          backgroundColor: "rgba(108, 117, 125, 0.5)",
+          borderColor: "rgba(108, 117, 125, 1)",
+          borderWidth: 1,
+          yAxisID: "y-axis-2",
         },
       ],
     },
@@ -68,61 +81,56 @@ $(function () {
         legend: {
           display: true,
           position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
         },
         tooltip: {
           enabled: true,
           intersect: false,
           yAlign: "bottom",
-        }
+          callbacks: {
+            label: function (context) {
+              var label = context.dataset.label || "";
+
+              if (label) {
+                label += ": ";
+              }
+              if (context.parsed.y !== null) {
+                label += context.parsed.y;
+              }
+              return label;
+            }
+          },
+        },
       },
       scales: {
-        yAxes: {
+        x: {
           stacked: true,
-          beginAtZero: true,
-          ticks: {
-            color: ticksColor,
-            precision: 0,
-          },
           grid: {
             color: gridColor,
-            drawBorder: false,
-          },
-        },
-        xAxes: {
-          type: "time",
-          stacked: true,
-          offset: false,
-          time: {
-            unit: "day",
-            displayFormats: {
-              day: "Do HH:mm",
-            },
-            tooltipFormat: "Do HH:mm",
-            minUnit: "hour",
-            min: moment().subtract(24, "hours"),
-            max: moment(),
-            stepSize: 1,
-          },
-          grid: {
-            color: gridColor,
-            offset: false,
-            drawBorder: false,
           },
           ticks: {
             color: ticksColor,
           },
         },
-      },
-      elements: {
-        line: {
-          borderWidth: 0,
-          spanGaps: false,
-          fill: true,
+        "y-axis-1": {
+          type: "linear",
+          position: "left",
+          stacked: true,
+          grid: {
+            color: gridColor,
+          },
+          ticks: {
+            color: ticksColor,
+          },
         },
-        point: {
-          radius: 0,
-          hoverRadius: 5,
-          hitRadius: 5,
+        "y-axis-2": {
+          type: "linear",
+          position: "right",
+          stacked: true,
+          offset: true,
         },
       },
     },
