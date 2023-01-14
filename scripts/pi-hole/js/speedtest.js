@@ -77,6 +77,14 @@ $(function () {
         axis: "x",
       },
       plugins: {
+        legend: {
+          display: false,
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
         tooltip: {
           enabled: true,
           intersect: false,
