@@ -887,7 +887,7 @@ $(function () {
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
+  var speedChartctx = document.getElementById("speedOverTimeChart");
   var speedChart = new Chart(speedChartctx, {
     type: "bar",
     data: {
@@ -952,17 +952,37 @@ $(function () {
         },
       },
       scales: {
-        x: {
-          grid: {
-            color: gridColor,
-          },
+        yAxes: {
+          stacked: true,
+          beginAtZero: true,
           ticks: {
             color: ticksColor,
+            precision: 0,
           },
-        },
-        y: {
           grid: {
             color: gridColor,
+            drawBorder: false,
+          },
+        },
+        xAxes: {
+          type: "time",
+          stacked: true,
+          offset: false,
+          time: {
+            unit: "day",
+            displayFormats: {
+              day: "Do HH:mm",
+            },
+            tooltipFormat: "Do HH:mm",
+            minUnit: "hour",
+            min: moment().subtract(24, "hours"),
+            max: moment(),
+            stepSize: 1,
+          },
+          grid: {
+            color: gridColor,
+            offset: false,
+            drawBorder: false,
           },
           ticks: {
             color: ticksColor,
