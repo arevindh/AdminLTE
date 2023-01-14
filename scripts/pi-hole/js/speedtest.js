@@ -1,6 +1,6 @@
 /* global Chart:false, moment:false */
 
-$(function () {
+$(function (line = true) {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -38,7 +38,7 @@ $(function () {
 
   var speedChartctx = document.getElementById("speedOverTime");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: "bar",
     data: {
       labels: speedlabels,
       datasets: [
