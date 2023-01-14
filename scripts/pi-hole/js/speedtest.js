@@ -49,30 +49,29 @@ $(function () {
         {
           label: "Download Mbps",
           data: downloadspeed,
-          backgroundColor: downloadColor,
-          fill: false,
-          borderColor: downloadColor,
+          backgroundColor: "rgba(0, 123, 255, 0.5)",
+          borderColor: "rgba(0, 123, 255, 1)",
           borderWidth: 1,
           cubicInterpolationMode: "monotone",
+          parsing: false,
           yAxisID: "y-axis-1",
         },
         {
           label: "Upload Mbps",
           data: uploadspeed,
-          backgroundColor: uploadColor,
-          fill: false,
-          borderColor: uploadColor,
+          backgroundColor: "rgba(40, 167, 69, 0.5)",
+          borderColor: "rgba(40, 167, 69, 1)",
           borderWidth: 1,
+          parsing: false,
           yAxisID: "y-axis-1",
         },
         {
           label: "Ping ms",
           data: serverPing,
-          backgroundColor: pingColor,
-          fill: false,
-          borderColor: pingColor,
+          backgroundColor: "rgba(108, 117, 125, 0.5)",
+          borderColor: "rgba(108, 117, 125, 1)",
           borderWidth: 1,
-          borderDash: [5, 5],
+          parsing: false,
           yAxisID: "y-axis-2",
         },
       ],
@@ -80,64 +79,59 @@ $(function () {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      legend: {
-        display: true,
-        position: "bottom",
+      interaction: {
+        mode: "nearest",
+        axis: "x",
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+          yAlign: "bottom",
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var label = data.datasets[tooltipItem.datasetIndex].label || "";
+              if (label) {
+                label += ": ";
+              }
+              label += tooltipItem.yLabel;
+              return label;
+            },
+          },
+        },
       },
       scales: {
-        yAxes: [
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "left",
-            id: "y-axis-1",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+        x: {
+          grid: {
+            color: gridColor,
           },
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "right",
-            id: "y-axis-2",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+          ticks: {
+            color: ticksColor,
           },
-        ],
-        xAxes: [
-          {
-            // type :'time',
-            display: true,
-            scaleLabel: {
-              display: true,
-            },
-            gridLines: {
-              color: gridColor,
-              zeroLineColor: gridColor,
-            },
-            ticks: {
-              // autoSkip: true,
-              maxTicksLimit: 10,
-              maxRotation: 0,
-              minRotation: 0,
-              fontColor: ticksColor,
-            },
+        },
+        "y-axis-1": {
+          type: "linear",
+          position: "left",
+          grid: {
+            color: gridColor,
           },
-        ],
-      },
-      tooltips: {
-        enabled: true,
-        mode: "x-axis",
-        intersect: false,
+          ticks: {
+            color: ticksColor,
+          },
+        },
+        "y-axis-2": {
+          type: "linear",
+          position: "right",
+          offset: true,
+        },
       },
     },
   });
