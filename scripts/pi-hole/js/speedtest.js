@@ -1,6 +1,6 @@
 /* global Chart:false, moment:false */
 
-$(function (line = true) {
+$(function (line = false) {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -36,7 +36,6 @@ $(function (line = true) {
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedOverTime");
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
     type: line ? "line" : "bar",
