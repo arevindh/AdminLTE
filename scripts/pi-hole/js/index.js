@@ -511,10 +511,10 @@ function updateTopClientsChart() {
         percentage = (data.top_sources[client] / data.dns_queries_today) * 100;
         clienttable.append(
           "<tr> " +
-            utils.addTD(url) +
-            utils.addTD(data.top_sources[client]) +
-            utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "progress-bar-blue")) +
-            "</tr> "
+          utils.addTD(url) +
+          utils.addTD(data.top_sources[client]) +
+          utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "progress-bar-blue")) +
+          "</tr> "
         );
       }
     }
@@ -551,10 +551,10 @@ function updateTopClientsChart() {
         percentage = (data.top_sources_blocked[client] / data.ads_blocked_today) * 100;
         clientblockedtable.append(
           "<tr> " +
-            utils.addTD(url) +
-            utils.addTD(data.top_sources_blocked[client]) +
-            utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "progress-bar-blue")) +
-            "</tr> "
+          utils.addTD(url) +
+          utils.addTD(data.top_sources_blocked[client]) +
+          utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "progress-bar-blue")) +
+          "</tr> "
         );
       }
     }
@@ -601,10 +601,10 @@ function updateTopLists() {
         percentage = (data.top_queries[domain] / data.dns_queries_today) * 100;
         domaintable.append(
           "<tr> " +
-            utils.addTD(url) +
-            utils.addTD(data.top_queries[domain]) +
-            utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "queries-permitted")) +
-            "</tr> "
+          utils.addTD(url) +
+          utils.addTD(data.top_queries[domain]) +
+          utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "queries-permitted")) +
+          "</tr> "
         );
       }
     }
@@ -627,10 +627,10 @@ function updateTopLists() {
         percentage = (data.top_ads[domain] / data.ads_blocked_today) * 100;
         adtable.append(
           "<tr> " +
-            utils.addTD(url) +
-            utils.addTD(data.top_ads[domain]) +
-            utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "queries-blocked")) +
-            "</tr> "
+          utils.addTD(url) +
+          utils.addTD(data.top_ads[domain]) +
+          utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "queries-blocked")) +
+          "</tr> "
         );
       }
     }
@@ -850,6 +850,130 @@ const htmlLegendPlugin = {
   },
 };
 
+// speedOverTimeBarChart
+$(function () {
+  var speedlabels = [];
+  var downloadspeed = [];
+  var uploadspeed = [];
+  var serverPing = [];
+
+  function updateSpeedTestData() {
+    function formatDate(itemdate) {
+      return moment(itemdate).format("Do HH:mm");
+    }
+
+    $.ajax({
+      url: "api.php?getSpeedData24hrs&PHP",
+      dataType: "json",
+    }).done(function (results) {
+      results.forEach(function (packet) {
+        // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
+        if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
+          speedlabels.push(formatDate(packet.start_time));
+          uploadspeed.push(parseFloat(packet.upload));
+          downloadspeed.push(parseFloat(packet.download));
+          serverPing.push(parseFloat(packet.server_ping));
+        }
+      });
+      speedChart.update();
+    });
+  }
+
+  setInterval(function () {
+    // console.log('updateSpeedTestData');
+    updateSpeedTestData();
+  }, 6000);
+
+  var gridColor = $(".graphs-grid").css("background-color");
+  var ticksColor = $(".graphs-ticks").css("color");
+
+  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
+  var speedChart = new Chart(speedChartctx, {
+    type: "bar",
+    data: {
+      labels: speedlabels,
+      datasets: [
+        {
+          label: "Download",
+          data: downloadspeed,
+          backgroundColor: "rgba(0, 123, 255, 0.5)",
+          borderColor: "rgba(0, 123, 255, 1)",
+          borderWidth: 1,
+          parsing: false,
+        },
+        {
+          label: "Upload",
+          data: uploadspeed,
+          backgroundColor: "rgba(40, 167, 69, 0.5)",
+          borderColor: "rgba(40, 167, 69, 1)",
+          borderWidth: 1,
+          parsing: false,
+        },
+        {
+          label: "Ping",
+          data: serverPing,
+          backgroundColor: "rgba(108, 117, 125, 0.5)",
+          borderColor: "rgba(108, 117, 125, 1)",
+          borderWidth: 1,
+          parsing: false,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: "nearest",
+        axis: "x",
+      },
+      plugins: {
+        legend: {
+          display: true,
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+        tooltip: {
+          enabled: true,
+          intersect: false,
+          yAlign: "bottom",
+          callbacks: {
+            label: function (tooltipItem, data) {
+              var label = data.datasets[tooltipItem.datasetIndex].label || "";
+              if (label) {
+                label += ": ";
+              }
+              label += tooltipItem.yLabel;
+              return label;
+            },
+          },
+        },
+      },
+      scales: {
+        x: {
+          grid: {
+            color: gridColor,
+          },
+          ticks: {
+            color: ticksColor,
+          },
+        },
+        y: {
+          grid: {
+            color: gridColor,
+          },
+          ticks: {
+            color: ticksColor,
+          },
+        },
+      },
+    },
+  });
+});
+
+// queryOverTimeBarChart
 $(function () {
   // Pull in data via AJAX
   getMaxlogage();
