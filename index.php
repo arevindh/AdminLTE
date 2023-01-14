@@ -123,8 +123,6 @@ require_once 'scripts/pi-hole/php/gravity.php';
                 <div class="box-body">
                     <div class="chart" style="height: 240px">
                         <canvas id="speedOverTimeChart"></canvas>
-                    <div class="chart" style="width: 100%; height: 240px">
-                        <canvas id="speedOverTimeChart"></canvas>
                     </div>
                 </div>
                 <div class="overlay">

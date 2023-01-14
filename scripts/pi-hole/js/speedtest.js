@@ -37,7 +37,6 @@ $(function (line = false) {
   var ticksColor = $(".graphs-ticks").css("color");
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
-  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
     type: line ? "line" : "bar",
     data: {
@@ -49,7 +48,7 @@ $(function (line = false) {
           backgroundColor: "rgba(0, 123, 255, 0.5)",
           borderColor: "rgba(0, 123, 255, 1)",
           borderWidth: 1,
-          cubicInterpolationMode: "monotone",
+          //cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-1",
         },
         {
