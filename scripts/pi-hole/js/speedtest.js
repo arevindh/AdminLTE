@@ -49,7 +49,6 @@ $(function () {
           borderColor: "rgba(0, 123, 255, 1)",
           borderWidth: 1,
           cubicInterpolationMode: "monotone",
-          parsing: false,
           yAxisID: "y-axis-1",
         },
         {
@@ -58,7 +57,6 @@ $(function () {
           backgroundColor: "rgba(40, 167, 69, 0.5)",
           borderColor: "rgba(40, 167, 69, 1)",
           borderWidth: 1,
-          parsing: false,
           yAxisID: "y-axis-1",
         },
         {
@@ -67,7 +65,6 @@ $(function () {
           backgroundColor: "rgba(108, 117, 125, 0.5)",
           borderColor: "rgba(108, 117, 125, 1)",
           borderWidth: 1,
-          parsing: false,
           yAxisID: "y-axis-2",
         },
       ],
