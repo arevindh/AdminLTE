@@ -40,7 +40,7 @@ $(function () {
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedtestChart");
+  var speedChartctx = document.getElementById("speedOverTime");
   var speedChart = new Chart(speedChartctx, {
     type: "line",
     data: {

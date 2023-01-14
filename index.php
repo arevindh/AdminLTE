@@ -121,8 +121,8 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
                 </div>
                 <div class="box-body">
-                    <div class="chart" style="width: 100%; height: 240px">
-                        <canvas id="speedtestChart"></canvas>
+                    <div class="chart">
+                        <canvas id="speedOverTime"></canvas>
                     </div>
                 </div>
                 <div class="overlay">
