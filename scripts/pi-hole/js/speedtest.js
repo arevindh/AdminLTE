@@ -90,14 +90,17 @@ $(function () {
           intersect: false,
           yAlign: "bottom",
           callbacks: {
-            label: function (tooltipItem, data) {
-              var label = data.datasets[tooltipItem.datasetIndex].label || "";
+            label: function (context) {
+              var label = context.dataset.label || "";
+
               if (label) {
                 label += ": ";
               }
-              label += tooltipItem.yLabel;
+              if (context.parsed.y !== null) {
+                label += context.parsed.y;
+              }
               return label;
-            },
+            }
           },
         },
       },
