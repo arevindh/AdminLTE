@@ -122,7 +122,7 @@ require_once 'scripts/pi-hole/php/gravity.php';
                 </div>
                 <div class="box-body">
                     <div class="chart" style="height: 240px">
-                        <canvas id="speedOverTime"></canvas>
+                        <canvas id="speedOverTimeChart"></canvas>
                     </div>
                 </div>
                 <div class="overlay">

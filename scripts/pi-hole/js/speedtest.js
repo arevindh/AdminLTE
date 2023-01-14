@@ -1,6 +1,6 @@
 /* global Chart:false, moment:false */
 
-$(function () {
+$(function (bar = false) {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -36,14 +36,14 @@ $(function () {
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedOverTime");
+  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: bar ? "bar" : "line",
     data: {
       labels: speedlabels,
       datasets: [
         {
-          label: "Download Mbps",
+          label: "Download (Mbps)",
           data: downloadspeed,
           backgroundColor: "rgba(0, 123, 255, 0.5)",
           borderColor: "rgba(0, 123, 255, 1)",
@@ -52,7 +52,7 @@ $(function () {
           yAxisID: "y-axis-1",
         },
         {
-          label: "Upload Mbps",
+          label: "Upload (Mbps)",
           data: uploadspeed,
           backgroundColor: "rgba(40, 167, 69, 0.5)",
           borderColor: "rgba(40, 167, 69, 1)",
@@ -60,7 +60,7 @@ $(function () {
           yAxisID: "y-axis-1",
         },
         {
-          label: "Ping ms",
+          label: "Ping (ms)",
           data: serverPing,
           backgroundColor: "rgba(108, 117, 125, 0.5)",
           borderColor: "rgba(108, 117, 125, 1)",
