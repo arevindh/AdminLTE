@@ -851,7 +851,7 @@ const htmlLegendPlugin = {
 };
 
 // speedOverTimeBarChart
-$(function () {
+$(function (bar = true) {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
@@ -889,7 +889,7 @@ $(function () {
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "bar",
+    type: bar ? "bar" : "line",
     data: {
       labels: speedlabels,
       datasets: [
@@ -952,37 +952,17 @@ $(function () {
         },
       },
       scales: {
-        yAxes: {
-          stacked: true,
-          beginAtZero: true,
+        x: {
+          grid: {
+            color: gridColor,
+          },
           ticks: {
             color: ticksColor,
-            precision: 0,
-          },
-          grid: {
-            color: gridColor,
-            drawBorder: false,
           },
         },
-        xAxes: {
-          type: "time",
-          stacked: true,
-          offset: false,
-          time: {
-            unit: "day",
-            displayFormats: {
-              day: "Do HH:mm",
-            },
-            tooltipFormat: "Do HH:mm",
-            minUnit: "hour",
-            min: moment().subtract(24, "hours"),
-            max: moment(),
-            stepSize: 1,
-          },
+        y: {
           grid: {
             color: gridColor,
-            offset: false,
-            drawBorder: false,
           },
           ticks: {
             color: ticksColor,
