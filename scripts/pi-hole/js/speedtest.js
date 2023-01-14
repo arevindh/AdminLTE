@@ -106,6 +106,7 @@ $(function (line = true) {
       },
       scales: {
         x: {
+          stacked: true,
           grid: {
             color: gridColor,
           },
@@ -116,6 +117,7 @@ $(function (line = true) {
         "y-axis-1": {
           type: "linear",
           position: "left",
+          stacked: true,
           grid: {
             color: gridColor,
           },
@@ -126,6 +128,7 @@ $(function (line = true) {
         "y-axis-2": {
           type: "linear",
           position: "right",
+          stacked: true,
           offset: true,
         },
       },
