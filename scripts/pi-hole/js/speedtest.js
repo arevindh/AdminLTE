@@ -90,7 +90,7 @@ $(function () {
         tooltip: {
           enabled: true,
           intersect: false,
-          yAlign: "bottom",
+          yAlign: "top",
           callbacks: {
             label: function (context) {
               return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
