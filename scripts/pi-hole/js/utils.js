@@ -181,20 +181,20 @@ function validateIPv6CIDR(ip) {
   var v6cidr = "(\\/([1-9]|[1-9][0-9]|1[0-1][0-9]|12[0-8])){0,1}";
   var ipv6validator = new RegExp(
     "^(((?:" +
-      ipv6elem +
-      "))*((?::" +
-      ipv6elem +
-      "))*::((?:" +
-      ipv6elem +
-      "))*((?::" +
-      ipv6elem +
-      "))*|((?:" +
-      ipv6elem +
-      "))((?::" +
-      ipv6elem +
-      ")){7})" +
-      v6cidr +
-      "$"
+    ipv6elem +
+    "))*((?::" +
+    ipv6elem +
+    "))*::((?:" +
+    ipv6elem +
+    "))*((?::" +
+    ipv6elem +
+    "))*|((?:" +
+    ipv6elem +
+    "))((?::" +
+    ipv6elem +
+    ")){7})" +
+    v6cidr +
+    "$"
   );
   return ipv6validator.test(ip);
 }
@@ -269,9 +269,11 @@ function stateLoadCallback(itemName) {
   return data;
 }
 
-function getGraphType() {
+function getGraphType(speedtest = 0) {
   // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
-  return localStorage && localStorage.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  if (!speedtest)
+    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  return localStorage?.getItem("speedtest_chart_type") || "line";
 }
 
 function addFromQueryLog(domain, list) {

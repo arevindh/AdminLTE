@@ -38,7 +38,7 @@ $(function () {
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: utils.getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
@@ -93,7 +93,7 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              return Math.round(context?.parsed?.y * 10) / 10 + context?.dataset?.label || null;
+              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
             }
           },
         },
