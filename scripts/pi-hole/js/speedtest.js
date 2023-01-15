@@ -5,7 +5,6 @@ $(function () {
   var downloadspeed = [];
   var uploadspeed = [];
   var serverPing = [];
-  var chartType = "line";
 
   function updateSpeedTestData() {
     function formatDate(itemdate) {
@@ -16,10 +15,6 @@ $(function () {
       url: "api.php?getSpeedData24hrs&PHP",
       dataType: "json",
     }).done(function (results) {
-      if (results.type) {
-        chartType = results.type;
-        delete results.type;
-      }
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
         if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
@@ -43,7 +38,7 @@ $(function () {
   console.log(chartType);
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: chartType,
+    type: utils.getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
