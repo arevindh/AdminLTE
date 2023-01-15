@@ -35,10 +35,10 @@ $(function () {
 
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
-  console.log(chartType);
+
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: utils.getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [

@@ -1565,7 +1565,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <div class="form-group col-md-12">
                                                     <div class="form-group">
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="bar" <?php if ($speedtestcharttype == 'bar') {?> checked <?php } ?>/>
-                                                        <label for="speedtestcharttype">Enable Bar Chart</label>
+                                                        <label for="speedtestcharttype">Enable Bar Chart (saves to browser)</label>
                                                     </div>
                                                 </div>
                                             </div>
