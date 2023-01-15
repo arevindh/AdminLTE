@@ -16,9 +16,9 @@ $(function () {
       url: "api.php?getSpeedData24hrs&PHP",
       dataType: "json",
     }).done(function (results) {
-      if (results.chartType) {
-        chartType = results.chartType;
-        delete results.chartType;
+      if (results.type) {
+        chartType = results.type;
+        delete results.type;
       }
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
@@ -53,7 +53,7 @@ $(function () {
           backgroundColor: "rgba(0, 123, 255, 0.5)",
           borderColor: "rgba(0, 123, 255, 1)",
           borderWidth: 1,
-          //cubicInterpolationMode: "monotone",
+          cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-1",
         },
         {
@@ -62,6 +62,7 @@ $(function () {
           backgroundColor: "rgba(40, 167, 69, 0.5)",
           borderColor: "rgba(40, 167, 69, 1)",
           borderWidth: 1,
+          cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-1",
         },
         {
@@ -70,6 +71,7 @@ $(function () {
           backgroundColor: "rgba(108, 117, 125, 0.5)",
           borderColor: "rgba(108, 117, 125, 1)",
           borderWidth: 1,
+          cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-2",
         },
       ],
@@ -83,7 +85,7 @@ $(function () {
       },
       plugins: {
         legend: {
-          display: true,
+          display: false,
           position: "bottom",
           labels: {
             usePointStyle: true,
@@ -96,7 +98,7 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              return Math.round(context?.parsed?.y * 10) / 10 + context?.dataset?.label || null;
+              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
             }
           },
         },

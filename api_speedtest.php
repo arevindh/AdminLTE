@@ -131,12 +131,6 @@ function getSpeedData24hrs($dbSpeedtest)
     } else {
         $dataFromSpeedDB = getSpeedTestData($dbSpeedtest);
     }
-    // append chart type to data
-    if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
-        $dataFromSpeedDB['chartType'] = $setupVars['SPEEDTEST_CHART_TYPE'];
-    } else {
-        $dataFromSpeedDB['chartType'] = 'line';
-    }
 
     return $dataFromSpeedDB;
 }

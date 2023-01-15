@@ -45,7 +45,11 @@ if (isset($_GET['overTimeData10mins'])) {
 // Auth Required
 
 if (isset($_GET['getSpeedData24hrs']) && $auth) {
-    $data = array_merge($data, getSpeedData24hrs($dbSpeedtest));
+    $type = "line";
+    if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
+        $type = $setupVars['SPEEDTEST_CHART_TYPE'];
+    }
+    $data = array_merge($data, getSpeedData24hrs($dbSpeedtest), array('type' => $type));
 }
 
 if (isset($_GET['getLastSpeedtestResult']) && $auth) {
