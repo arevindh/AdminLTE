@@ -601,6 +601,16 @@ if (isset($_POST['field'])) {
                 pihole_execute('-a -sd '.trim($_POST['speedtestdays']));
             }
 
+            if (isset($_POST['speedtestcharttype'])) {
+                $charttype = trim($_POST['speedtestcharttype']);
+                if (strlen($charttype) == 0) {
+                    $charttype = 'line';
+                }
+                pihole_execute('-a -st '.trim($charttype));
+            } else {
+                pihole_execute('-a -st line');
+            }
+
             $success .= 'The Speedtest settings have been updated';
             break;
         default:

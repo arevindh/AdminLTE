@@ -469,3 +469,27 @@ $(function () {
     checkMessages();
   });
 });
+
+// Speedtest chart type toggle
+$(function () {
+  var speedtestChartType = $("#speedtestcharttype");
+  var type = localStorage?.getItem("speedtest_chart_type");
+
+  if (type) {
+    speedtestChartType.prop("checked", type === "bar");
+  } else {
+    speedtestChartType.prop("checked", false);
+    if (localStorage) {
+      localStorage.setItem("speedtest_chart_type", "line");
+    }
+  }
+
+  speedtestChartType.on("click", function () {
+    // if type null, set to "bar", else toggle
+    type = type ? type === "bar" ? "line" : "bar" : "bar";
+    localStorage.setItem("speedtest_chart_type", type);
+
+    // Call check messages to make new setting effective
+    checkMessages();
+  });
+});
