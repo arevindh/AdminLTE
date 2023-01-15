@@ -1488,6 +1488,12 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 } else {
                     $speedtestmode = 'python';
                 }
+
+                if (isset($setupvars['SPEEDTEST_CHART_TYPE'])) {
+                    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+                } else {
+                    $speedtestcharttype = 'line';
+                }
 ?>
 
 
@@ -1558,6 +1564,15 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                     <label>Speedtest Mode</label>
                                                     <select name="speedtestmode" class="form-control" >
                                                         <option value="official" <?php if ($speedtestmode == 'official') {?> selected <?php } ?>>Official CLI</option>
+                                                    </select>
+                                                </div>
+
+                                                <h4>Speedtest Chart Type (Beta)</h4>
+                                                <div class="form-group col-md-12">
+                                                    <label>Speedtest Chart Type</label>
+                                                    <select name="speedtestcharttype" class="form-control" >
+                                                        <option value="line" <?php if ($speedtestcharttype == 'line') {?> selected <?php } ?>>Line</option>
+                                                        <option value="bar" <?php if ($speedtestcharttype == 'bar') {?> selected <?php } ?>>Bar</option>
                                                     </select>
                                                 </div>
 

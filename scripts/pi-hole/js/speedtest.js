@@ -1,10 +1,11 @@
 /* global Chart:false, moment:false */
 
-$(function (line = false) {
+$(function () {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
   var serverPing = [];
+  var chartType = "line";
 
   function updateSpeedTestData() {
     function formatDate(itemdate) {
@@ -15,6 +16,7 @@ $(function (line = false) {
       url: "api.php?getSpeedData24hrs&PHP",
       dataType: "json",
     }).done(function (results) {
+      chartType = results.pop();
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
         if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
@@ -38,7 +40,7 @@ $(function (line = false) {
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: line ? "line" : "bar",
+    type: chartType,
     data: {
       labels: speedlabels,
       datasets: [
@@ -106,7 +108,6 @@ $(function (line = false) {
       },
       scales: {
         x: {
-          stacked: true,
           grid: {
             color: gridColor,
           },
@@ -117,7 +118,6 @@ $(function (line = false) {
         "y-axis-1": {
           type: "linear",
           position: "left",
-          stacked: true,
           grid: {
             color: gridColor,
           },
