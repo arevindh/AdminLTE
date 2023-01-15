@@ -1553,7 +1553,6 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
 
                                                 <h4>Flush Speedtest history </h4>
                                                 <div class="form-group col-md-12">
-
                                                     <div class="form-group">
                                                             <input type="checkbox"  name="clearspeedtests" id="clearspeedtests" value="yes"/>
                                                             <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
@@ -1569,7 +1568,10 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
 
                                                 <h4>Use Bar Chart (Beta)</h4>
                                                 <div class="form-group col-md-12">
-                                                    <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="bar" <?php if ($speedtestcharttype == 'bar') {?> checked <?php } ?>/>
+                                                    <div class="form-group">
+                                                        <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="bar" <?php if ($speedtestcharttype == 'bar') {?> checked <?php } ?>/>
+                                                        <label for="speedtestcharttype">Enable Bar Chart</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

@@ -16,8 +16,10 @@ $(function () {
       url: "api.php?getSpeedData24hrs&PHP",
       dataType: "json",
     }).done(function (results) {
-      chartType = results.chartType;
-      delete results.chartType;
+      if (results.chartType) {
+        chartType = results.chartType;
+        delete results.chartType;
+      }
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
         if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
@@ -46,7 +48,7 @@ $(function () {
       labels: speedlabels,
       datasets: [
         {
-          label: "Download (Mbps)",
+          label: "Mbps Download",
           data: downloadspeed,
           backgroundColor: "rgba(0, 123, 255, 0.5)",
           borderColor: "rgba(0, 123, 255, 1)",
@@ -55,7 +57,7 @@ $(function () {
           yAxisID: "y-axis-1",
         },
         {
-          label: "Upload (Mbps)",
+          label: "Mbps Upload",
           data: uploadspeed,
           backgroundColor: "rgba(40, 167, 69, 0.5)",
           borderColor: "rgba(40, 167, 69, 1)",
@@ -63,7 +65,7 @@ $(function () {
           yAxisID: "y-axis-1",
         },
         {
-          label: "Ping (ms)",
+          label: "ms Ping",
           data: serverPing,
           backgroundColor: "rgba(108, 117, 125, 0.5)",
           borderColor: "rgba(108, 117, 125, 1)",
@@ -94,15 +96,7 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              var label = context.dataset.label || "";
-
-              if (label) {
-                label += ": ";
-              }
-              if (context.parsed.y !== null) {
-                label += context.parsed.y;
-              }
-              return label;
+              return Math.round(context?.parsed?.y * 10) / 10 + context?.dataset?.label || null;
             }
           },
         },
