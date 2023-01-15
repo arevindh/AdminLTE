@@ -1465,34 +1465,29 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <?php
 
                 // Fix for select for not population on save
+                $speedtestshedule = false;
                 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
                     $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
-                } else {
-                    $speedtestshedule = false;
                 }
 
+                $speedtestdays = 'official';
                 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
                     $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
-                } else {
-                    $speedtestdays = 'official';
                 }
 
+                $speedtestserver = '';
                 if (isset($setupVars['SPEEDTEST_SERVER'])) {
                     $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
-                } else {
-                    $speedtestserver = '';
                 }
 
+                $speedtestmode = 'python';
                 if (isset($setupVars['SPEEDTEST_MODE'])) {
                     $speedtestmode = $setupVars['SPEEDTEST_MODE'];
-                } else {
-                    $speedtestmode = 'python';
                 }
 
-                if (isset($setupvars['SPEEDTEST_CHART_TYPE'])) {
+                $speedtestcharttype = 'line';
+                if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
-                } else {
-                    $speedtestcharttype = 'line';
                 }
 ?>
 
