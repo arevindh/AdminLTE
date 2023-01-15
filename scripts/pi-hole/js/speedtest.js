@@ -38,7 +38,7 @@ $(function () {
   console.log(chartType);
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: utils.getGraphType(1),
+    type: "line",
     data: {
       labels: speedlabels,
       datasets: [
