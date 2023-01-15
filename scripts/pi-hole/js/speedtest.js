@@ -16,7 +16,8 @@ $(function () {
       url: "api.php?getSpeedData24hrs&PHP",
       dataType: "json",
     }).done(function (results) {
-      chartType = results.pop();
+      chartType = results.chartType;
+      delete results.chartType;
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
         if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {

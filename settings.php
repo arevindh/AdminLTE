@@ -1567,16 +1567,10 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                     </select>
                                                 </div>
 
-                                                <h4>Speedtest Chart Type (Beta)</h4>
+                                                <h4>Use Bar Chart (Beta)</h4>
                                                 <div class="form-group col-md-12">
-                                                    <label>Speedtest Chart Type</label>
-                                                    <select name="speedtestcharttype" class="form-control" >
-                                                        <option value="line" <?php if ($speedtestcharttype == 'line') {?> selected <?php } ?>>Line</option>
-                                                        <option value="bar" <?php if ($speedtestcharttype == 'bar') {?> selected <?php } ?>>Bar</option>
-                                                    </select>
+                                                    <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="bar" <?php if ($speedtestcharttype == 'bar') {?> checked <?php } ?>/>
                                                 </div>
-
-
                                             </div>
                                         </div>
                                     </div>
