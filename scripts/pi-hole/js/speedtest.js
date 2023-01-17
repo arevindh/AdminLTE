@@ -88,9 +88,9 @@ $(function () {
           },
         },
         tooltip: {
-          enabled: true,
-          intersect: false,
-          yAlign: "top",
+          mode: 'index',
+          intersect: utils.getGraphType(1) === "bar",
+          yAlign: 'bottom',
           callbacks: {
             label: function (context) {
               return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
