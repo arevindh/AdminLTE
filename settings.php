@@ -1563,12 +1563,13 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
 
                                                 <h4>Use Bar Chart (Beta)</h4>
                                                 <div class="form-group col-md-12">
-                                                    <div class="form-group">
+                                                    <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="bar" <?php if ($speedtestcharttype == 'bar') {?> checked <?php } ?>/>
                                                         <label for="speedtestcharttype">Enable Bar Chart</label>
-                                                        <br>
+                                                    </div>
+                                                    <div>
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" value="yes" checked/>
-                                                        <label for="speedtestcharttypesave">Autosave for this browser only.</label>
+                                                        <label for="speedtestcharttypesave">Autosave for this browser only</label>
                                                     </div>
                                                 </div>
                                             </div>
