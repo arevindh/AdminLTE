@@ -607,7 +607,7 @@ if (isset($_POST['field'])) {
             if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
                 $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
             if (isset($_POST['speedtestcharttypesave'])) {
-                $newtype = trim($_POST['speedtestcharttype']);
+                $newtype = trim($_POST['speedtestcharttypesave']);
                 if (strlen($newtype) != 0)
                     $charttype = $newtype;
             }
