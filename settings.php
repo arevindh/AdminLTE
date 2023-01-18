@@ -1523,7 +1523,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </select>
                                                 </div>
 
-                                                <h4>Use Bar Chart (Beta)</h4>
+                                                <h4>Use Bar Chart</h4>
                                                 <div class="form-group col-md-12">
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
