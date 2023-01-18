@@ -473,18 +473,11 @@ $(function () {
 // Speedtest chart type toggle
 $(function () {
   var speedtestChartType = $("#speedtestcharttype");
-  var type = localStorage?.getItem("speedtest_chart_type");
+  var speedtestChartTypeSave = $("#speedtestcharttypesave");
+  var type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
 
-  if (type) {
-    speedtestChartType.prop("checked", type === "bar");
-    speedtestChartType.attr("value", type);
-  } else {
-    speedtestChartType.prop("checked", false);
-    speedtestChartType.attr("value", "line");
-    if (localStorage) {
-      localStorage.setItem("speedtest_chart_type", "line");
-    }
-  }
+  speedtestChartType.prop("checked", type === "bar");
+  localStorage.setItem("speedtest_chart_type", type);
 
   speedtestChartType.on("click", function () {
     // if type null, set to "bar", else toggle
@@ -494,5 +487,13 @@ $(function () {
 
     // Call check messages to make new setting effective
     checkMessages();
+  });
+
+  document.addEventListener("DOMContentLoaded", function () {
+    speedtestChartTypeSave.attr("value", null);
+  });
+
+  speedtestChartTypeSave.on("click", function () {
+    speedtestChartTypeSave.attr("value", type);
   });
 });

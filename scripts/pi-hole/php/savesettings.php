@@ -607,9 +607,9 @@ if (isset($_POST['field'])) {
             if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
                 $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
             if (isset($_POST['speedtestcharttypesave'])) {
-                $charttype = trim($_POST['speedtestcharttype']);
-                if (strlen($charttype) == 0)
-                    $charttype = 'line';
+                $newtype = trim($_POST['speedtestcharttype']);
+                if (strlen($newtype) != 0)
+                    $charttype = $newtype;
             }
             pihole_execute('-a -st ' . trim($charttype));
 
