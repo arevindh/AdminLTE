@@ -493,7 +493,7 @@ $(function () {
     checkMessages();
 
     if ($("#speedtestcharttypesave").length === 0) {
-      speedtestChartType.append(
+      speedtestChartType.parent().append(
         '<div>\
           <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" value="yes" />\
           <label for="speedtestcharttypesave">Set choice as default (on manual save)</label>\
