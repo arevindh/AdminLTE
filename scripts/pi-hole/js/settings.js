@@ -491,5 +491,12 @@ $(function () {
 
     // Call check messages to make new setting effective
     checkMessages();
+
+    speedtestChartType.after(
+      '<div>\
+        <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" value="yes" />\
+        <label for="speedtestcharttypesave">Set choice as default (on manual save)</label>\
+      </div>'
+    );
   });
 });
