@@ -8,6 +8,7 @@
 */
 
 require_once 'func.php';
+$setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 if (!in_array(basename($_SERVER['SCRIPT_FILENAME']), array('settings.php', 'teleporter.php'), true)) {
     exit('Direct access to this script is forbidden!');
@@ -602,8 +603,7 @@ if (isset($_POST['field'])) {
             }
 
             // default is always saved but only changed if requested
-            $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
-            $charttype = isset($charttype) ? $charttype : 'line';
+            $charttype = isset($setupVars['SPEEDTEST_CHART_TYPE']) ? $setupVars['SPEEDTEST_CHART_TYPE'] : 'line';
             if (isset($_POST['speedtestcharttypesave'])) {
                 $charttype = trim($_POST['speedtestcharttype']);
                 $charttype = strlen($charttype) == 0 ? 'line' : $charttype;

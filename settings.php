@@ -1533,7 +1533,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
-                                                        <label for="speedtestcharttypesave">Change default on manual save</label>
+                                                        <label for="speedtestcharttypesave">Change default (on manual save)</label>
                                                     </div>
                                                 </div>
                                             </div>
