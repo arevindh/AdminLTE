@@ -477,8 +477,10 @@ $(function () {
 
   if (type) {
     speedtestChartType.prop("checked", type === "bar");
+    speedtestChartType.attr("value", type);
   } else {
     speedtestChartType.prop("checked", false);
+    speedtestChartType.attr("value", "line");
     if (localStorage) {
       localStorage.setItem("speedtest_chart_type", "line");
     }
@@ -487,6 +489,7 @@ $(function () {
   speedtestChartType.on("click", function () {
     // if type null, set to "bar", else toggle
     type = type ? type === "bar" ? "line" : "bar" : "bar";
+    speedtestChartType.attr("value", type);
     localStorage.setItem("speedtest_chart_type", type);
 
     // Call check messages to make new setting effective
