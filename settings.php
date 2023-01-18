@@ -1528,11 +1528,11 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 <h4>Use Bar Chart (Beta)</h4>
                                                 <div class="form-group col-md-12">
                                                     <div>
-                                                        <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" <?php if ($speedtestcharttype == 'bar') { ?> checked <?php } ?> />
+                                                        <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value="<?php $speedtestcharttype ?>" <?php if ($speedtestcharttype == 'bar') { ?> checked <?php } ?> />
                                                         <label for="speedtestcharttype">Enable bar chart (autosaved, per-browser)</label>
                                                     </div>
                                                     <div>
-                                                        <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
+                                                        <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" value="yes" />
                                                         <label for="speedtestcharttypesave">Change default (on manual save)</label>
                                                     </div>
                                                 </div>
