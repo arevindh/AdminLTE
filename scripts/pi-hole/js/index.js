@@ -1217,3 +1217,11 @@ $(function () {
 window.addEventListener("resize", function () {
   $(".chartjs-tooltip").remove();
 });
+
+// update speedtestcharttype
+$(function () {
+  let speedOverTimeChart = $("#speedOverTimeChart");
+  let type = localStorage?.getItem("speedtest_chart_type") || speedOverTimeChart.attr("value");
+  speedOverTimeChart.attr("value", type);
+  localStorage.setItem("speedtest_chart_type", type);
+});

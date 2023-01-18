@@ -472,9 +472,9 @@ $(function () {
 
 // Speedtest chart type toggle
 $(function () {
-  var speedtestChartType = $("#speedtestcharttype");
-  var speedtestChartTypeSave = $("#speedtestcharttypesave");
-  var type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
+  let speedtestChartType = $("#speedtestcharttype");
+  let speedtestChartTypeSave = $("#speedtestcharttypesave");
+  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
 
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
