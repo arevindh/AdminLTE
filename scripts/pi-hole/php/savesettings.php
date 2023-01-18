@@ -603,7 +603,9 @@ if (isset($_POST['field'])) {
             }
 
             // default is always saved but only changed if requested
-            $charttype = isset($setupVars['SPEEDTEST_CHART_TYPE']) ? $setupVars['SPEEDTEST_CHART_TYPE'] : 'line';
+            $charttype = 'line';
+            if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
+                $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
             if (isset($_POST['speedtestcharttypesave'])) {
                 $charttype = trim($_POST['speedtestcharttype']);
                 if (strlen($charttype) == 0)
