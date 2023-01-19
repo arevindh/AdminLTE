@@ -7,8 +7,13 @@ $(function () {
   var serverPing = [];
 
   function updateSpeedTestData() {
-    function formatDate(itemdate) {
-      return moment(itemdate).format("Do HH:mm");
+    function formatDate(itemdate, results) {
+      // if the the first and last time are different days, not necessarily less than 24 hours apart
+      // then return the date and time, otherwise return the time
+      let format = "HH:mm";
+      if (moment(results[0].start_time).format("YYYY-MM-DD") !== moment(results[results.length - 1].start_time).format("YYYY-MM-DD"))
+        format = "Do " + format;
+      return moment(itemdate).format(format);
     }
 
     $.ajax({
@@ -17,17 +22,13 @@ $(function () {
     }).done(function (results) {
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
-        if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
-          speedlabels.push(formatDate(packet.start_time));
+        if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
+          speedlabels.push(formatDate(packet.start_time, results));
           uploadspeed.push(parseFloat(packet.upload));
           downloadspeed.push(parseFloat(packet.download));
           serverPing.push(parseFloat(packet.server_ping));
         }
       });
-      // if the first non-space characters of each element are the same as in every other element (aka one day)
-      // then remove them and the space after them (aka keep only the time)
-      if (speedlabels.every((el) => el.startsWith(speedlabels[0].split(' ')[0])))
-        speedlabels = speedlabels.map((el) => el.split(' ')[1]);
       speedChart.update();
     });
   }
