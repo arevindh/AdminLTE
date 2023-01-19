@@ -136,198 +136,199 @@ if ($auth && $speedtestshedule) { ?>
                 </div>
             </div>
         </div>
-    <?php }  ?>
+    </div>
+<?php }  ?>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box" id="clients">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Client activity over last <span class="maxlogage-interval">24</span> hours</h3>
-                </div>
-                <div class="box-body">
-                    <div class="chart" style="width: 100%; height: 180px">
-                        <canvas id="clientsChart" class="extratooltipcanvas no-user-select"></canvas>
-                    </div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+<div class="row">
+    <div class="col-md-12">
+        <div class="box" id="clients">
+            <div class="box-header with-border">
+                <h3 class="box-title">Client activity over last <span class="maxlogage-interval">24</span> hours</h3>
             </div>
+            <div class="box-body">
+                <div class="chart" style="width: 100%; height: 180px">
+                    <canvas id="clientsChart" class="extratooltipcanvas no-user-select"></canvas>
+                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
         </div>
     </div>
+</div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="box" id="query-types-pie">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Query Types</h3>
-                </div>
-                <div class="box-body">
-                    <div style="width:50%">
-                        <canvas id="queryTypePieChart" width="280" height="280"></canvas>
-                    </div>
-                    <div class="chart-legend" style="width:50%" id="query-types-legend"></div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="box" id="query-types-pie">
+            <div class="box-header with-border">
+                <h3 class="box-title">Query Types</h3>
             </div>
-        </div>
-        <div class="col-md-6">
-            <div class="box" id="forward-destinations-pie">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Upstream servers</h3>
+            <div class="box-body">
+                <div style="width:50%">
+                    <canvas id="queryTypePieChart" width="280" height="280"></canvas>
                 </div>
-                <div class="box-body">
-                    <div style="width:50%">
-                        <canvas id="forwardDestinationPieChart" width="280" height="280" class="extratooltipcanvas no-user-select"></canvas>
-                    </div>
-                    <div class="chart-legend" style="width:50%" id="forward-destinations-legend"></div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+                <div class="chart-legend" style="width:50%" id="query-types-legend"></div>
             </div>
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
         </div>
     </div>
-
-    <?php
-    if ($boxedlayout) {
-        $tablelayout = 'col-md-6';
-    } else {
-        $tablelayout = 'col-md-6 col-lg-6';
-    } ?>
-    <div class="row">
-        <div class="<?php echo $tablelayout; ?>">
-            <div class="box" id="domain-frequency">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Top Permitted Domains</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Domain</th>
-                                    <th>Hits</th>
-                                    <th>Frequency</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+    <div class="col-md-6">
+        <div class="box" id="forward-destinations-pie">
+            <div class="box-header with-border">
+                <h3 class="box-title">Upstream servers</h3>
             </div>
-            <!-- /.box -->
-        </div>
-        <!-- /.col -->
-        <div class="<?php echo $tablelayout; ?>">
-            <div class="box" id="ad-frequency">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Top Blocked Domains</h3>
+            <div class="box-body">
+                <div style="width:50%">
+                    <canvas id="forwardDestinationPieChart" width="280" height="280" class="extratooltipcanvas no-user-select"></canvas>
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Domain</th>
-                                    <th>Hits</th>
-                                    <th>Frequency</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+                <div class="chart-legend" style="width:50%" id="forward-destinations-legend"></div>
             </div>
-            <!-- /.box -->
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
         </div>
     </div>
-    <div class="row">
-        <!-- /.col -->
-        <div class="<?php echo $tablelayout; ?>">
-            <div class="box" id="client-frequency">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Top Clients (total)</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Client</th>
-                                    <th>Requests</th>
-                                    <th>Frequency</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
+</div>
+
+<?php
+if ($boxedlayout) {
+    $tablelayout = 'col-md-6';
+} else {
+    $tablelayout = 'col-md-6 col-lg-6';
+} ?>
+<div class="row">
+    <div class="<?php echo $tablelayout; ?>">
+        <div class="box" id="domain-frequency">
+            <div class="box-header with-border">
+                <h3 class="box-title">Top Permitted Domains</h3>
             </div>
-            <!-- /.box -->
-        </div>
-        <!-- /.col -->
-        <div class="<?php echo $tablelayout; ?>">
-            <div class="box" id="client-frequency-blocked">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Top Clients (blocked only)</h3>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Hits</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
                 </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Client</th>
-                                    <th>Requests</th>
-                                    <th>Frequency</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="overlay">
-                    <i class="fa fa-sync fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
             </div>
-            <!-- /.box -->
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
         </div>
-        <!-- /.col -->
+        <!-- /.box -->
     </div>
-    <!-- /.row -->
+    <!-- /.col -->
+    <div class="<?php echo $tablelayout; ?>">
+        <div class="box" id="ad-frequency">
+            <div class="box-header with-border">
+                <h3 class="box-title">Top Blocked Domains</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Domain</th>
+                                <th>Hits</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+</div>
+<div class="row">
+    <!-- /.col -->
+    <div class="<?php echo $tablelayout; ?>">
+        <div class="box" id="client-frequency">
+            <div class="box-header with-border">
+                <h3 class="box-title">Top Clients (total)</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Requests</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="<?php echo $tablelayout; ?>">
+        <div class="box" id="client-frequency-blocked">
+            <div class="box-header with-border">
+                <h3 class="box-title">Top Clients (blocked only)</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Client</th>
+                                <th>Requests</th>
+                                <th>Frequency</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="overlay">
+                <i class="fa fa-sync fa-spin"></i>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
 
-    <script src="scripts/pi-hole/js/index.js?v=<?php echo $cacheVer; ?>"></script>
+<script src="scripts/pi-hole/js/index.js?v=<?php echo $cacheVer; ?>"></script>
 
-    <?php
-    require 'scripts/pi-hole/php/footer.php';
-    ?>
+<?php
+require 'scripts/pi-hole/php/footer.php';
+?>
 
-    <script src="scripts/pi-hole/js/index.js"></script>
-    <script src="scripts/pi-hole/js/speedtest.js"></script>
-    <script src="scripts/vendor/moment.min.js"></script>
+<script src="scripts/pi-hole/js/index.js"></script>
+<script src="scripts/pi-hole/js/speedtest.js"></script>
+<script src="scripts/vendor/moment.min.js"></script>
