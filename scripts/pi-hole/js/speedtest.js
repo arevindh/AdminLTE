@@ -23,6 +23,10 @@ $(function () {
           downloadspeed.push(parseFloat(packet.download));
           serverPing.push(parseFloat(packet.server_ping));
         }
+        // if the first non-space characters of each element are the same as in every other element (aka one day)
+        // then remove them and the space after them (aka keep only the time)
+        if (speedlabels.every((el) => el.startsWith(speedlabels[0].split(' ')[0])))
+          speedlabels = speedlabels.map((el) => el.split(' ')[1]);
       });
       speedChart.update();
     });
