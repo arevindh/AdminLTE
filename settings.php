@@ -1535,7 +1535,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                 </div>
 
-                                                <h4>Update and/or Uninstall (BETA)</h4>
+                                                <h4>Update and/or Uninstall (HIGHLY EXPERIMENTAL)</h4>
                                                 <div class="form-group col-md-12">
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
