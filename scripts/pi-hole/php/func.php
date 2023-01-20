@@ -97,9 +97,8 @@ function validMAC($mac_addr)
 
 function get_ip_type($ip)
 {
-    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? 4 :
-        (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 6 :
-        0);
+    return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? 4 : (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 6 :
+            0);
 }
 
 function checkfile($filename)
@@ -147,12 +146,15 @@ if (!function_exists('hash_equals')) {
  *
  * @param $argument_string String of arguments to run pihole with
  */
-function pihole_execute($argument_string)
+function pihole_execute($argument_string, $background = false)
 {
     $escaped = escapeshellcmd($argument_string);
     $output = null;
     $return_status = -1;
-    $command = 'sudo pihole '.$escaped;
+    $command = 'sudo pihole ' . $escaped;
+    if ($background) {
+        $command .= ' > /dev/null 2>&1 &';
+    }
     exec($command, $output, $return_status);
     if ($return_status !== 0) {
         trigger_error("Executing {$command} failed.", E_USER_WARNING);
@@ -251,7 +253,7 @@ function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true)
             foreach ($existingEntries as $entry) {
                 foreach ($domains as $d) {
                     if ($entry->domain == $d && get_ip_type($entry->ip) == $ipType) {
-                        return returnError("The domain {$d} already has a custom DNS entry for an IPv".$ipType, $json);
+                        return returnError("The domain {$d} already has a custom DNS entry for an IPv" . $ipType, $json);
                     }
                 }
             }
@@ -263,7 +265,7 @@ function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true)
         }
         // Add records
         foreach ($domains as $domain) {
-            pihole_execute('-a addcustomdns '.$ip.' '.$domain.' '.$reload);
+            pihole_execute('-a addcustomdns ' . $ip . ' ' . $domain . ' ' . $reload);
         }
         if ($num > 0) {
             pihole_execute('restartdns');
@@ -306,7 +308,7 @@ function deleteCustomDNSEntry()
             return returnError('This domain/ip association does not exist');
         }
 
-        pihole_execute('-a removecustomdns '.$ip.' '.$domain);
+        pihole_execute('-a removecustomdns ' . $ip . ' ' . $domain);
 
         return returnSuccess();
     } catch (\Exception $ex) {
@@ -324,7 +326,7 @@ function deleteAllCustomDNSEntries($reload = '')
         $existingEntries = getCustomDNSEntries();
         // passing false to pihole_execute stops pihole from reloading after each entry has been deleted
         foreach ($existingEntries as $entry) {
-            pihole_execute('-a removecustomdns '.$entry->ip.' '.$entry->domain.' '.$reload);
+            pihole_execute('-a removecustomdns ' . $entry->ip . ' ' . $entry->domain . ' ' . $reload);
         }
     } catch (\Exception $ex) {
         return returnError($ex->getMessage());
@@ -443,7 +445,7 @@ function addCustomCNAMEEntry($domain = '', $target = '', $reload = '', $json = t
         }
         // add records
         foreach ($domains as $d) {
-            pihole_execute('-a addcustomcname '.$d.' '.$target.' '.$reload);
+            pihole_execute('-a addcustomcname ' . $d . ' ' . $target . ' ' . $reload);
         }
 
         if ($num > 0) {
@@ -487,7 +489,7 @@ function deleteCustomCNAMEEntry()
             return returnError('This domain/ip association does not exist');
         }
 
-        pihole_execute('-a removecustomcname '.$domain.' '.$target);
+        pihole_execute('-a removecustomcname ' . $domain . ' ' . $target);
 
         return returnSuccess();
     } catch (\Exception $ex) {
@@ -505,7 +507,7 @@ function deleteAllCustomCNAMEEntries($reload = '')
         $existingEntries = getCustomCNAMEEntries();
         // passing false to pihole_execute stops pihole from reloading after each entry has been deleted
         foreach ($existingEntries as $entry) {
-            pihole_execute('-a removecustomcname '.$entry->domain.' '.$entry->target.' '.$reload);
+            pihole_execute('-a removecustomcname ' . $entry->domain . ' ' . $entry->target . ' ' . $reload);
         }
     } catch (\Exception $ex) {
         return returnError($ex->getMessage());
@@ -519,7 +521,7 @@ function returnSuccess($message = '', $json = true)
     if ($json) {
         return array('success' => true, 'message' => $message);
     }
-    echo $message.'<br>';
+    echo $message . '<br>';
 
     return true;
 }
@@ -530,7 +532,7 @@ function returnError($message = '', $json = true)
     if ($json) {
         return array('success' => false, 'message' => $message);
     }
-    echo $message.'<br>';
+    echo $message . '<br>';
 
     return false;
 }
@@ -543,7 +545,7 @@ function getQueryTypeStr($querytype)
         return $qtypes[$qtype - 1];
     }
 
-    return 'TYPE'.($qtype - 100);
+    return 'TYPE' . ($qtype - 100);
 }
 
 // Functions to return Alert messages (success, error, warning) in JSON format.
@@ -675,7 +677,7 @@ function pidofFTL()
 // Get FTL process information (used in settings.php)
 function get_FTL_data($FTLpid, $arg)
 {
-    return trim(exec('ps -p '.$FTLpid.' -o '.$arg));
+    return trim(exec('ps -p ' . $FTLpid . ' -o ' . $arg));
 }
 
 // Convert seconds into readable time (used in settings.php)
@@ -708,5 +710,5 @@ function start_php_session()
     // protection against cross-site request forgery attacks.
     // Direct support of Samesite has been added to PHP only in version 7.3
     // We manually set the cookie option ourselves to ensure backwards compatibility
-    header('Set-Cookie: PHPSESSID='.session_id().'; path=/; HttpOnly; SameSite=Strict');
+    header('Set-Cookie: PHPSESSID=' . session_id() . '; path=/; HttpOnly; SameSite=Strict');
 }

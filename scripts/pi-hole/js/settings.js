@@ -470,8 +470,9 @@ $(function () {
   });
 });
 
-// Speedtest chart type toggle
+// Speedtest toggles
 $(function () {
+  // type
   let speedtestChartType = $("#speedtestcharttype");
   let speedtestChartTypeSave = $("#speedtestcharttypesave");
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
@@ -489,11 +490,26 @@ $(function () {
     checkMessages();
   });
 
+  // update/uninstall
+  let speedtestUpdate = $("#speedtestupdate");
+  let speedtestUninstall = $("#speedtestuninstall");
+
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
+    speedtestUpdate.attr("value", null);
+    speedtestUninstall.attr("value", null);
   });
 
   speedtestChartTypeSave.on("click", function () {
     speedtestChartTypeSave.attr("value", type);
   });
+
+  speedtestUpdate.on("click", function () {
+    speedtestUpdate.attr("value", "up");
+  });
+
+  speedtestUninstall.on("click", function () {
+    speedtestUninstall.attr("value", "un");
+  });
+
 });

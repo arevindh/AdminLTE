@@ -1531,16 +1531,27 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
-                                                        <label for="speedtestcharttypesave">Set choice as default (on manual save)</label>
+                                                        <label for="speedtestcharttypesave">Set choice as default (upon confirmation)</label>
+                                                    </div>
+                                                </div>
+
+                                                <h4>Update and/or Uninstall (BETA)</h4>
+                                                <div class="form-group col-md-12">
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
+                                                        <label for="speedtestupdate">Update to latest Speedtest Mod and Pi-hole</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
+                                                        <label for="speedtestuninstall">Uninstall Speedtest Mod</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        <div class="box-footer clearfix">
+                                            <button type="submit" class="btn btn-primary pull-right">Confirm</button>
+                                        </div>
                                     </div>
-                                    <div class="box-footer clearfix">
-                                        <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                    </div>
-                                </div>
                             </form>
                         </div>
                     </div>
