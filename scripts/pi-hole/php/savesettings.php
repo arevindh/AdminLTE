@@ -616,20 +616,15 @@ if (isset($_POST['field'])) {
             $success .= 'The Speedtest settings have been updated';
 
             if (isset($_POST['speedtestupdate'])) {
-                $success .= ' like Pi-hole is about to be';
+                $success .= ' like Pi-hole is about to be, see progress with <code>screen -r pimod</code>';
                 if (isset($_POST['speedtestuninstall'])) {
-                    $success .= ' while the Mod will be uninstalled';
-                    pihole_execute('-a -up un', true);
+                    pihole_execute('-a up un', true);
                 } else
-                    pihole_execute('-a -up', true);
+                    pihole_execute('-a up', true);
                 $success .= ' now';
             } elseif (isset($_POST['speedtestuninstall'])) {
-                $success .= ' and the Mod will be uninstalled';
-                if (isset($_POST['speedtestupdate'])) {
-                    $success .= ' while Pi-hole will be updated';
-                    pihole_execute('-a -un up', true);
-                } else
-                    pihole_execute('-a -un', true);
+                $success .= ' and the Mod will be uninstalled, see progress with <code>screen -r pimod</code>';
+                pihole_execute('-a un', true);
                 $success .= ' now';
             }
 
