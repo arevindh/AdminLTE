@@ -501,15 +501,15 @@ $(function () {
   });
 
   speedtestChartTypeSave.on("click", function () {
-    speedtestChartTypeSave.attr("value", type);
+    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
   });
 
   speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", speedtestUpdate.attr("value") === "up" ? null : "up");
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
   });
 
   speedtestUninstall.on("click", function () {
-    speedtestUninstall.attr("value", speedtestUninstall.attr("value") === "un" ? null : "un");
+    speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
   });
 
 });
