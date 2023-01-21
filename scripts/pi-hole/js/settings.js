@@ -517,5 +517,4 @@ $(function () {
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
   });
-
 });

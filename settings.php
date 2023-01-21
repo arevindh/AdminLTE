@@ -1539,7 +1539,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 <div class="form-group col-md-12">
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
-                                                        <label for="speedtestupdate">Update to latest Speedtest Mod and Pi-hole</label>
+                                                        <label for="speedtestupdate">Install latest Speedtest Mod and Pi-hole</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
