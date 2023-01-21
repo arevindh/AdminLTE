@@ -8,11 +8,15 @@ $(function () {
 
   function updateSpeedTestData() {
     function formatDate(itemdate, results) {
-      // if the the first and last time are different days, not necessarily less than 24 hours apart
+      // if the the first and last time are 24 hours apart or more
       // then return the date and time, otherwise return the time
       let format = "HH:mm";
-      if (moment(results[0].start_time).format("YYYY-MM-DD") !== moment(results[results.length - 1].start_time).format("YYYY-MM-DD"))
-        format = "Do " + format;
+      if (results.length > 1) {
+        const first = moment(results[0].start_time);
+        const last = moment(results[results.length - 1].start_time);
+        if (last.diff(first, "hours") >= 24)
+          format = "Do " + format;
+      }
       return moment(itemdate).format(format);
     }
 
