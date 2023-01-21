@@ -505,11 +505,11 @@ $(function () {
   });
 
   speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", "up");
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") === "up" ? null : "up");
   });
 
   speedtestUninstall.on("click", function () {
-    speedtestUninstall.attr("value", "un");
+    speedtestUninstall.attr("value", speedtestUninstall.attr("value") === "un" ? null : "un");
   });
 
 });
