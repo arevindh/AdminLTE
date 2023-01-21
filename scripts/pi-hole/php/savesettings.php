@@ -617,7 +617,7 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtestupdate'])) {
                 $success .= ' like Pi-hole is about to be, see progress with <code>sudo tmux attach-session -t pimod</code>';
-                if (isset($_POST['speedtestinstall'])) {
+                if (isset($_POST['speedtestuninstall'])) {
                     pihole_execute('-a -up', true);
                 } else {
                     pihole_execute('-a -up un', true);
