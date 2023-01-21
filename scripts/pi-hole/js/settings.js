@@ -490,18 +490,24 @@ $(function () {
     checkMessages();
   });
 
-  // update/uninstall
+  let speedtestFlush = $("#clearspeedtests");
+
   let speedtestUpdate = $("#speedtestupdate");
   let speedtestUninstall = $("#speedtestuninstall");
 
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
+    speedtestFlush.attr("value", null);
     speedtestUpdate.attr("value", null);
     speedtestUninstall.attr("value", null);
   });
 
   speedtestChartTypeSave.on("click", function () {
     speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
+  });
+
+  speedtestFlush.on("click", function () {
+    speedtestFlush.attr("value", speedtestFlush.attr("value") ? null : "yes");
   });
 
   speedtestUpdate.on("click", function () {

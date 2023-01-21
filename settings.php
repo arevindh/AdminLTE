@@ -1511,7 +1511,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 <h4>Flush Speedtest history </h4>
                                                 <div class="form-group col-md-12">
                                                     <div class="form-group">
-                                                        <input type="checkbox" name="clearspeedtests" id="clearspeedtests" value="yes" />
+                                                        <input type="checkbox" name="clearspeedtests" id="clearspeedtests" />
                                                         <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
                                                     </div>
                                                 </div>
