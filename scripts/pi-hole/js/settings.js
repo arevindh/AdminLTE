@@ -516,6 +516,7 @@ $(function () {
 
   speedtestDelete.on("click", function () {
     speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
+    $("#st-submit").toggleClass("btn-primary");
     $("#st-submit").toggleClass("btn-danger");
   });
 });
