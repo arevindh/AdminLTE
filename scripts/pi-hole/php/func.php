@@ -98,7 +98,7 @@ function validMAC($mac_addr)
 function get_ip_type($ip)
 {
     return filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? 4 : (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 6 :
-            0);
+        0);
 }
 
 function checkfile($filename)
@@ -153,7 +153,7 @@ function pihole_execute($argument_string, $background = false)
     $return_status = -1;
     $command = 'sudo pihole ' . $escaped;
     if ($background) {
-        $command .= ' > /dev/null 2>&1 &';
+        $command .= ' &';
     }
     exec($command, $output, $return_status);
     if ($return_status !== 0) {
