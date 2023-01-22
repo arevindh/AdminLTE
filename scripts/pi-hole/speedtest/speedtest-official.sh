@@ -14,7 +14,8 @@ function nointernet(){
 }
 
 version=$(speedtest --version | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
-if [[ "$version" >= "2.0.0" ]]; then
+min='2.0.0'
+if [ $(echo -e "${version}\n${min}"|sort -V|head -1) != "${version}" ]; then
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
         /usr/bin/speedtest -s $serverid --json --share > /tmp/speedtest.log || nointernet
     else
@@ -36,7 +37,7 @@ if [[ -f "$FILE" ]]; then
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
     
-    if [[ "$version" >= "2.0.0" ]]; then
+    if [ $(echo -e "${version}\n${min}"|sort -V|head -1) != "${version}" ]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
