@@ -13,7 +13,7 @@ function nointernet(){
     exit
 }
 # Get Speedtest-Version
-version=$(echo $(speedtest --version) | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
+version=$(echo $(/usr/bin/speedtest --version) | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
 [ -z "$version" ] && version=$(echo "$output" | grep -oE '[0-9\.]+' | head -1)
 
 if [[ "$version" >= "2.0.0" ]]; then
