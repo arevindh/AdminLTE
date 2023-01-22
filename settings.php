@@ -1539,13 +1539,13 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 <div class="form-group col-md-12">
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
-                                                        <label for="speedtestupdate">(Re)Install latest Speedtest Mod and Pi-hole</label>
+                                                        <label for="speedtestupdate">(Re)Install latest Pi-hole</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
                                                         <label for="speedtestuninstall">Uninstall Speedtest Mod</label>
                                                     </div>
-                                                    <p>You can find the log here: <code>/var/log/pimod.log</code> </p>
+                                                    <p>You can attach to the shell (<code>sudo tmux attach-session -t pimod</code>) or view the log (<code>sudo tail -f /var/log/pimod.log</code>) to see what's going on.</p>
                                                 </div>
                                             </div>
                                         </div>
