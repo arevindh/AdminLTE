@@ -1472,9 +1472,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                         <div class="row">
                                             <div class="col-md-12">
 
-                                                <h4>Speedtests</h4>
                                                 <div class="form-group col-md-6">
-                                                    <label>Schedule</label>
+                                                    <label>Testing Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
                                                         <option value="0" <?php if ($speedtestshedule == 0) { ?> selected <?php } ?>>Disabled</option>
                                                         <option value="1" <?php if ($speedtestshedule == 1) { ?> selected <?php } ?>>Every 1 Hour</option>
@@ -1486,7 +1485,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label>Display Range</label>
+                                                    <label>Chart Display Range</label>
                                                     <select name="speedtestdays" class="form-control">
                                                         <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
                                                         <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
