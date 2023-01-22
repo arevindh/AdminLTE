@@ -1471,14 +1471,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-
                                                 <h4>Speedtests</h4>
-                                                <div class="form-group col-md-12">
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Run Test Now</label>
-                                                    </div>
-                                                </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
@@ -1525,8 +1518,14 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                 </div>
 
-                                                <h4>Mod the Mod</h4>
-                                                <div class="form-group col-md-12">
+                                                <div class="form-group col-md-6">
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Test Now</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
                                                         <label for="speedtestupdate">(Re)install Latest</label>
