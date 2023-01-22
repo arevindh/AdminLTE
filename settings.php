@@ -1470,10 +1470,11 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                     </div>
                                     <div class="box-body">
                                         <div class="row">
-                                            <h4>Speedtest</h4>
                                             <div class="col-md-12">
+
+                                                <h4>Speedtests</h4>
                                                 <div class="form-group col-md-6">
-                                                    <label>Speedtest Schedule</label>
+                                                    <label>Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
                                                         <option value="0" <?php if ($speedtestshedule == 0) { ?> selected <?php } ?>>Disabled</option>
                                                         <option value="1" <?php if ($speedtestshedule == 1) { ?> selected <?php } ?>>Every 1 Hour</option>
@@ -1485,7 +1486,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </select>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label>Speedtest Display Range</label>
+                                                    <label>Display Range</label>
                                                     <select name="speedtestdays" class="form-control">
                                                         <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
                                                         <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
@@ -1494,12 +1495,14 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
                                                     </select>
                                                 </div>
-                                                <div>
-                                                    <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                    <label for="speedtesttest">Run Speedtest Now</label>
+                                                <div class="form-group col-md-12">
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Test Now</label>
+                                                    </div>
                                                 </div>
-                                                <h4>Custom Speedtest server </h4>
 
+                                                <h4>Custom Server</h4>
                                                 <div class="form-group col-md-12">
                                                     <p> <span class="text-danger"> Expert only!!!</span>. Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank"> here</a></p>
                                                     <div class="form-group">
