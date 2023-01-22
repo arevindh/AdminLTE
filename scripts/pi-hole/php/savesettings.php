@@ -616,14 +616,15 @@ if (isset($_POST['field'])) {
             $success .= 'The Speedtest settings have been updated';
 
             if (isset($_POST['speedtestupdate'])) {
-                $success .= ' like Pi-hole is about to be, see progress with <code>sudo tmux attach-session -t pimod</code>';
+                $success .= ' like Pi-hole is about to be';
                 if (isset($_POST['speedtestuninstall'])) {
                     pihole_execute('-a -up', true);
                 } else {
+                    $success .= ', but the Mod will not be uninstalled';
                     pihole_execute('-a -up un', true);
                 }
             } elseif (isset($_POST['speedtestuninstall'])) {
-                $success .= ' and the Mod will be uninstalled, see progress with <code>sudo tmux attach-session -t pimod</code>';
+                $success .= ' and the Mod will be uninstalled';
                 pihole_execute('-a -un', true);
             }
             break;
