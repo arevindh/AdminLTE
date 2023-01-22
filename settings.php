@@ -1508,21 +1508,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                 </div>
 
-                                                <h4>Flush Speedtest history </h4>
-                                                <div class="form-group col-md-12">
-                                                    <div class="form-group">
-                                                        <input type="checkbox" name="clearspeedtests" id="clearspeedtests" />
-                                                        <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
-                                                    </div>
-                                                </div>
-                                                <h4>Speedtest Mode (Beta)</h4>
-                                                <div class="form-group col-md-12">
-                                                    <label>Speedtest Mode</label>
-                                                    <select name="speedtestmode" class="form-control">
-                                                        <option value="official" <?php if ($speedtestmode == 'official') { ?> selected <?php } ?>>Official CLI</option>
-                                                    </select>
-                                                </div>
-
                                                 <h4>Use Bar Chart</h4>
                                                 <div class="form-group col-md-12">
                                                     <div>
@@ -1539,13 +1524,17 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 <div class="form-group col-md-12">
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
-                                                        <label for="speedtestupdate">(Re)Install Latest</label>
+                                                        <label for="speedtestupdate">(Re)install Latest</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
-                                                        <label for="speedtestuninstall">Uninstall</label>
+                                                        <label for="speedtestuninstall">Uninstall Mod</label>
                                                     </div>
-                                                    <p>You can attach to the shell <code>sudo tmux attach-session -t pimod</code> <br> or view the log <code>cat /var/log/pimod.log</code> to see what's going on.</p>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
+                                                        <label for="speedtestdelete">Clear History</label>
+                                                    </div>
+                                                    <p>You can attach to the process <code>sudo tmux attach-session -t pimod</code> <br> or access the log <code>cat /var/log/pimod.log</code>.</p>
                                                 </div>
                                             </div>
                                         </div>

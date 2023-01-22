@@ -490,24 +490,20 @@ $(function () {
     checkMessages();
   });
 
-  let speedtestFlush = $("#clearspeedtests");
-
   let speedtestUpdate = $("#speedtestupdate");
   let speedtestUninstall = $("#speedtestuninstall");
+  let speedtestDelete = $("#speedtestdelete");
 
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
     speedtestFlush.attr("value", null);
     speedtestUpdate.attr("value", null);
     speedtestUninstall.attr("value", null);
+    speedtestDelete.attr("value", null);
   });
 
   speedtestChartTypeSave.on("click", function () {
     speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
-  });
-
-  speedtestFlush.on("click", function () {
-    speedtestFlush.attr("value", speedtestFlush.attr("value") ? null : "yes");
   });
 
   speedtestUpdate.on("click", function () {
@@ -516,5 +512,10 @@ $(function () {
 
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
+  });
+
+  speedtestDelete.on("click", function () {
+    speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
+    $(".pull-right").toggleClass("btn-danger");
   });
 });
