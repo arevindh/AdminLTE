@@ -1470,8 +1470,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                     </div>
                                     <div class="box-body">
                                         <div class="row">
+                                            <h4>Speedtest</h4>
                                             <div class="col-md-12">
-                                                <h4>Speedtest</h4>
                                                 <div class="form-group col-md-6">
                                                     <label>Speedtest Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
@@ -1494,6 +1494,10 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
                                                     </select>
                                                 </div>
+                                                <div>
+                                                    <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                    <label for="speedtesttest">Run Speedtest Now</label>
+                                                </div>
                                                 <h4>Custom Speedtest server </h4>
 
                                                 <div class="form-group col-md-12">
@@ -1505,10 +1509,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                                                                                                         echo $speedtestserver;
                                                                                                                                     } ?>" placeholder="Keep this blank to autoselect" />
                                                         </div>
-                                                    </div>
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Run Speedtest Now</label>
                                                     </div>
                                                 </div>
 

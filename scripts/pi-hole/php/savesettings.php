@@ -598,10 +598,6 @@ if (isset($_POST['field'])) {
                 pihole_execute('-a -ss ' . trim($_POST['speedtestserver']));
             }
 
-            if (isset($_POST['speedtesttest'])) {
-                pihole_execute('-a test');
-            }
-
             if (isset($_POST['speedtestdays'])) {
                 pihole_execute('-a -sd ' . trim($_POST['speedtestdays']));
             }
@@ -619,8 +615,13 @@ if (isset($_POST['field'])) {
 
             $success .= 'The Speedtest settings have been updated';
 
+            if (isset($_POST['speedtesttest'])) {
+                $success .= ' and a speedtest has been started';
+                pihole_execute('-a test');
+            }
+
             if (isset($_POST['speedtestupdate'])) {
-                $success .= ' like Pi-hole is about to be';
+                $success .= ' and Pi-hole will be updated';
                 if (isset($_POST['speedtestuninstall'])) {
                     $success .= ', but the Mod will be uninstalled';
                     if (isset($_POST['speedtestdelete'])) {
