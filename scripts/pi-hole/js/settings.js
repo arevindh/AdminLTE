@@ -493,6 +493,7 @@ $(function () {
   let speedtestUpdate = $("#speedtestupdate");
   let speedtestUninstall = $("#speedtestuninstall");
   let speedtestDelete = $("#speedtestdelete");
+  let speedtestTest = $("#speedtesttest");
 
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
@@ -500,6 +501,7 @@ $(function () {
     speedtestUpdate.attr("value", null);
     speedtestUninstall.attr("value", null);
     speedtestDelete.attr("value", null);
+    speedtestTest.attr("value", null);
   });
 
   speedtestChartTypeSave.on("click", function () {
@@ -518,5 +520,9 @@ $(function () {
     speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
     $("#st-submit").toggleClass("btn-primary");
     $("#st-submit").toggleClass("btn-danger");
+  });
+
+  speedtestTest.on("click", function () {
+    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
   });
 });

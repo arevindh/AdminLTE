@@ -598,6 +598,10 @@ if (isset($_POST['field'])) {
                 pihole_execute('-a -ss ' . trim($_POST['speedtestserver']));
             }
 
+            if (isset($_POST['speedtesttest'])) {
+                pihole_execute('-a test');
+            }
+
             if (isset($_POST['speedtestdays'])) {
                 pihole_execute('-a -sd ' . trim($_POST['speedtestdays']));
             }

@@ -1506,6 +1506,10 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                                                                                                     } ?>" placeholder="Keep this blank to autoselect" />
                                                         </div>
                                                     </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Speedtest Now</label>
+                                                    </div>
                                                 </div>
 
                                                 <h4>Use Bar Chart</h4>
