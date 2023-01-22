@@ -1540,8 +1540,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     <pre><code>cat /var/log/pimod.log</code></pre>
                                                 </div>
                                                 <div class="form-group col-md-6">
+                                                    <label>Test the Test</label>
                                                     <div>
-                                                        <label>Test the Test</label>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest" />
                                                         <label for="speedtesttest">Run Test Now</label>
                                                     </div>
