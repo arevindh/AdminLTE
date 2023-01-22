@@ -1545,7 +1545,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
                                                         <label for="speedtestuninstall">Uninstall Speedtest Mod</label>
                                                     </div>
-                                                    <p>You can attach to the shell (<code>sudo tmux attach-session -t pimod</code>) or view the log (<code>sudo tail -f /var/log/pimod.log</code>) to see what's going on.</p>
+                                                    <p>You can attach to the shell (<code>sudo tmux attach-session -t pimod</code>) or view the log (<code>cat /var/log/pimod.log</code>) to see what's going on.</p>
                                                 </div>
                                             </div>
                                         </div>
