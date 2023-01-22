@@ -1537,7 +1537,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
 
                                                 <h4>Update and/or Uninstall (Beta)</h4>
                                                 <div class="form-group col-md-12">
-                                                    <p>You can find the log here: <code>/var/log/pimod.log</code> </p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
                                                         <label for="speedtestupdate">(Re)Install latest Speedtest Mod and Pi-hole</label>
@@ -1546,6 +1545,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
                                                         <label for="speedtestuninstall">Uninstall Speedtest Mod</label>
                                                     </div>
+                                                    <p>You can find the log here: <code>/var/log/pimod.log</code> </p>
                                                 </div>
                                             </div>
                                         </div>
