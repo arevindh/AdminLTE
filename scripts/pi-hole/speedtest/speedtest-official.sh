@@ -12,10 +12,8 @@ function nointernet(){
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit
 }
-# Get Speedtest-Version
-version=$(echo $(/usr/bin/speedtest --version) | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
-[ -z "$version" ] && version=$(echo "$output" | grep -oE '[0-9\.]+' | head -1)
 
+version=$(speedtest --version | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
 if [[ "$version" >= "2.0.0" ]]; then
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
         /usr/bin/speedtest -s $serverid --json --share > /tmp/speedtest.log || nointernet
