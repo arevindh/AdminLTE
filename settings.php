@@ -1538,7 +1538,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
-                                                    <p>You can attach to the process <code>sudo tmux attach-session -t pimod</code> <br> or access the log <code>cat /var/log/pimod.log</code>.</p>
+                                                    <p>You can attach to the process now with <code>sudo tmux attach-session -t pimod</code> <br> or access the latest log whenever with <code>cat /var/log/pimod.log</code>.</p>
                                                 </div>
                                             </div>
                                         </div>
