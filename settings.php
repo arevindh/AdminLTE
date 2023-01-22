@@ -1471,6 +1471,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
+
                                                 <h4>Speedtests</h4>
                                                 <div class="form-group col-md-6">
                                                     <label>Schedule</label>
@@ -1494,6 +1495,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
                                                     </select>
                                                 </div>
+
                                                 <div class="form-group col-md-6">
                                                     <label>Custom Server</label>
                                                     <p>Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank">here</a>. <span class="text-danger">Expert only!</span> </p>
@@ -1519,12 +1521,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Run Test Now</label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-6">
                                                     <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
@@ -1538,10 +1534,17 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
-                                                    <p>Attach to the process now with</p>
+                                                    <p>Attach to a running process with</p>
                                                     <pre><code>sudo tmux attach-session -t pimod</code></pre>
                                                     <p>Or access the latest log whenever with</p>
                                                     <pre><code>cat /var/log/pimod.log</code></pre>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <div>
+                                                        <label>Test the Test</label>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Test Now</label>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
