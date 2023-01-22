@@ -1471,7 +1471,13 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-
+                                                <div class="form-group col-md-12">
+                                                    <label>Test the Test</label>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Test Now</label>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Testing Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
@@ -1537,13 +1543,6 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     <pre><code>sudo tmux attach-session -t pimod</code></pre>
                                                     <p>Or access the latest log whenever with</p>
                                                     <pre><code>cat /var/log/pimod.log</code></pre>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label>Test the Test</label>
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Run Test Now</label>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
