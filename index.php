@@ -323,7 +323,7 @@ if ($boxedlayout) {
 </div>
 <!-- /.row -->
 
-<script src="scripts/pi-hole/js/index.js?v=<?php echo $cacheVer; ?>"></script>
+<script src="<?php echo fileversion('scripts/pi-hole/js/index.js'); ?>"></script>
 
 <?php
 require 'scripts/pi-hole/php/footer.php';
