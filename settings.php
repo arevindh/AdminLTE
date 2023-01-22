@@ -1473,6 +1473,12 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                             <div class="col-md-12">
 
                                                 <h4>Speedtests</h4>
+                                                <div class="form-group col-md-12">
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Test Now</label>
+                                                    </div>
+                                                </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Schedule</label>
                                                     <select name="speedtestschedule" class="form-control">
@@ -1495,16 +1501,9 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
                                                     </select>
                                                 </div>
-                                                <div class="form-group col-md-12">
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Test Now</label>
-                                                    </div>
-                                                </div>
-
-                                                <h4>Custom Server</h4>
-                                                <div class="form-group col-md-12">
-                                                    <p> <span class="text-danger"> Expert only!!!</span>. Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank"> here</a></p>
+                                                <div class="form-group col-md-6">
+                                                    <label>Custom Server</label>
+                                                    <p>Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank">here</a>. <span class="text-danger">Expert only!</span> </p>
                                                     <div class="form-group">
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
@@ -1514,9 +1513,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <h4>Use Bar Chart</h4>
-                                                <div class="form-group col-md-12">
+                                                <div class="form-group col-md-6">
+                                                    <label>Use Bar Chart</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
                                                         <label for="speedtestcharttype">Enable bar chart (autosaved, per-browser)</label>
