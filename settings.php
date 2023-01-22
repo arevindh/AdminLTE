@@ -1539,7 +1539,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                             </div>
                                         </div>
                                         <div class="box-footer clearfix">
-                                            <button type="submit" class="btn btn-primary pull-right">Confirm</button>
+                                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">Confirm</button>
                                         </div>
                                     </div>
                             </form>
