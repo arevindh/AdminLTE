@@ -617,7 +617,7 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtesttest'])) {
                 $success .= ' and a speedtest has been started';
-                pihole_execute('-a test');
+                pihole_execute('-a -sn');
             }
 
             if (isset($_POST['speedtestupdate'])) {
