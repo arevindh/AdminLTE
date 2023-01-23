@@ -1525,7 +1525,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group col-md-6">
+                                                <div class="form-group col-md-12">
                                                     <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
