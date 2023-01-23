@@ -9,8 +9,9 @@ serverid=$(sed -n -e '/SPEEDTEST_SERVER/ s/.*\= *//p' $setupVars)
 echo "Testing with ${serverid}"
 
 function nointernet(){
+    stop=$(date +"%Y-%m-%d %H:%M:%S")
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
-    exit
+    exit 0
 }
 
 
@@ -47,3 +48,5 @@ if [[ -f "$FILE" ]]; then
 
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', '${isp}', '${from_ip}', '${server_name}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
 fi
+
+exit 0
