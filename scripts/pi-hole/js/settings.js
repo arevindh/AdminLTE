@@ -472,13 +472,26 @@ $(function () {
 
 // Speedtest toggles
 $(function () {
-  // type
+
   let speedtestChartType = $("#speedtestcharttype");
   let speedtestChartTypeSave = $("#speedtestcharttypesave");
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
 
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
+
+  let speedtestUpdate = $("#speedtestupdate");
+  let speedtestUninstall = $("#speedtestuninstall");
+  let speedtestDelete = $("#speedtestdelete");
+  let speedtestTest = $("#speedtesttest");
+
+  document.addEventListener("DOMContentLoaded", function () {
+    speedtestChartTypeSave.attr("value", null);
+    speedtestUpdate.attr("value", null);
+    speedtestUninstall.attr("value", null);
+    speedtestDelete.attr("value", null);
+    speedtestTest.attr("value", null);
+  });
 
   speedtestChartType.on("click", function () {
     // if type null, set to "bar", else toggle
@@ -488,20 +501,6 @@ $(function () {
 
     // Call check messages to make new setting effective
     checkMessages();
-  });
-
-  let speedtestUpdate = $("#speedtestupdate");
-  let speedtestUninstall = $("#speedtestuninstall");
-  let speedtestDelete = $("#speedtestdelete");
-  let speedtestTest = $("#speedtesttest");
-
-  document.addEventListener("DOMContentLoaded", function () {
-    speedtestChartTypeSave.attr("value", null);
-    speedtestFlush.attr("value", null);
-    speedtestUpdate.attr("value", null);
-    speedtestUninstall.attr("value", null);
-    speedtestDelete.attr("value", null);
-    speedtestTest.attr("value", null);
   });
 
   speedtestChartTypeSave.on("click", function () {
