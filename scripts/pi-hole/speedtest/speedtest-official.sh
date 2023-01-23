@@ -3,17 +3,18 @@
 start=$(date +"%Y-%m-%d %H:%M:%S")
 
 readonly setupVars="/etc/pihole/setupVars.conf"
-
-serverid=$(sed -n -e '/SPEEDTEST_SERVER/ s/.*\= *//p' $setupVars)
-
-echo "Testing with ${serverid}"
+serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
+if [[ -z "${serverid}" ]]; then
+    echo "Running Speedtest..."
+else
+    echo "Running Speedtest with server ${serverid}..."
+fi
 
 function nointernet(){
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 0
 }
-
 
 if [[ "$serverid" =~ ^[0-9]+$ ]]; then
     /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
