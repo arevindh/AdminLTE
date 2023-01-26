@@ -16,11 +16,13 @@ function nointernet(){
     exit 0
 }
 
-if [ -f /usr/local/bin/speedtest-cli ]; then
+version=$(speedtest --version)
+ 
+if [[ $version == *"Python"* ]]; then
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-        /usr/local/bin/speedtest-cli -s $serverid --json --share --secure > /tmp/speedtest.log || nointernet
+        /usr/bin/speedtest -s $serverid --json --share --secure > /tmp/speedtest.log || nointernet
     else
-        /usr/local/bin/speedtest-cli --json --share --secure > /tmp/speedtest.log || nointernet
+        /usr/bin/speedtest --json --share --secure > /tmp/speedtest.log || nointernet
     fi
 else 
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
@@ -36,7 +38,7 @@ if [[ -f "$FILE" ]]; then
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [ -f /usr/local/bin/speedtest-cli ]; then
+    if [[ $version == *"Python"* ]]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
