@@ -17,7 +17,7 @@ function nointernet(){
 }
 
 # if serverid is a number, use it, otherwise use the default
-if [[ -z "${serverid}" ]]; then
+if [[ ! -z "${serverid}" ]]; then
     /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
 else
     /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
