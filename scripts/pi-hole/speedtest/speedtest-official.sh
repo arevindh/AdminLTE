@@ -16,12 +16,9 @@ function nointernet(){
     exit 0
 }
 
-version=$(echo $(speedtest --version) | grep -oE '[0-9\.]+[ -]*' | head -1 | sed -e 's/^[ \t]*//' -e 's/[ \t]*$//')
-[ -z "$version" ] && version=$(echo "$output" | grep -oE '[0-9\.]+' | head -1)
+version=$(echo $(speedtest --version) | grep -oE '^[^\.]*[0-9]+\.' | grep -oE '[0-9]+')
 
-if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-    /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
-if [[ ! "$version" < "2.0.0" ]] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
+if [ ! "$version" -lt "2.0.0" ] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
         /usr/bin/speedtest -s $serverid --json --share --secure > /tmp/speedtest.log || nointernet
     else
@@ -44,7 +41,7 @@ if [[ -f "$FILE" ]]; then
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [[ ! "$version" < "2.0.0" ]] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
+    if [ ! "$version" -lt "2.0.0" ] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
