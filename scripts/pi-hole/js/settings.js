@@ -524,4 +524,10 @@ $(function () {
   speedtestTest.on("click", function () {
     speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
   });
+
+  let speedtestServer = $("#speedtestserver");
+
+  speedtestServer.on("change", function () {
+    speedtestServer.attr("value", speedtestServer.val());
+  });
 });
