@@ -16,27 +16,45 @@ function nointernet(){
     exit 0
 }
 
-# if serverid is a number, use it, otherwise use the default
-if [[ ! -z "${serverid}" ]]; then
-    /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
-else
-    /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
+version=$(speedtest --version)
+ 
+if [[ $version == *"Python"* ]]; then
+    if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+        /usr/bin/speedtest -s $serverid --json --share --secure > /tmp/speedtest.log || nointernet
+    else
+        /usr/bin/speedtest --json --share --secure > /tmp/speedtest.log || nointernet
+    fi
+else 
+    if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+        /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
+    else
+        /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > /tmp/speedtest.log || nointernet
+    fi
 fi
-
-# sed 's/,/./g' fix for those regions use , instead of .
 
 FILE=/tmp/speedtest.log
 if [[ -f "$FILE" ]]; then
     stop=$(date +"%Y-%m-%d %H:%M:%S")
-    download=`cat /tmp/speedtest.log| jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g' `
-    upload=`cat /tmp/speedtest.log| jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g'`
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
-    isp=`cat /tmp/speedtest.log| jq -r '.isp'`
-    server_ip=`cat /tmp/speedtest.log| jq -r '.server.ip'`
-    from_ip=`cat /tmp/speedtest.log| jq -r '.interface.externalIp'`
-    server_ping=`cat /tmp/speedtest.log| jq -r '.ping.latency'`
-    share_url=`cat /tmp/speedtest.log| jq -r '.result.url'`
     server_dist=0
+
+    if [[ $version == *"Python"* ]]; then
+        download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
+        upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
+        isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
+        server_ip=`cat /tmp/speedtest.log| jq -r '.server.host'`
+        from_ip=`cat /tmp/speedtest.log| jq -r '.client.ip'`
+        server_ping=`cat /tmp/speedtest.log| jq -r '.ping'`
+        share_url=`cat /tmp/speedtest.log| jq -r '.share'`
+    else
+        download=`cat /tmp/speedtest.log| jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g' `
+        upload=`cat /tmp/speedtest.log| jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g'`
+        isp=`cat /tmp/speedtest.log| jq -r '.isp'`
+        server_ip=`cat /tmp/speedtest.log| jq -r '.server.ip'`
+        from_ip=`cat /tmp/speedtest.log| jq -r '.interface.externalIp'`
+        server_ping=`cat /tmp/speedtest.log| jq -r '.ping.latency'`
+        share_url=`cat /tmp/speedtest.log| jq -r '.result.url'`
+    fi
 
     rm /tmp/speedtest.log
 
