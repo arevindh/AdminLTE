@@ -17,8 +17,9 @@ function nointernet(){
 }
 
 version=$(echo $(speedtest --version) | grep -oE '^[^\.]*[0-9]+\.' | grep -oE '[0-9]+')
+python=$(speedtest --version | grep "Python" | wc -l)
 
-if [ ! "$version" -lt "2" ] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
+if [ ! "$version" -lt "2" ] && [[ "${python}" -ge 1 ]]; then
     if [[ "$serverid" =~ ^[0-9]+$ ]]; then
         /usr/bin/speedtest -s $serverid --json --share --secure > /tmp/speedtest.log || nointernet
     else
@@ -41,7 +42,7 @@ if [[ -f "$FILE" ]]; then
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [ ! "$version" -lt "2" ] && [ -f /etc/apt/sources.list.d/ookla_speedtest-cli.list ]; then
+    if [ ! "$version" -lt "2" ] && [[ "${python}" -ge 1 ]]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
