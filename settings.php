@@ -1507,9 +1507,9 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                     <div class="form-group">
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" name="speedtestserver" value="<?php if ($speedtestserver) {
-                                                                                                                                        echo $speedtestserver;
-                                                                                                                                    } ?>" placeholder="Keep this blank to autoselect" />
+                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                                                                                                                                echo $speedtestserver;
+                                                                                                                                                            } ?>" placeholder="Keep this blank to autoselect" />
                                                         </div>
                                                     </div>
                                                 </div>
