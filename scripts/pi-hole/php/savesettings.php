@@ -596,6 +596,8 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
                 pihole_execute('-a -ss ' . trim($_POST['speedtestserver']));
+            } else {
+                pihole_execute('-a -ss');
             }
 
             if (isset($_POST['speedtestdays'])) {
