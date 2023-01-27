@@ -6,16 +6,16 @@ serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 speedtest() {
     start=$(date +"%Y-%m-%d %H:%M:%S")
     if [[ $1 == *"Python"* ]]; then
-        if [[ "$2" =~ ^[0-9]+$ ]]; then
-            /usr/bin/speedtest -s $2 --json --share --secure > $FILE
+        if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+            /usr/bin/speedtest -s $serverid --json --share --secure
         else
-            /usr/bin/speedtest --json --share --secure > $FILE
+            /usr/bin/speedtest --json --share --secure
         fi
     else 
-        if [[ "$1" =~ ^[0-9]+$ ]]; then
-            /usr/bin/speedtest -s $2 --accept-gdpr --accept-license -f json-pretty > $FILE
+        if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
         else
-            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE
+            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
         fi
     fi
 }
@@ -34,7 +34,7 @@ internet() {
         else
             apt-get install -y speedtest- speedtest-cli
         fi
-        speedtest $(speedtest --version) $serverid || nointernet
+        speedtest $(speedtest --version) > $FILE || nointernet
     fi
 
     stop=$(date +"%Y-%m-%d %H:%M:%S")
@@ -78,7 +78,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest $(speedtest --version) $serverid && internet || nointernet
+    speedtest $(speedtest --version) > $FILE && internet || nointernet
 }
     
 main
