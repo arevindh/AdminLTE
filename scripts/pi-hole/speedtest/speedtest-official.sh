@@ -41,7 +41,7 @@ internet() {
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [[ $version == *"Python"* ]]; then
+    if [[ $(speedtest --version) == *"Python"* ]]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
