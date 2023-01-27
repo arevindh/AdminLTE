@@ -1,14 +1,10 @@
 #!/bin/bash
 FILE=/tmp/speedtest.log
 readonly setupVars="/etc/pihole/setupVars.conf"
-
-nointernet(){
-    stop=$(date +"%Y-%m-%d %H:%M:%S")
-    sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
-    exit 0
-}
+serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 
 speedtest() {
+    start=$(date +"%Y-%m-%d %H:%M:%S")
     if [[ $1 == *"Python"* ]]; then
         if [[ "$2" =~ ^[0-9]+$ ]]; then
             /usr/bin/speedtest -s $2 --json --share --secure > $FILE
@@ -22,6 +18,12 @@ speedtest() {
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE
         fi
     fi
+}
+
+nointernet(){
+    stop=$(date +"%Y-%m-%d %H:%M:%S")
+    sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
+    exit 0
 }
 
 internet() {
@@ -71,8 +73,6 @@ internet() {
 }
 
 main() {
-    start=$(date +"%Y-%m-%d %H:%M:%S")
-    serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
     if [[ -z "${serverid}" ]]; then
         echo "Running Speedtest..."
     else
