@@ -32,7 +32,7 @@ internet() {
         else
             apt-get install -y speedtest- speedtest-cli
         fi
-        speedtest $version $serverid || nointernet
+        speedtest $(speedtest --version) $serverid || nointernet
     fi
 
     stop=$(date +"%Y-%m-%d %H:%M:%S")
