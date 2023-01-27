@@ -2,10 +2,10 @@
 FILE=/tmp/speedtest.log
 readonly setupVars="/etc/pihole/setupVars.conf"
 serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
+start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
-    start=$(date +"%Y-%m-%d %H:%M:%S")
-    if [[ $1 == *"Python"* ]]; then
+    if [[ "$(speedtest --version)" == *Python* ]]; then
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
             /usr/bin/speedtest -s $serverid --json --share --secure
         else
@@ -34,14 +34,15 @@ internet() {
         else
             apt-get install -y speedtest- speedtest-cli
         fi
-        speedtest $(speedtest --version) > $FILE || nointernet
+        start=$(date +"%Y-%m-%d %H:%M:%S")
+        speedtest > $FILE || nointernet
     fi
 
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [[ $(speedtest --version) == *"Python"* ]]; then
+    if [[ "$(speedtest --version)" == *Python* ]]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
@@ -78,7 +79,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest $(speedtest --version) > $FILE && internet || nointernet
+    speedtest > $FILE && internet || nointernet
 }
     
 main
