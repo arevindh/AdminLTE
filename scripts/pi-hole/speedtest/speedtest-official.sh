@@ -5,23 +5,29 @@ serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
+    if [[ -z "${serverid}" ]]; then
+        echo "Running Speedtest..."
+    else
+        echo "Running Speedtest with server ${serverid}..."
+    fi
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
-        if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --json --share --secure
-        else
+        if [[ -z "${serverid}" ]]; then
             /usr/bin/speedtest --json --share --secure
+        else
+            /usr/bin/speedtest -s $serverid --json --share --secure
         fi
     else 
-        if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
-        else
+        if [[ -z "${serverid}" ]]; then
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
+        else
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty  
         fi
     fi
 }
 
 abort(){
     stop=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "No Internet"
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 1
 }
@@ -29,8 +35,10 @@ abort(){
 nointernet(){
     rm -f $FILE
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
+        echo "Trying Official Version..."
         apt-get install -y speedtest-cli- speedtest || abort
     else
+        echo "Trying Python Version..."
         apt-get install -y speedtest- speedtest-cli || abort
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
@@ -39,25 +47,26 @@ nointernet(){
 
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
-    server_name=$(sudo cat $FILE | jq -r '.server.name')
+    catFILE=$(sudo cat $FILE)
+    server_name=$(catFILE | jq -r '.server.name')
     server_dist=0
 
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
-        download=$(sudo cat $FILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$(sudo cat $FILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$(sudo cat $FILE | jq -r '.client.isp')
-        server_ip=$(sudo cat $FILE | jq -r '.server.host')
-        from_ip=$(sudo cat $FILE | jq -r '.client.ip')
-        server_ping=$(sudo cat $FILE | jq -r '.ping')
-        share_url=$(sudo cat $FILE | jq -r '.share')
+        download=$(catFILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(catFILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(catFILE | jq -r '.client.isp')
+        server_ip=$(catFILE | jq -r '.server.host')
+        from_ip=$(catFILE | jq -r '.client.ip')
+        server_ping=$(catFILE | jq -r '.ping')
+        share_url=$(catFILE | jq -r '.share')
     else
-        download=$(sudo cat $FILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$(sudo cat $FILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$(sudo cat $FILE | jq -r '.isp')
-        server_ip=$(sudo cat $FILE | jq -r '.server.ip')
-        from_ip=$(sudo cat $FILE | jq -r '.interface.externalIp')
-        server_ping=$(sudo cat $FILE | jq -r '.ping.latency')
-        share_url=$(sudo cat $FILE | jq -r '.result.url')
+        download=$(catFILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(catFILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(catFILE | jq -r '.isp')
+        server_ip=$(catFILE | jq -r '.server.ip')
+        from_ip=$(catFILE | jq -r '.interface.externalIp')
+        server_ping=$(catFILE | jq -r '.ping.latency')
+        share_url=$(catFILE | jq -r '.result.url')
     fi
 
     rm -f $FILE
@@ -75,11 +84,7 @@ internet() {
 }
 
 main() {
-    if [[ -z "${serverid}" ]]; then
-        echo "Running Speedtest..."
-    else
-        echo "Running Speedtest with server ${serverid}..."
-    fi
+    
     speedtest > $FILE && internet || nointernet
 }
     
