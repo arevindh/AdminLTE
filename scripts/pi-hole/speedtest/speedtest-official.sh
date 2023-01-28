@@ -7,14 +7,18 @@ start=$(date +"%Y-%m-%d %H:%M:%S")
 speedtest() {
     if [[ "$(speedtest --version)" == *Python* ]]; then
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+            echo 0
             /usr/bin/speedtest -s $serverid --json --share --secure > $FILE || nointernet $1
         else
+            echo 1
             /usr/bin/speedtest --json --share --secure > $FILE || nointernet $1
         fi
     else 
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
+            echo 2
             /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > $FILE || nointernet $1
         else
+            echo 3
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE || nointernet $1
         fi
     fi
