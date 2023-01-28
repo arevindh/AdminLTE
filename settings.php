@@ -1503,7 +1503,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
 
                                                 <div class="form-group col-md-6">
                                                     <label>Custom Server</label>
-                                                    <p>You can find the closest servers with <code>speedtest -L</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
+                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
                                                     <div class="form-group">
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
