@@ -7,15 +7,15 @@ start=$(date +"%Y-%m-%d %H:%M:%S")
 speedtest() {
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
         if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --json --share --secure > $FILE && internet || nointernet $1
+            /usr/bin/speedtest -s $serverid --json --share --secure
         else
-            /usr/bin/speedtest --json --share --secure > $FILE && internet || nointernet $1
+            /usr/bin/speedtest --json --share --secure
         fi
     else 
         if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > $FILE && internet || nointernet $1
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
         else
-            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE && internet || nointernet $1
+            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
         fi
     fi
 }
@@ -28,39 +28,36 @@ abort(){
 
 nointernet(){
     rm -f $FILE
-    if [ $1 == 1]; then
-        abort
-    fi
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
         apt-get install -y speedtest-cli- speedtest || abort
     else
         apt-get install -y speedtest- speedtest-cli || abort
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest 1
+    speedtest > $FILE && internet || abort
 }
 
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
-    server_name=$($FILE | jq -r '.server.name')
+    server_name=$(sudo cat $FILE | jq -r '.server.name')
     server_dist=0
 
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
-        download=$($FILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$($FILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$($FILE | jq -r '.client.isp')
-        server_ip=$($FILE | jq -r '.server.host')
-        from_ip=$($FILE | jq -r '.client.ip')
-        server_ping=$($FILE | jq -r '.ping')
-        share_url=$($FILE | jq -r '.share')
+        download=$(sudo cat $FILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(sudo cat $FILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(sudo cat $FILE | jq -r '.client.isp')
+        server_ip=$(sudo cat $FILE | jq -r '.server.host')
+        from_ip=$(sudo cat $FILE | jq -r '.client.ip')
+        server_ping=$(sudo cat $FILE | jq -r '.ping')
+        share_url=$(sudo cat $FILE | jq -r '.share')
     else
-        download=$($FILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$($FILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$($FILE | jq -r '.isp')
-        server_ip=$($FILE | jq -r '.server.ip')
-        from_ip=$($FILE | jq -r '.interface.externalIp')
-        server_ping=$($FILE | jq -r '.ping.latency')
-        share_url=$($FILE | jq -r '.result.url')
+        download=$(sudo cat $FILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(sudo cat $FILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(sudo cat $FILE | jq -r '.isp')
+        server_ip=$(sudo cat $FILE | jq -r '.server.ip')
+        from_ip=$(sudo cat $FILE | jq -r '.interface.externalIp')
+        server_ping=$(sudo cat $FILE | jq -r '.ping.latency')
+        share_url=$(sudo cat $FILE | jq -r '.result.url')
     fi
 
     rm -f $FILE
@@ -83,7 +80,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest
+    speedtest > $FILE && internet || nointernet
 }
     
 main
