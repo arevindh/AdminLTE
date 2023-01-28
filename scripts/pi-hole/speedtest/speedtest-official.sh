@@ -10,17 +10,17 @@ speedtest() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
-        if [[ -z "${serverid}" ]]; then
-            /usr/bin/speedtest --json --share --secure
-        else
-            /usr/bin/speedtest -s $serverid --json --share --secure
-        fi
-    else 
+    if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
         if [[ -z "${serverid}" ]]; then
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
         else
             /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty  
+        fi
+    else
+        if [[ -z "${serverid}" ]]; then
+            /usr/bin/speedtest --json --share --secure
+        else
+            /usr/bin/speedtest -s $serverid --json --share --secure
         fi
     fi
 }
@@ -34,12 +34,12 @@ abort(){
 
 nointernet(){
     rm -f $FILE
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
-        echo "Trying Official Version..."
-        apt-get install -y speedtest-cli- speedtest || abort
-    else
+    if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
         echo "Trying Python Version..."
         apt-get install -y speedtest- speedtest-cli || abort
+    else
+        echo "Trying Official Version..."
+        apt-get install -y speedtest-cli- speedtest || abort
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
     speedtest > $FILE && internet || abort
@@ -51,15 +51,7 @@ internet() {
     server_name=$(catFILE | jq -r '.server.name')
     server_dist=0
 
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
-        download=$(catFILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$(catFILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$(catFILE | jq -r '.client.isp')
-        server_ip=$(catFILE | jq -r '.server.host')
-        from_ip=$(catFILE | jq -r '.client.ip')
-        server_ping=$(catFILE | jq -r '.ping')
-        share_url=$(catFILE | jq -r '.share')
-    else
+    if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
         download=$(catFILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
         upload=$(catFILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
         isp=$(catFILE | jq -r '.isp')
@@ -67,6 +59,14 @@ internet() {
         from_ip=$(catFILE | jq -r '.interface.externalIp')
         server_ping=$(catFILE | jq -r '.ping.latency')
         share_url=$(catFILE | jq -r '.result.url')
+    else
+        download=$(catFILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(catFILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(catFILE | jq -r '.client.isp')
+        server_ip=$(catFILE | jq -r '.server.host')
+        from_ip=$(catFILE | jq -r '.client.ip')
+        server_ping=$(catFILE | jq -r '.ping')
+        share_url=$(catFILE | jq -r '.share')
     fi
 
     rm -f $FILE
@@ -84,7 +84,6 @@ internet() {
 }
 
 main() {
-    
     speedtest > $FILE && internet || nointernet
 }
     
