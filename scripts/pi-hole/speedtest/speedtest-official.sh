@@ -79,7 +79,8 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest > $FILE && internet || nointernet
+    speedtest > $FILE
+    internet
 }
     
 main
