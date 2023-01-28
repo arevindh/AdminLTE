@@ -7,15 +7,15 @@ start=$(date +"%Y-%m-%d %H:%M:%S")
 speedtest() {
     if [[ "$(speedtest --version)" == *Python* ]]; then
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-            /usr/bin/speedtest -s $serverid --json --share --secure
+            /usr/bin/speedtest -s $serverid --json --share --secure > $FILE
         else
-            /usr/bin/speedtest --json --share --secure
+            /usr/bin/speedtest --json --share --secure > $FILE
         fi
     else 
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > $FILE
         else
-            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
+            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE
         fi
     fi
 }
@@ -28,7 +28,7 @@ nointernet(){
         apt-get install -y speedtest- speedtest-cli
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest > $FILE && internet
+    speedtest && internet
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 0
@@ -77,7 +77,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest > $FILE && internet || nointernet
+    speedtest && internet || nointernet
 }
     
 main
