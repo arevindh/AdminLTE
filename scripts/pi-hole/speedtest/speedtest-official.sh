@@ -5,7 +5,7 @@ serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
+    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
         if [[ ! -z "${serverid}" ]]; then
             /usr/bin/speedtest -s $serverid --json --share --secure
         else
@@ -28,7 +28,7 @@ abort(){
 
 nointernet(){
     rm -f $FILE
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
+    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
         apt-get install -y speedtest-cli- speedtest || abort
     else
         apt-get install -y speedtest- speedtest-cli || abort
@@ -42,7 +42,7 @@ internet() {
     server_name=$(sudo cat $FILE | jq -r '.server.name')
     server_dist=0
 
-    if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
+    if [[ ! "$(/usr/bin/speedtest --version)" =~ *official* ]]; then
         download=$(sudo cat $FILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
         upload=$(sudo cat $FILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
         isp=$(sudo cat $FILE | jq -r '.client.isp')
