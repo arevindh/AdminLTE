@@ -21,23 +21,20 @@ speedtest() {
 }
 
 nointernet(){
+    rm -f $FILE
+    if [[ $version == *"Python"* ]]; then
+        apt-get install -y speedtest-cli- speedtest
+    else
+        apt-get install -y speedtest- speedtest-cli
+    fi
+    start=$(date +"%Y-%m-%d %H:%M:%S")
+    speedtest > $FILE && internet
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 0
 }
 
 internet() {
-    if grep -q "error" "$FILE"; then
-        rm -f $FILE
-        if [[ $version == *"Python"* ]]; then
-            apt-get install -y speedtest-cli- speedtest
-        else
-            apt-get install -y speedtest- speedtest-cli
-        fi
-        start=$(date +"%Y-%m-%d %H:%M:%S")
-        speedtest > $FILE || nointernet
-    fi
-
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
@@ -71,6 +68,7 @@ internet() {
     printf "$quote$start$sep$stop$sep$isp$sep$from_ip$sep$server_name$sep$server_dist$sep$server_ping$sep$download$sep$upload$sep$share_url$quote\n"
 
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', '${isp}', '${from_ip}', '${server_name}', ${server_dist}, ${server_ping}, ${download}, ${upload}, '${share_url}');"
+    exit 0
 }
 
 main() {
@@ -79,9 +77,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest > $FILE
-    internet
+    speedtest > $FILE && internet || nointernet
 }
     
 main
-exit 0
