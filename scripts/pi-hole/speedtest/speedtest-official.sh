@@ -5,21 +5,17 @@ serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
-    if [[ "$(speedtest --version)" =~ *Python* ]]; then
+    if [[ "$(/usr/bin/speedtest --version)" =~ *Python* ]]; then
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-            echo 0
-            /usr/bin/speedtest -s $serverid --json --share --secure > $FILE || nointernet $1
+            /usr/bin/speedtest -s $serverid --json --share --secure
         else
-            echo 1
-            /usr/bin/speedtest --json --share --secure > $FILE || nointernet $1
+            /usr/bin/speedtest --json --share --secure
         fi
     else 
         if [[ "$serverid" =~ ^[0-9]+$ ]]; then
-            echo 2
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > $FILE || nointernet $1
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
         else
-            echo 3
-            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE || nointernet $1
+            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
         fi
     fi
 }
@@ -37,8 +33,7 @@ nointernet(){
         apt-get install -y speedtest- speedtest-cli
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest 1
-    internet
+    speedtest > $FILE && internet || nointernet 1
 }
 
 internet() {
@@ -46,7 +41,7 @@ internet() {
     server_name=`cat /tmp/speedtest.log| jq -r '.server.name'`
     server_dist=0
 
-    if [[ "$(speedtest --version)" =~ *Python* ]]; then
+    if [[ "$(/usr/bin/speedtest --version)" =~ *Python* ]]; then
         download=`cat /tmp/speedtest.log| jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g' `
         upload=`cat /tmp/speedtest.log| jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
         isp=`cat /tmp/speedtest.log| jq -r '.client.isp'`
@@ -84,8 +79,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest
-    internet
+    speedtest && internet || nointernet
 }
     
 main
