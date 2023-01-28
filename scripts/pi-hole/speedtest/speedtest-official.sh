@@ -30,25 +30,25 @@ nointernet(){
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     res="$(<$FILE)"
-    server_name=$(sudo jq -Rrs '.server.name' $res)
+    server_name=$(sudo jq -r '.server.name' <<< $res)
     server_dist=0
 
     if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
-        download=$(sudo jq -Rrs '.download.bandwidth' $res | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$(sudo jq -Rrs '.upload.bandwidth' $res | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$(sudo jq -Rrs '.isp' $res)
-        server_ip=$(sudo jq -Rrs '.server.ip' $res)
-        from_ip=$(sudo jq -Rrs '.interface.externalIp' $res)
-        server_ping=$(sudo jq -Rrs '.ping.latency' $res)
-        share_url=$(sudo jq -Rrs '.result.url' $res)
+        download=$(sudo jq -r '.download.bandwidth' <<< $res | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(sudo jq -r '.upload.bandwidth' <<< $res | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(sudo jq -r '.isp' <<< $res)
+        server_ip=$(sudo jq -r '.server.ip' <<< $res)
+        from_ip=$(sudo jq -r '.interface.externalIp' <<< $res)
+        server_ping=$(sudo jq -r '.ping.latency' <<< $res)
+        share_url=$(sudo jq -r '.result.url' <<< $res)
     else
-        download=$(sudo jq -Rrs '.download' $res | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$(sudo jq -Rrs '.upload' $res | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$(sudo jq -Rrs '.client.isp' $res)
-        server_ip=$(sudo jq -Rrs '.server.host' $res)
-        from_ip=$(sudo jq -Rrs '.client.ip' $res)
-        server_ping=$(sudo jq -Rrs '.ping' $res)
-        share_url=$(sudo jq -Rrs '.share' $res)
+        download=$(sudo jq -r '.download' <<< $res | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        upload=$(sudo jq -r '.upload' <<< $res | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
+        isp=$(sudo jq -r '.client.isp' <<< $res)
+        server_ip=$(sudo jq -r '.server.host' <<< $res)
+        from_ip=$(sudo jq -r '.client.ip' <<< $res)
+        server_ping=$(sudo jq -r '.ping' <<< $res)
+        share_url=$(sudo jq -r '.share' <<< $res)
     fi
 
     sep="\t"
