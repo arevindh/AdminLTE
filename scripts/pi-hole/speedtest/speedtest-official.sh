@@ -29,26 +29,25 @@ nointernet(){
 
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
-    catFILE=$(sudo cat $FILE)
-    server_name=$($catFILE | jq -r '.server.name')
+    server_name=`/tmp/speedtest.log | jq -r '.server.name'`
     server_dist=0
 
     if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
-        download=$($catFILE | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$($catFILE | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$($catFILE | jq -r '.isp')
-        server_ip=$($catFILE | jq -r '.server.ip')
-        from_ip=$($catFILE | jq -r '.interface.externalIp')
-        server_ping=$($catFILE | jq -r '.ping.latency')
-        share_url=$($catFILE | jq -r '.result.url')
+        download=`/tmp/speedtest.log | jq -r '.download.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g'`
+        upload=`/tmp/speedtest.log | jq -r '.upload.bandwidth' | awk '{$1=$1*8/1000/1000; print $1;}' | sed 's/,/./g'`
+        isp=`/tmp/speedtest.log | jq -r '.isp'`
+        server_ip=`/tmp/speedtest.log | jq -r '.server.ip'`
+        from_ip=`/tmp/speedtest.log | jq -r '.interface.externalIp'`
+        server_ping=`/tmp/speedtest.log | jq -r '.ping.latency'`
+        share_url=`/tmp/speedtest.log | jq -r '.result.url'`
     else
-        download=$($catFILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        upload=$($catFILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
-        isp=$($catFILE | jq -r '.client.isp')
-        server_ip=$($catFILE | jq -r '.server.host')
-        from_ip=$($catFILE | jq -r '.client.ip')
-        server_ping=$($catFILE | jq -r '.ping')
-        share_url=$($catFILE | jq -r '.share')
+        download=`/tmp/speedtest.log | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
+        upload=`/tmp/speedtest.log | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g'`
+        isp=`/tmp/speedtest.log | jq -r '.client.isp'`
+        server_ip=`/tmp/speedtest.log | jq -r '.server.host'`
+        from_ip=`/tmp/speedtest.log | jq -r '.client.ip'`
+        server_ping=`/tmp/speedtest.log | jq -r '.ping'`
+        share_url=`/tmp/speedtest.log | jq -r '.share'`
     fi
 
     sep="\t"
