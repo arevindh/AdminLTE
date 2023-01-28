@@ -29,6 +29,7 @@ nointernet(){
 
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "$(<$FILE)"
     server_name=$(sudo jq -r '.server.name' $FILE)
     server_dist=0
 
@@ -68,13 +69,12 @@ tryagain(){
         apt-get install -y speedtest-cli- speedtest || nointernet
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest 2>&1 | sudo tee -- "$FILE"
-    internet || nointernet
+    speedtest > $FILE && internet || nointernet
 }
 
 main() {
-    speedtest 2>&1 | sudo tee -- "$FILE"
-    internet || tryagain
+    echo "Test has been initiated, please wait."
+    speedtest > "$FILE" && internet || tryagain
 }
     
 main
