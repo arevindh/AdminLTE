@@ -5,7 +5,7 @@ serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
 start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
-    if [[ "$(/usr/bin/speedtest --version)" =~ *Python* ]]; then
+    if [[ ! "${$(/usr/bin/speedtest --version),,}" =~ *ookla* ]]; then
         if [[ ! -z "${serverid}" ]]; then
             /usr/bin/speedtest -s $serverid --json --share --secure
         else
@@ -34,8 +34,7 @@ nointernet(){
         apt-get install -y speedtest- speedtest-cli || abort
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest > $FILE && internet
-    abort
+    speedtest > $FILE && internet || abort
 }
 
 internet() {
@@ -43,7 +42,7 @@ internet() {
     server_name=$($FILE | jq -r '.server.name')
     server_dist=0
 
-    if [[ "$(/usr/bin/speedtest --version)" =~ *Python* ]]; then
+    if [[ ! "${$(/usr/bin/speedtest --version),,}" =~ *ookla* ]]; then
         download=$($FILE | jq -r '.download' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
         upload=$($FILE | jq -r '.upload' | awk '{$1=$1/1000/1000; print $1;}' | sed 's/,/./g')
         isp=$($FILE | jq -r '.client.isp')
