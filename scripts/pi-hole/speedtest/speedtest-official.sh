@@ -6,13 +6,13 @@ start=$(date +"%Y-%m-%d %H:%M:%S")
 
 speedtest() {
     if [[ "$(/usr/bin/speedtest --version)" =~ *Python* ]]; then
-        if [[ -z "${serverid}" ]]; then
+        if [[ ! -z "${serverid}" ]]; then
             /usr/bin/speedtest -s $serverid --json --share --secure
         else
             /usr/bin/speedtest --json --share --secure
         fi
     else 
-        if [[ -z "${serverid}" ]]; then
+        if [[ ! -z "${serverid}" ]]; then
             /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
         else
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
