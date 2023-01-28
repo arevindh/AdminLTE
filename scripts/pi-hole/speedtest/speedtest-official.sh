@@ -20,18 +20,22 @@ speedtest() {
     fi
 }
 
-nointernet(){
-    rm -f $FILE
-    if [[ "$(/usr/bin/speedtest --version)" == *"Python"* ]]; then
-        apt-get install -y speedtest-cli- speedtest
-    else
-        apt-get install -y speedtest- speedtest-cli
-    fi
-    start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest > $FILE && internet
+abort(){
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 1
+}
+
+nointernet(){
+    rm -f $FILE
+    if [[ "$(/usr/bin/speedtest --version)" == *"Python"* ]]; then
+        apt-get install -y speedtest-cli- speedtest || abort
+    else
+        apt-get install -y speedtest- speedtest-cli || abort
+    fi
+    start=$(date +"%Y-%m-%d %H:%M:%S")
+    speedtest > $FILE && internet
+    abort
 }
 
 internet() {
