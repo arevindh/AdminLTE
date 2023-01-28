@@ -7,15 +7,15 @@ start=$(date +"%Y-%m-%d %H:%M:%S")
 speedtest() {
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
         if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --json --share --secure
+            /usr/bin/speedtest -s $serverid --json --share --secure > $FILE && internet || nointernet $1
         else
-            /usr/bin/speedtest --json --share --secure
+            /usr/bin/speedtest --json --share --secure > $FILE && internet || nointernet $1
         fi
     else 
         if [[ ! -z "${serverid}" ]]; then
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty > $FILE && internet || nointernet $1
         else
-            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
+            /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty > $FILE && internet || nointernet $1
         fi
     fi
 }
@@ -28,13 +28,16 @@ abort(){
 
 nointernet(){
     rm -f $FILE
+    if [ $1 == 1]; then
+        abort
+    fi
     if [[ ! "$(/usr/bin/speedtest --version)" =~ *okla* ]]; then
         apt-get install -y speedtest-cli- speedtest || abort
     else
         apt-get install -y speedtest- speedtest-cli || abort
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest > $FILE && internet || abort
+    speedtest 1
 }
 
 internet() {
@@ -80,7 +83,7 @@ main() {
     else
         echo "Running Speedtest with server ${serverid}..."
     fi
-    speedtest > $FILE && internet || nointernet
+    speedtest
 }
     
 main
