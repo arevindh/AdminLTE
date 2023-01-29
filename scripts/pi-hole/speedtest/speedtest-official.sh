@@ -63,10 +63,10 @@ internet() {
 tryagain(){
     if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
         echo "Trying Python Version..."
-        apt-get install -y speedtest- speedtest-cli || nointernet
+        apt-get install -y speedtest- speedtest-cli
     else
         echo "Trying Official Version..."
-        apt-get install -y speedtest-cli- speedtest || nointernet
+        apt-get install -y speedtest-cli- speedtest
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
     speedtest > $FILE && internet || nointernet
