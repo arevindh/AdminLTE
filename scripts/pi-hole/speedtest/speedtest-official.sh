@@ -73,6 +73,10 @@ tryagain(){
 }
 
 main() {
+    if [ $EUID != 0 ]; then
+        sudo "$0" "$@"
+        exit $?
+    fi
     echo "Test has been initiated, please wait."
     speedtest > "$FILE" && internet || tryagain
 }
