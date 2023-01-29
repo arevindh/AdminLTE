@@ -56,7 +56,7 @@ internet() {
 nointernet(){
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     echo "No Internet"
-    sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
+    sqlite3 /etc/pihole/speedtest.db "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 1
 }
 
