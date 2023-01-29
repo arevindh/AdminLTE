@@ -20,13 +20,6 @@ speedtest() {
     fi
 }
 
-nointernet(){
-    stop=$(date +"%Y-%m-%d %H:%M:%S")
-    echo "No Internet"
-    sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
-    exit 1
-}
-
 internet() {
     stop=$(date +"%Y-%m-%d %H:%M:%S")
     res="$(<$FILE)"
@@ -60,12 +53,17 @@ internet() {
     exit 0
 }
 
+nointernet(){
+    stop=$(date +"%Y-%m-%d %H:%M:%S")
+    echo "No Internet"
+    sqlite3 /etc/pihole/speedtest.db  "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
+    exit 1
+}
+
 tryagain(){
     if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
-        echo "Trying Python Version..."
         apt-get install -y speedtest- speedtest-cli
     else
-        echo "Trying Official Version..."
         apt-get install -y speedtest-cli- speedtest
     fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
