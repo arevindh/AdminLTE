@@ -10,7 +10,9 @@ if [ ! -f /opt/pihole/webpage.sh.org ]; then
     git fetch --tags -q
     localVer=$(pihole -v | grep "Pi-hole" | cut -d ' ' -f 6)
     remoteVer=$(curl -s https://api.github.com/repos/pi-hole/pi-hole/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-    [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]] && remoteVer=$localVer
+    if [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]]; then
+        remoteVer=$localVer
+    fi
     git checkout -q $remoteVer
     cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
     cd - > /dev/null
@@ -25,15 +27,16 @@ if [ ! -d /var/www/html/org_admin ]; then
     git fetch --tags -q
     localVer=$(pihole -v | grep "AdminLTE" | cut -d ' ' -f 6)
     remoteVer=$(curl -s https://api.github.com/repos/pi-hole/AdminLTE/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-    [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]] && remoteVer=$localVer
+    if [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]]; then
+        remoteVer=$localVer
+    fi
     git checkout -q $remoteVer
     cd - > /dev/null
 fi
 
-if [ "${1-}" == "db" ]; then
-    echo "$(date) - Configuring Database..."
-    [ -f /etc/pihole/speedtest.db ] && mv /etc/pihole/speedtest.db /etc/pihole/speedtest.db.old
-    cp scripts/pi-hole/speedtest/speedtest.db /etc/pihole/
+if [ "${1-}" == "db" ] && [ -f /etc/pihole/speedtest.db ]; then
+    mv /etc/pihole/speedtest.db /etc/pihole/speedtest.db.old
+    echo "$(date) - Configured Database..."
 fi
 
 echo "$(date) - Uninstalling Current Speedtest Mod..."
