@@ -61,11 +61,6 @@ nointernet(){
 }
 
 tryagain(){
-    if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
-        apt-get install -y speedtest- speedtest-cli
-    else
-        apt-get install -y speedtest-cli- speedtest
-    fi
     start=$(date +"%Y-%m-%d %H:%M:%S")
     speedtest > $FILE && internet || nointernet
 }
