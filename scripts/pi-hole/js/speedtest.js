@@ -7,8 +7,17 @@ $(function () {
   var serverPing = [];
 
   function updateSpeedTestData() {
-    function formatDate(itemdate) {
-      return moment(itemdate).format("Do HH:mm");
+    function formatDate(itemdate, results) {
+      // if the the first and last time are 24 hours apart or more
+      // then return the date and time, otherwise return the time
+      let format = "HH:mm";
+      if (results.length > 1) {
+        const first = moment(results[0].start_time);
+        const last = moment(results[results.length - 1].start_time);
+        if (last.diff(first, "hours") >= 24)
+          format = "Do " + format;
+      }
+      return moment(itemdate).format(format);
     }
 
     $.ajax({
@@ -17,8 +26,8 @@ $(function () {
     }).done(function (results) {
       results.forEach(function (packet) {
         // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
-        if (speedlabels.indexOf(formatDate(packet.start_time)) === -1) {
-          speedlabels.push(formatDate(packet.start_time));
+        if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
+          speedlabels.push(formatDate(packet.start_time, results));
           uploadspeed.push(parseFloat(packet.upload));
           downloadspeed.push(parseFloat(packet.download));
           serverPing.push(parseFloat(packet.server_ping));
@@ -33,46 +42,40 @@ $(function () {
     updateSpeedTestData();
   }, 6000);
 
-  var uploadColor = $(".speedtest-upload").css("background-color");
-  var downloadColor = $(".speedtest-download").css("background-color");
-  var pingColor = $(".speedtest-ping").css("background-color");
-
   var gridColor = $(".graphs-grid").css("background-color");
   var ticksColor = $(".graphs-ticks").css("color");
 
-  var speedChartctx = document.getElementById("speedtestChart");
+  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: "line",
+    type: utils.getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
         {
-          label: "Download Mbps",
+          label: "Mbps Download",
           data: downloadspeed,
-          backgroundColor: downloadColor,
-          fill: false,
-          borderColor: downloadColor,
+          backgroundColor: "rgba(0, 123, 255, 0.5)",
+          borderColor: "rgba(0, 123, 255, 1)",
           borderWidth: 1,
           cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-1",
         },
         {
-          label: "Upload Mbps",
+          label: "Mbps Upload",
           data: uploadspeed,
-          backgroundColor: uploadColor,
-          fill: false,
-          borderColor: uploadColor,
+          backgroundColor: "rgba(40, 167, 69, 0.5)",
+          borderColor: "rgba(40, 167, 69, 1)",
           borderWidth: 1,
+          cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-1",
         },
         {
-          label: "Ping ms",
+          label: "ms Ping",
           data: serverPing,
-          backgroundColor: pingColor,
-          fill: false,
-          borderColor: pingColor,
+          backgroundColor: "rgba(108, 117, 125, 0.5)",
+          borderColor: "rgba(108, 117, 125, 1)",
           borderWidth: 1,
-          borderDash: [5, 5],
+          cubicInterpolationMode: "monotone",
           yAxisID: "y-axis-2",
         },
       ],
@@ -80,64 +83,53 @@ $(function () {
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      legend: {
-        display: true,
-        position: "bottom",
+      interaction: {
+        mode: "nearest",
+        axis: "x",
+      },
+      plugins: {
+        legend: {
+          display: false,
+          position: "bottom",
+          labels: {
+            usePointStyle: true,
+            padding: 20,
+          },
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: utils.getGraphType(1) === "bar",
+          yAlign: 'bottom',
+          callbacks: {
+            label: function (context) {
+              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
+            }
+          },
+        },
       },
       scales: {
-        yAxes: [
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "left",
-            id: "y-axis-1",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+        x: {
+          grid: {
+            color: gridColor,
           },
-          {
-            type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-            display: true,
-            position: "right",
-            id: "y-axis-2",
-            ticks: {
-              // min: 0,
-              fontColor: ticksColor,
-            },
-            gridLines: {
-              color: gridColor,
-            },
+          ticks: {
+            color: ticksColor,
           },
-        ],
-        xAxes: [
-          {
-            // type :'time',
-            display: true,
-            scaleLabel: {
-              display: true,
-            },
-            gridLines: {
-              color: gridColor,
-              zeroLineColor: gridColor,
-            },
-            ticks: {
-              // autoSkip: true,
-              maxTicksLimit: 10,
-              maxRotation: 0,
-              minRotation: 0,
-              fontColor: ticksColor,
-            },
+        },
+        "y-axis-1": {
+          type: "linear",
+          position: "left",
+          grid: {
+            color: gridColor,
           },
-        ],
-      },
-      tooltips: {
-        enabled: true,
-        mode: "x-axis",
-        intersect: false,
+          ticks: {
+            color: ticksColor,
+          },
+        },
+        "y-axis-2": {
+          type: "linear",
+          position: "right",
+        },
       },
     },
   });

@@ -239,7 +239,7 @@ $(function () {
       fieldtext += '<input type="hidden" name="id" value="' + parseInt(data[4], 10) + '">';
 
       $(row).addClass(blocked === true ? "blocked-row" : "allowed-row");
-      if (localStorage && localStorage.getItem("colorfulQueryLog_chkbox") === "true") {
+      if (localStorage?.getItem("colorfulQueryLog_chkbox") === "true") {
         $(row).addClass(blocked === true ? "text-red" : "text-green");
       }
 
@@ -253,9 +253,9 @@ $(function () {
             this.title = "Click to show matching blacklist/whitelist domain";
             this.style.color = "#72afd2";
           },
-          function () {
-            this.style.color = "";
-          })
+            function () {
+              this.style.color = "";
+            })
         );
         $("td:eq(4)", row).off(); // Release any possible previous onClick event handlers
         $("td:eq(4)", row).on("click", function () {
@@ -382,9 +382,9 @@ $(function () {
           (function () {
             $(this).addClass("pointer").attr("title", tooltipText(1, this.textContent));
           },
-          function () {
-            $(this).removeClass("pointer");
-          })
+            function () {
+              $(this).removeClass("pointer");
+            })
         );
 
       // Domain
@@ -398,9 +398,9 @@ $(function () {
           (function () {
             $(this).addClass("pointer").attr("title", tooltipText(2, this.textContent));
           },
-          function () {
-            $(this).removeClass("pointer");
-          })
+            function () {
+              $(this).removeClass("pointer");
+            })
         );
 
       // Client
@@ -414,9 +414,9 @@ $(function () {
           (function () {
             $(this).addClass("pointer").attr("title", tooltipText(3, this.textContent));
           },
-          function () {
-            $(this).removeClass("pointer");
-          })
+            function () {
+              $(this).removeClass("pointer");
+            })
         );
 
       // Status
@@ -432,9 +432,9 @@ $(function () {
           (function () {
             $(this).addClass("pointer").attr("title", tooltipText(4, this.textContent));
           },
-          function () {
-            $(this).removeClass("pointer");
-          })
+            function () {
+              $(this).removeClass("pointer");
+            })
         );
 
       // Reply type
@@ -450,9 +450,9 @@ $(function () {
           (function () {
             $(this).addClass("pointer").attr("title", tooltipText(5, this.textContent));
           },
-          function () {
-            $(this).removeClass("pointer");
-          })
+            function () {
+              $(this).removeClass("pointer");
+            })
         );
 
       // Disable autocorrect in the search box

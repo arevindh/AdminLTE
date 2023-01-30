@@ -10,6 +10,7 @@
 $indexpage = true;
 require 'scripts/pi-hole/php/header_authenticated.php';
 require_once 'scripts/pi-hole/php/gravity.php';
+$setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 ?>
 <!-- Sourceing CSS colors from stylesheet to be used in JS code -->
 <span class="queries-permitted"></span>
@@ -113,7 +114,11 @@ require_once 'scripts/pi-hole/php/gravity.php';
 
 ?>
 
-<?php if ($auth && $speedtestshedule) { ?>
+<?php
+$speedtestcharttype = 'line';
+if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
+    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+if ($auth && $speedtestshedule) { ?>
     <div class="row">
         <div class="col-md-12">
             <div class="box" id="queries-over-time">
@@ -121,14 +126,14 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
                 </div>
                 <div class="box-body">
-                    <div class="chart">
-                        <canvas id="speedtestChart" width="800" height="240"></canvas>
+                    <div class="chart" style="width: 100%; height: 180px">
+                        <canvas id="speedOverTimeChart" value=<?php echo $speedtestcharttype; ?>></canvas>
                     </div>
+                    <div class="overlay">
+                        <i class="fa fa-sync fa-spin"></i>
+                    </div>
+                    <!-- /.box-body -->
                 </div>
-                <div class="overlay">
-                    <i class="fa fa-refresh fa-spin"></i>
-                </div>
-                <!-- /.box-body -->
             </div>
         </div>
     </div>
@@ -163,7 +168,7 @@ require_once 'scripts/pi-hole/php/gravity.php';
                 <div style="width:50%">
                     <canvas id="queryTypePieChart" width="280" height="280"></canvas>
                 </div>
-                <div class="chart-legend" style="width:50%" id="query-types-legend" ></div>
+                <div class="chart-legend" style="width:50%" id="query-types-legend"></div>
             </div>
             <div class="overlay">
                 <i class="fa fa-sync fa-spin"></i>
@@ -191,11 +196,11 @@ require_once 'scripts/pi-hole/php/gravity.php';
 </div>
 
 <?php
-    if ($boxedlayout) {
-        $tablelayout = 'col-md-6';
-    } else {
-        $tablelayout = 'col-md-6 col-lg-6';
-    } ?>
+if ($boxedlayout) {
+    $tablelayout = 'col-md-6';
+} else {
+    $tablelayout = 'col-md-6 col-lg-6';
+} ?>
 <div class="row">
     <div class="<?php echo $tablelayout; ?>">
         <div class="box" id="domain-frequency">
@@ -208,9 +213,9 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th>Domain</th>
-                            <th>Hits</th>
-                            <th>Frequency</th>
+                                <th>Domain</th>
+                                <th>Hits</th>
+                                <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -237,9 +242,9 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th>Domain</th>
-                            <th>Hits</th>
-                            <th>Frequency</th>
+                                <th>Domain</th>
+                                <th>Hits</th>
+                                <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -268,9 +273,9 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th>Client</th>
-                            <th>Requests</th>
-                            <th>Frequency</th>
+                                <th>Client</th>
+                                <th>Requests</th>
+                                <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -297,9 +302,9 @@ require_once 'scripts/pi-hole/php/gravity.php';
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                            <th>Client</th>
-                            <th>Requests</th>
-                            <th>Frequency</th>
+                                <th>Client</th>
+                                <th>Requests</th>
+                                <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>

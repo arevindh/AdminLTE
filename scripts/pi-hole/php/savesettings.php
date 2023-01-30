@@ -8,6 +8,7 @@
 */
 
 require_once 'func.php';
+$setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 if (!in_array(basename($_SERVER['SCRIPT_FILENAME']), array('settings.php', 'teleporter.php'), true)) {
     exit('Direct access to this script is forbidden!');
@@ -142,16 +143,16 @@ function addStaticDHCPLease($mac, $ip, $hostname)
 
     try {
         if (!validMAC($mac)) {
-            throw new Exception('MAC address ('.htmlspecialchars($mac).') is invalid!<br>', 0);
+            throw new Exception('MAC address (' . htmlspecialchars($mac) . ') is invalid!<br>', 0);
         }
         $mac = strtoupper($mac);
 
         if (!validIP($ip) && strlen($ip) > 0) {
-            throw new Exception('IP address ('.htmlspecialchars($ip).') is invalid!<br>', 1);
+            throw new Exception('IP address (' . htmlspecialchars($ip) . ') is invalid!<br>', 1);
         }
 
         if (!validDomain($hostname) && strlen($hostname) > 0) {
-            throw new Exception('Host name ('.htmlspecialchars($hostname).') is invalid!<br>', 2);
+            throw new Exception('Host name (' . htmlspecialchars($hostname) . ') is invalid!<br>', 2);
         }
 
         if (strlen($hostname) == 0 && strlen($ip) == 0) {
@@ -171,17 +172,17 @@ function addStaticDHCPLease($mac, $ip, $hostname)
 
         foreach ($dhcp_static_leases as $lease) {
             if ($lease['hwaddr'] === $mac) {
-                throw new Exception('Static lease for MAC address ('.htmlspecialchars($mac).') already defined!<br>', 4);
+                throw new Exception('Static lease for MAC address (' . htmlspecialchars($mac) . ') already defined!<br>', 4);
             }
             if ($ip !== 'noip' && $lease['IP'] === $ip) {
-                throw new Exception('Static lease for IP address ('.htmlspecialchars($ip).') already defined!<br>', 5);
+                throw new Exception('Static lease for IP address (' . htmlspecialchars($ip) . ') already defined!<br>', 5);
             }
             if ($lease['host'] === $hostname) {
-                throw new Exception('Static lease for hostname ('.htmlspecialchars($hostname).') already defined!<br>', 6);
+                throw new Exception('Static lease for hostname (' . htmlspecialchars($hostname) . ') already defined!<br>', 6);
             }
         }
 
-        pihole_execute('-a addstaticdhcp '.$mac.' '.$ip.' '.$hostname);
+        pihole_execute('-a addstaticdhcp ' . $mac . ' ' . $ip . ' ' . $hostname);
         $success .= 'A new static address has been added';
 
         return true;
@@ -204,7 +205,7 @@ if (isset($_POST['field'])) {
 
     // Process request
     switch ($_POST['field']) {
-        // Set DNS server
+            // Set DNS server
         case 'DNS':
             $DNSservers = array();
             // Add selected predefined servers to list
@@ -222,7 +223,7 @@ if (isset($_POST['field'])) {
                     // (POST), we add it to the
                     // array of DNS servers
                     $server = str_replace('.', '_', $value[$type]);
-                    if (array_key_exists('DNSserver'.$server, $_POST)) {
+                    if (array_key_exists('DNSserver' . $server, $_POST)) {
                         array_push($DNSservers, $value[$type]);
                     }
                 }
@@ -230,19 +231,19 @@ if (isset($_POST['field'])) {
 
             // Test custom server fields
             for ($i = 1; $i <= 4; ++$i) {
-                if (array_key_exists('custom'.$i, $_POST)) {
-                    $exploded = explode('#', $_POST['custom'.$i.'val'], 2);
+                if (array_key_exists('custom' . $i, $_POST)) {
+                    $exploded = explode('#', $_POST['custom' . $i . 'val'], 2);
                     $IP = trim($exploded[0]);
 
                     if (!validIP($IP)) {
-                        $error .= 'IP ('.htmlspecialchars($IP).') is invalid!<br>';
+                        $error .= 'IP (' . htmlspecialchars($IP) . ') is invalid!<br>';
                     } else {
                         if (count($exploded) > 1) {
                             $port = trim($exploded[1]);
                             if (!is_numeric($port)) {
-                                $error .= 'Port ('.htmlspecialchars($port).') is invalid!<br>';
+                                $error .= 'Port (' . htmlspecialchars($port) . ') is invalid!<br>';
                             } else {
-                                $IP .= '#'.$port;
+                                $IP .= '#' . $port;
                             }
                         }
 
@@ -283,24 +284,24 @@ if (isset($_POST['field'])) {
                 // Validate CIDR IP
                 $cidr = trim($_POST['rev_server_cidr']);
                 if (!validCIDRIP($cidr)) {
-                    $error .= 'Conditional forwarding subnet ("'.htmlspecialchars($cidr).'") is invalid!<br>'.
-                                'This field requires CIDR notation for local subnets (e.g., 192.168.0.0/16).<br>';
+                    $error .= 'Conditional forwarding subnet ("' . htmlspecialchars($cidr) . '") is invalid!<br>' .
+                        'This field requires CIDR notation for local subnets (e.g., 192.168.0.0/16).<br>';
                 }
 
                 // Validate target IP
                 $target = trim($_POST['rev_server_target']);
                 if (!validIP($target)) {
-                    $error .= 'Conditional forwarding target IP ("'.htmlspecialchars($target).'") is invalid!<br>';
+                    $error .= 'Conditional forwarding target IP ("' . htmlspecialchars($target) . '") is invalid!<br>';
                 }
 
                 // Validate conditional forwarding domain name (empty is okay)
                 $domain = trim($_POST['rev_server_domain']);
                 if (strlen($domain) > 0 && !validDomain($domain)) {
-                    $error .= 'Conditional forwarding domain name ("'.htmlspecialchars($domain).'") is invalid!<br>';
+                    $error .= 'Conditional forwarding domain name ("' . htmlspecialchars($domain) . '") is invalid!<br>';
                 }
 
                 if (!$error) {
-                    $extra .= ' rev-server '.$cidr.' '.$target.' '.$domain;
+                    $extra .= ' rev-server ' . $cidr . ' ' . $target . ' ' . $domain;
                 }
             }
 
@@ -319,20 +320,20 @@ if (isset($_POST['field'])) {
                 // Fallback
                 $DNSinterface = 'local';
             }
-            pihole_execute('-a -i '.$DNSinterface.' -web');
+            pihole_execute('-a -i ' . $DNSinterface . ' -web');
 
             // Add rate-limiting settings
             if (isset($_POST['rate_limit_count'], $_POST['rate_limit_interval'])) {
                 // Restart of FTL is delayed
-                pihole_execute('-a ratelimit '.intval($_POST['rate_limit_count']).' '.intval($_POST['rate_limit_interval']).' false');
+                pihole_execute('-a ratelimit ' . intval($_POST['rate_limit_count']) . ' ' . intval($_POST['rate_limit_interval']) . ' false');
             }
 
             // If there has been no error we can save the new DNS server IPs
             if (!strlen($error)) {
                 $IPs = implode(',', $DNSservers);
-                $return = pihole_execute('-a setdns "'.$IPs.'" '.$extra);
-                $success .= htmlspecialchars(end($return)).'<br>';
-                $success .= 'The DNS settings have been updated (using '.$DNSservercount.' DNS servers)';
+                $return = pihole_execute('-a setdns "' . $IPs . '" ' . $extra);
+                $success .= htmlspecialchars(end($return)) . '<br>';
+                $success .= 'The DNS settings have been updated (using ' . $DNSservercount . ' DNS servers)';
             } else {
                 $error .= 'The settings have been reset to their previous values';
             }
@@ -364,7 +365,7 @@ if (isset($_POST['field'])) {
             $first = true;
             foreach ($domains as $domain) {
                 if (!validDomainWildcard($domain) || validIP($domain)) {
-                    $error .= 'Top Domains/Ads entry '.htmlspecialchars($domain).' is invalid (use only domains)!<br>';
+                    $error .= 'Top Domains/Ads entry ' . htmlspecialchars($domain) . ' is invalid (use only domains)!<br>';
                 }
                 if (!$first) {
                     $domainlist .= ',';
@@ -378,7 +379,7 @@ if (isset($_POST['field'])) {
             $first = true;
             foreach ($clients as $client) {
                 if (!validDomainWildcard($client) && !validIP($client)) {
-                    $error .= 'Top Clients entry '.htmlspecialchars($client).' is invalid (use only host names and IP addresses)!<br>';
+                    $error .= 'Top Clients entry ' . htmlspecialchars($client) . ' is invalid (use only host names and IP addresses)!<br>';
                 }
                 if (!$first) {
                     $clientlist .= ',';
@@ -391,8 +392,8 @@ if (isset($_POST['field'])) {
             // Set Top Lists options
             if (!strlen($error)) {
                 // All entries are okay
-                pihole_execute('-a setexcludedomains '.$domainlist);
-                pihole_execute('-a setexcludeclients '.$clientlist);
+                pihole_execute('-a setexcludedomains ' . $domainlist);
+                pihole_execute('-a setexcludeclients ' . $clientlist);
                 $success .= 'The API settings have been updated<br>';
             } else {
                 $error .= 'The settings have been reset to their previous values';
@@ -424,7 +425,7 @@ if (isset($_POST['field'])) {
             if (isset($_POST['webtheme'])) {
                 global $available_themes;
                 if (array_key_exists($_POST['webtheme'], $available_themes)) {
-                    exec('sudo pihole -a theme '.$_POST['webtheme']);
+                    exec('sudo pihole -a theme ' . $_POST['webtheme']);
                 }
             }
             $success .= 'The webUI settings have been updated';
@@ -469,13 +470,13 @@ if (isset($_POST['field'])) {
             if (isset($_POST['removestatic'])) {
                 $mac = $_POST['removestatic'];
                 if (!validMAC($mac)) {
-                    $error .= 'MAC address ('.htmlspecialchars($mac).') is invalid!<br>';
+                    $error .= 'MAC address (' . htmlspecialchars($mac) . ') is invalid!<br>';
                 }
                 $mac = strtoupper($mac);
 
                 if (!strlen($error)) {
-                    pihole_execute('-a removestaticdhcp '.$mac);
-                    $success .= 'The static address with MAC address '.htmlspecialchars($mac).' has been removed';
+                    pihole_execute('-a removestaticdhcp ' . $mac);
+                    $success .= 'The static address with MAC address ' . htmlspecialchars($mac) . ' has been removed';
                 }
 
                 break;
@@ -485,33 +486,33 @@ if (isset($_POST['field'])) {
                 // Validate from IP
                 $from = $_POST['from'];
                 if (!validIP($from)) {
-                    $error .= 'From IP ('.htmlspecialchars($from).') is invalid!<br>';
+                    $error .= 'From IP (' . htmlspecialchars($from) . ') is invalid!<br>';
                 }
 
                 // Validate to IP
                 $to = $_POST['to'];
                 if (!validIP($to)) {
-                    $error .= 'To IP ('.htmlspecialchars($to).') is invalid!<br>';
+                    $error .= 'To IP (' . htmlspecialchars($to) . ') is invalid!<br>';
                 }
 
                 // Validate router IP
                 $router = $_POST['router'];
                 if (!validIP($router)) {
-                    $error .= 'Router IP ('.htmlspecialchars($router).') is invalid!<br>';
+                    $error .= 'Router IP (' . htmlspecialchars($router) . ') is invalid!<br>';
                 }
 
                 $domain = $_POST['domain'];
 
                 // Validate Domain name
                 if (!validDomain($domain)) {
-                    $error .= 'Domain name '.htmlspecialchars($domain).' is invalid!<br>';
+                    $error .= 'Domain name ' . htmlspecialchars($domain) . ' is invalid!<br>';
                 }
 
                 $leasetime = $_POST['leasetime'];
 
                 // Validate Lease time length
                 if (!is_numeric($leasetime) || intval($leasetime) < 0) {
-                    $error .= 'Lease time '.htmlspecialchars($leasetime).' is invalid!<br>';
+                    $error .= 'Lease time ' . htmlspecialchars($leasetime) . ' is invalid!<br>';
                 }
 
                 if (isset($_POST['useIPv6'])) {
@@ -529,8 +530,8 @@ if (isset($_POST['field'])) {
                 }
 
                 if (!strlen($error)) {
-                    pihole_execute('-a enabledhcp '.$from.' '.$to.' '.$router.' '.$leasetime.' '.$domain.' '.$ipv6.' '.$rapidcommit);
-                    $success .= 'The DHCP server has been activated '.htmlspecialchars($type);
+                    pihole_execute('-a enabledhcp ' . $from . ' ' . $to . ' ' . $router . ' ' . $leasetime . ' ' . $domain . ' ' . $ipv6 . ' ' . $rapidcommit);
+                    $success .= 'The DHCP server has been activated ' . htmlspecialchars($type);
                 }
             } else {
                 pihole_execute('-a disabledhcp');
@@ -550,7 +551,7 @@ if (isset($_POST['field'])) {
                 }
 
                 // Store privacy level
-                pihole_execute('-a privacylevel '.$level);
+                pihole_execute('-a privacylevel ' . $level);
 
                 if ($privacylevel > $level) {
                     pihole_execute('-a restartdns');
@@ -561,7 +562,7 @@ if (isset($_POST['field'])) {
                     $success .= 'The privacy level has not been changed';
                 }
             } else {
-                $error .= 'Invalid privacy level ('.$level.')!';
+                $error .= 'Invalid privacy level (' . $level . ')!';
             }
 
             break;
@@ -580,11 +581,11 @@ if (isset($_POST['field'])) {
 
         case 'speedtest':
             if (isset($_POST['speedtestmode'])) {
-                pihole_execute('-a -sm '.trim($_POST['speedtestmode']));
+                pihole_execute('-a -sm ' . trim($_POST['speedtestmode']));
             }
 
             if (isset($_POST['speedtestschedule'])) {
-                pihole_execute('-a -s '.trim($_POST['speedtestschedule']));
+                pihole_execute('-a -s ' . trim($_POST['speedtestschedule']));
             }
 
             if (isset($_POST['clearspeedtests'])) {
@@ -594,14 +595,63 @@ if (isset($_POST['field'])) {
             }
 
             if (isset($_POST['speedtestserver']) && is_numeric($_POST['speedtestserver'])) {
-                pihole_execute('-a -ss '.trim($_POST['speedtestserver']));
+                pihole_execute('-a -ss ' . trim($_POST['speedtestserver']));
+            } else {
+                pihole_execute('-a -ss');
             }
 
             if (isset($_POST['speedtestdays'])) {
-                pihole_execute('-a -sd '.trim($_POST['speedtestdays']));
+                pihole_execute('-a -sd ' . trim($_POST['speedtestdays']));
             }
 
+            // default is always saved but only changed if requested
+            $charttype = 'line';
+            if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
+                $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+            if (isset($_POST['speedtestcharttypesave'])) {
+                $newtype = trim($_POST['speedtestcharttypesave']);
+                if (strlen($newtype) != 0)
+                    $charttype = $newtype;
+            }
+            pihole_execute('-a -st ' . trim($charttype));
+
             $success .= 'The Speedtest settings have been updated';
+
+            if (isset($_POST['speedtesttest'])) {
+                $success .= ' and a speedtest has been started';
+                pihole_execute('-a -sn');
+            }
+
+            if (isset($_POST['speedtestupdate'])) {
+                $success .= ' and Pi-hole will be updated';
+                if (isset($_POST['speedtestuninstall'])) {
+                    $success .= ', but the Mod will be uninstalled';
+                    if (isset($_POST['speedtestdelete'])) {
+                        $success .= ' and the database will be deleted';
+                        pihole_execute('-a -up un db', true);
+                    } else {
+                        pihole_execute('-a -up un', true);
+                    }
+                } else {
+                    if (isset($_POST['speedtestdelete'])) {
+                        $success .= ' and the database will be flushed';
+                        pihole_execute('-a -up db', true);
+                    } else {
+                        pihole_execute('-a -up', true);
+                    }
+                }
+            } elseif (isset($_POST['speedtestuninstall'])) {
+                $success .= ' and the Mod will be uninstalled';
+                if (isset($_POST['speedtestdelete'])) {
+                    $success .= ' and the database will be deleted';
+                    pihole_execute('-a -un db', true);
+                } else {
+                    pihole_execute('-a -un', true);
+                }
+            } elseif (isset($_POST['speedtestdelete'])) {
+                $success .= ' and the database will be flushed';
+                pihole_execute('-a -db', true);
+            }
             break;
         default:
             // Option not found
@@ -613,15 +663,15 @@ if (isset($_POST['field'])) {
 function formatSizeUnits($bytes)
 {
     if ($bytes >= 1073741824) {
-        $bytes = number_format($bytes / 1073741824, 2).' GB';
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
     } elseif ($bytes >= 1048576) {
-        $bytes = number_format($bytes / 1048576, 2).' MB';
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
     } elseif ($bytes >= 1024) {
-        $bytes = number_format($bytes / 1024, 2).' kB';
+        $bytes = number_format($bytes / 1024, 2) . ' kB';
     } elseif ($bytes > 1) {
-        $bytes = $bytes.' bytes';
+        $bytes = $bytes . ' bytes';
     } elseif ($bytes == 1) {
-        $bytes = $bytes.' byte';
+        $bytes = $bytes . ' byte';
     } else {
         $bytes = '0 bytes';
     }
