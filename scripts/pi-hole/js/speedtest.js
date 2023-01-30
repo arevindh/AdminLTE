@@ -1,4 +1,4 @@
-/* global Chart:false, moment:false */
+/* global utils:false, Chart:false, moment:false */
 
 function getGraphType(speedtest = 0) {
   // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
@@ -22,6 +22,7 @@ $(function () {
         const last = moment(results[results.length - 1].start_time);
         if (last.diff(first, "hours") >= 24) format = "Do " + format;
       }
+
       return moment(itemdate).format(format);
     }
 

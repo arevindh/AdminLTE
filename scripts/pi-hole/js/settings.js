@@ -472,17 +472,17 @@ $(function () {
 
 // Speedtest toggles
 $(function () {
-  let speedtestChartType = $("#speedtestcharttype");
-  let speedtestChartTypeSave = $("#speedtestcharttypesave");
+  const speedtestChartType = $("#speedtestcharttype");
+  const speedtestChartTypeSave = $("#speedtestcharttypesave");
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
 
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
 
-  let speedtestUpdate = $("#speedtestupdate");
-  let speedtestUninstall = $("#speedtestuninstall");
-  let speedtestDelete = $("#speedtestdelete");
-  let speedtestTest = $("#speedtesttest");
+  const speedtestUpdate = $("#speedtestupdate");
+  const speedtestUninstall = $("#speedtestuninstall");
+  const speedtestDelete = $("#speedtestdelete");
+  const speedtestTest = $("#speedtesttest");
 
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
@@ -524,7 +524,7 @@ $(function () {
     speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
   });
 
-  let speedtestServer = $("#speedtestserver");
+  const speedtestServer = $("#speedtestserver");
 
   speedtestServer.on("change", function () {
     speedtestServer.attr("value", speedtestServer.val());
