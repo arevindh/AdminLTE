@@ -472,7 +472,6 @@ $(function () {
 
 // Speedtest toggles
 $(function () {
-
   let speedtestChartType = $("#speedtestcharttype");
   let speedtestChartTypeSave = $("#speedtestcharttypesave");
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
