@@ -1,16 +1,18 @@
-/* global utils:false, Chart:false, moment:false */
+/* global Chart:false, moment:false */
 
-function getGraphType(speedtest = 0) {
-  // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
-  if (!speedtest) return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
-  return localStorage?.getItem("speedtest_chart_type") || "line";
-}
+
 
 $(function () {
   var speedlabels = [];
   var downloadspeed = [];
   var uploadspeed = [];
   var serverPing = [];
+
+  function getGraphType(speedtest = 0) {
+    // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
+    if (!speedtest) return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+    return localStorage?.getItem("speedtest_chart_type") || "line";
+  }
 
   function updateSpeedTestData() {
     function formatDate(itemdate, results) {
@@ -53,7 +55,7 @@ $(function () {
 
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: utils.getGraphType(1),
+    type: getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
@@ -104,7 +106,7 @@ $(function () {
         },
         tooltip: {
           mode: "index",
-          intersect: utils.getGraphType(1) === "bar",
+          intersect: getGraphType(1) === "bar",
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
