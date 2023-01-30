@@ -639,6 +639,7 @@ input[type="password"]::-webkit-caps-lock-indicator {
   border-color: rgb(120, 127, 133);
 }
 
+/** Speedtest mod css **/
 .speedtest-upload {
   background-color: #f54f4f;
 }
