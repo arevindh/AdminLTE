@@ -511,10 +511,10 @@ function updateTopClientsChart() {
         percentage = (data.top_sources[client] / data.dns_queries_today) * 100;
         clienttable.append(
           "<tr> " +
-          utils.addTD(url) +
-          utils.addTD(data.top_sources[client]) +
-          utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "progress-bar-blue")) +
-          "</tr> "
+            utils.addTD(url) +
+            utils.addTD(data.top_sources[client]) +
+            utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "progress-bar-blue")) +
+            "</tr> "
         );
       }
     }
@@ -551,10 +551,10 @@ function updateTopClientsChart() {
         percentage = (data.top_sources_blocked[client] / data.ads_blocked_today) * 100;
         clientblockedtable.append(
           "<tr> " +
-          utils.addTD(url) +
-          utils.addTD(data.top_sources_blocked[client]) +
-          utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "progress-bar-blue")) +
-          "</tr> "
+            utils.addTD(url) +
+            utils.addTD(data.top_sources_blocked[client]) +
+            utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "progress-bar-blue")) +
+            "</tr> "
         );
       }
     }
@@ -601,10 +601,10 @@ function updateTopLists() {
         percentage = (data.top_queries[domain] / data.dns_queries_today) * 100;
         domaintable.append(
           "<tr> " +
-          utils.addTD(url) +
-          utils.addTD(data.top_queries[domain]) +
-          utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "queries-permitted")) +
-          "</tr> "
+            utils.addTD(url) +
+            utils.addTD(data.top_queries[domain]) +
+            utils.addTD(utils.colorBar(percentage, data.dns_queries_today, "queries-permitted")) +
+            "</tr> "
         );
       }
     }
@@ -627,10 +627,10 @@ function updateTopLists() {
         percentage = (data.top_ads[domain] / data.ads_blocked_today) * 100;
         adtable.append(
           "<tr> " +
-          utils.addTD(url) +
-          utils.addTD(data.top_ads[domain]) +
-          utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "queries-blocked")) +
-          "</tr> "
+            utils.addTD(url) +
+            utils.addTD(data.top_ads[domain]) +
+            utils.addTD(utils.colorBar(percentage, data.ads_blocked_today, "queries-blocked")) +
+            "</tr> "
         );
       }
     }
@@ -857,7 +857,6 @@ const htmlLegendPlugin = {
   },
 };
 
-// queryOverTimeBarChart
 $(function () {
   // Pull in data via AJAX
   getMaxlogage();
@@ -1223,12 +1222,4 @@ $(function () {
 //destroy all chartjs customTooltips on window resize
 window.addEventListener("resize", function () {
   $(".chartjs-tooltip").remove();
-});
-
-// update speedtestcharttype
-$(function () {
-  let speedOverTimeChart = $("#speedOverTimeChart");
-  let type = localStorage?.getItem("speedtest_chart_type") || speedOverTimeChart.attr("value");
-  speedOverTimeChart.attr("value", type);
-  localStorage.setItem("speedtest_chart_type", type);
 });

@@ -495,7 +495,7 @@ $(function () {
 
   speedtestChartType.on("click", function () {
     // if type null, set to "bar", else toggle
-    type = type ? type === "bar" ? "line" : "bar" : "bar";
+    type = type ? (type === "bar" ? "line" : "bar") : "bar";
     speedtestChartType.attr("value", type);
     localStorage.setItem("speedtest_chart_type", type);
 

@@ -1,5 +1,12 @@
 /* global Chart:false, moment:false */
 
+function getGraphType(speedtest = 0) {
+  // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
+  if (!speedtest)
+    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  return localStorage?.getItem("speedtest_chart_type") || "line";
+}
+
 $(function () {
   var speedlabels = [];
   var downloadspeed = [];
@@ -14,8 +21,7 @@ $(function () {
       if (results.length > 1) {
         const first = moment(results[0].start_time);
         const last = moment(results[results.length - 1].start_time);
-        if (last.diff(first, "hours") >= 24)
-          format = "Do " + format;
+        if (last.diff(first, "hours") >= 24) format = "Do " + format;
       }
       return moment(itemdate).format(format);
     }
@@ -97,9 +103,9 @@ $(function () {
           },
         },
         tooltip: {
-          mode: 'index',
+          mode: "index",
           intersect: utils.getGraphType(1) === "bar",
-          yAlign: 'bottom',
+          yAlign: "bottom",
           callbacks: {
             label: function (context) {
               return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
