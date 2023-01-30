@@ -9,7 +9,7 @@ speedtest() {
         if [[ -z "${serverid}" ]]; then
             /usr/bin/speedtest --accept-gdpr --accept-license -f json-pretty
         else
-            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty  
+            /usr/bin/speedtest -s $serverid --accept-gdpr --accept-license -f json-pretty
         fi
     else
         if [[ -z "${serverid}" ]]; then
@@ -73,5 +73,5 @@ main() {
     echo "Test has been initiated, please wait."
     speedtest > "$FILE" && internet || tryagain
 }
-    
+
 main
