@@ -2,8 +2,7 @@
 
 function getGraphType(speedtest = 0) {
   // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
-  if (!speedtest)
-    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  if (!speedtest) return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
   return localStorage?.getItem("speedtest_chart_type") || "line";
 }
 
@@ -109,7 +108,7 @@ $(function () {
           callbacks: {
             label: function (context) {
               return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
-            }
+            },
           },
         },
       },
