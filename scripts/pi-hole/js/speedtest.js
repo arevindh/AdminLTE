@@ -1,7 +1,5 @@
 /* global Chart:false, moment:false, getGraphType:false */
 
-
-
 $(function () {
   var speedlabels = [];
   var downloadspeed = [];
