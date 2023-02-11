@@ -168,7 +168,7 @@ if ($auth && $speedtestshedule) { ?>
                 <div style="width:50%">
                     <canvas id="queryTypePieChart" width="280" height="280"></canvas>
                 </div>
-                <div class="chart-legend" style="width:50%" id="query-types-legend"></div>
+                <div class="chart-legend" style="width:50%" id="query-types-legend" ></div>
             </div>
             <div class="overlay">
                 <i class="fa fa-sync fa-spin"></i>
@@ -196,11 +196,11 @@ if ($auth && $speedtestshedule) { ?>
 </div>
 
 <?php
-if ($boxedlayout) {
-    $tablelayout = 'col-md-6';
-} else {
-    $tablelayout = 'col-md-6 col-lg-6';
-} ?>
+    if ($boxedlayout) {
+        $tablelayout = 'col-md-6';
+    } else {
+        $tablelayout = 'col-md-6 col-lg-6';
+    } ?>
 <div class="row">
     <div class="<?php echo $tablelayout; ?>">
         <div class="box" id="domain-frequency">
@@ -213,9 +213,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Domain</th>
-                                <th>Hits</th>
-                                <th>Frequency</th>
+                            <th>Domain</th>
+                            <th>Hits</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -242,9 +242,9 @@ if ($boxedlayout) {
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Domain</th>
-                                <th>Hits</th>
-                                <th>Frequency</th>
+                            <th>Domain</th>
+                            <th>Hits</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
