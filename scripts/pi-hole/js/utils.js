@@ -274,6 +274,7 @@ function getGraphType(speedtest = 0) {
   if (!speedtest) {
     return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
   }
+
   return localStorage?.getItem("speedtest_chart_type") || "line";
 }
 
