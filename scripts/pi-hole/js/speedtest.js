@@ -102,8 +102,8 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              let varParsed = context.parsed !== "undefined" ? context.parsed : null;
-              return Math.round(varParsed.y) + " " + context?.dataset?.label || null;
+              const varParsed = context.parsed !== "undefined" && context.parsed !== "undefined" ? context.parsed.y : null;
+              return Math.round(y) + " " + context?.dataset?.label || null;
             },
           },
         },
