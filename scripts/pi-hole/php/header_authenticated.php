@@ -148,15 +148,12 @@ $piholeFTLConf = piholeFTLConfig();
 
 require 'header.php';
 ?>
-
 <body class="<?php echo $theme; ?> hold-transition sidebar-mini<?php if ($boxedlayout) { ?> layout-boxed<?php } ?><?php if ($auth) { ?> logged-in<?php } ?>">
     <noscript>
         <!-- JS Warning -->
         <div>
             <input type="checkbox" id="js-hide">
-            <div class="js-warn" id="js-warn-exit">
-                <h1>JavaScript Is Disabled</h1>
-                <p>JavaScript is required for the site to function.</p>
+        <div class="js-warn" id="js-warn-exit"><h1>JavaScript Is Disabled</h1><p>JavaScript is required for the site to function.</p>
                 <p>To learn how to enable JavaScript click <a href="https://www.enable-javascript.com/" rel="noopener" target="_blank">here</a></p><label for="js-hide">Close</label>
             </div>
         </div>
@@ -214,9 +211,7 @@ require 'header.php';
                                     <!-- Menu Footer -->
                                     <li class="user-footer">
                                         <a class="btn-link" href="https://pi-hole.net/" rel="noopener" target="_blank">
-                                            <svg class="svg-inline--fa fa-fw menu-icon" style="height: 1.25em">
-                                                <use xlink:href="img/pihole_icon.svg#pihole-svg-logo" />
-                                            </svg>
+                                    <svg class="svg-inline--fa fa-fw menu-icon" style="height: 1.25em"><use xlink:href="img/pihole_icon.svg#pihole-svg-logo"/></svg>
                                             Pi-hole Website
                                         </a>
                                         <hr>
@@ -224,8 +219,7 @@ require 'header.php';
                                         <a class="btn-link" href="https://discourse.pi-hole.net/" rel="noopener" target="_blank"><i class="fa fa-fw menu-icon fab fa-discourse"></i> Pi-hole Forum</a>
                                         <a class="btn-link" href="https://github.com/pi-hole" rel="noopener" target="_blank"><i class="fa-fw menu-icon fab fa-github"></i> GitHub</a>
                                         <a class="btn-link" href="https://discourse.pi-hole.net/c/announcements/5" rel="noopener" target="_blank"><i class="fa-fw menu-icon fa fa-regular fa-rocket"></i> Pi-hole Releases</a>
-                                        <?php if (strlen($pwhash) > 0) {  // Show "Logout" link only when the user has the password protection enabled.
-                                        ?>
+                                <?php if (strlen($pwhash) > 0) {  // Show "Logout" link only when the user has the password protection enabled.?>
                                             <hr>
                                             <a class="btn-link" href="logout.php" rel="noopener"><i class="fa fa-fw menu-icon fa-sign-out-alt"></i> Log out</a>
                                         <?php } ?>
