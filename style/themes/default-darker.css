@@ -5999,12 +5999,15 @@ td.highlight {
   color: #999;
 }
 
-.speedtest-upload {
-  background-color: #ff6384;
-}
+/** Speedtest mod css **/
 .speedtest-download {
-  background-color: #3c8dbc;
+  background-color: rgba(0, 166, 255, 0.5);
 }
+
+.speedtest-upload {
+  background-color: rgba(166, 255, 0, 0.5);
+}
+
 .speedtest-ping {
-  background-color: #00aa60;
+  background-color: rgba(125, 125, 125, 0.5);
 }

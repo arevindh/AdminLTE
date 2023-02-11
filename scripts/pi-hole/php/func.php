@@ -161,12 +161,15 @@ if (!function_exists('hash_equals')) {
  *
  * @param $argument_string String of arguments to run pihole with
  */
-function pihole_execute($argument_string)
+function pihole_execute($argument_string, $background = false)
 {
     $escaped = escapeshellcmd($argument_string);
     $output = null;
     $return_status = -1;
     $command = 'sudo pihole '.$escaped;
+    if ($background) {
+        $command .= ' &';
+    }
     exec($command, $output, $return_status);
     if ($return_status !== 0) {
         trigger_error("Executing {$command} failed.", E_USER_WARNING);

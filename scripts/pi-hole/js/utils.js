@@ -269,9 +269,13 @@ function stateLoadCallback(itemName) {
   return data;
 }
 
-function getGraphType() {
+function getGraphType(speedtest = 0) {
   // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
-  return localStorage && localStorage.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  if (!speedtest) {
+    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  }
+
+  return localStorage?.getItem("speedtest_chart_type") || "line";
 }
 
 function addFromQueryLog(domain, list) {

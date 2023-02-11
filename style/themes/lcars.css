@@ -2065,3 +2065,16 @@ td.highlight {
 .speedtest-ping {
   background-color: #f39c12;
 }
+
+/** Speedtest mod css **/
+.speedtest-download {
+  background-color: rgba(0, 123, 255, 0.5);
+}
+
+.speedtest-upload {
+  background-color: rgba(40, 167, 69, 0.5);
+}
+
+.speedtest-ping {
+  background-color: rgba(108, 117, 125, 0.5);
+}

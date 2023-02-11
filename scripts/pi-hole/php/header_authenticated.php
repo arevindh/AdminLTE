@@ -138,7 +138,7 @@ if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
 } else {
     $speedtestshedule = false;
 }
-if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+if (isset($setupVars['SPEEDTEST_CHART_DAYS']) && $setupVars['SPEEDTEST_CHART_DAYS'] > 1) {
     $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' Days';
 } else {
     $speedtestdays = '24 Hours';

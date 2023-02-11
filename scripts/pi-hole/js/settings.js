@@ -469,3 +469,64 @@ $(function () {
     checkMessages();
   });
 });
+
+// Speedtest toggles
+$(function () {
+  const speedtestChartType = $("#speedtestcharttype");
+  const speedtestChartTypeSave = $("#speedtestcharttypesave");
+  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
+
+  speedtestChartType.prop("checked", type === "bar");
+  localStorage.setItem("speedtest_chart_type", type);
+
+  const speedtestUpdate = $("#speedtestupdate");
+  const speedtestUninstall = $("#speedtestuninstall");
+  const speedtestDelete = $("#speedtestdelete");
+  const speedtestTest = $("#speedtesttest");
+
+  document.addEventListener("DOMContentLoaded", function () {
+    speedtestChartTypeSave.attr("value", null);
+    speedtestUpdate.attr("value", null);
+    speedtestUninstall.attr("value", null);
+    speedtestDelete.attr("value", null);
+    speedtestTest.attr("value", null);
+  });
+
+  speedtestChartType.on("click", function () {
+    // if type null, set to "bar", else toggle
+    type = type ? (type === "bar" ? "line" : "bar") : "bar";
+    speedtestChartType.attr("value", type);
+    localStorage.setItem("speedtest_chart_type", type);
+
+    // Call check messages to make new setting effective
+    checkMessages();
+  });
+
+  speedtestChartTypeSave.on("click", function () {
+    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
+  });
+
+  speedtestUpdate.on("click", function () {
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
+  });
+
+  speedtestUninstall.on("click", function () {
+    speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
+  });
+
+  speedtestDelete.on("click", function () {
+    speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
+    $("#st-submit").toggleClass("btn-primary");
+    $("#st-submit").toggleClass("btn-danger");
+  });
+
+  speedtestTest.on("click", function () {
+    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
+  });
+
+  const speedtestServer = $("#speedtestserver");
+
+  speedtestServer.on("change", function () {
+    speedtestServer.attr("value", speedtestServer.val());
+  });
+});

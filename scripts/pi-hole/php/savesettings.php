@@ -8,6 +8,7 @@
 */
 
 require_once 'func.php';
+$setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 if (!in_array(basename($_SERVER['SCRIPT_FILENAME']), array('settings.php', 'teleporter.php'), true)) {
     exit('Direct access to this script is forbidden!');
@@ -601,7 +602,56 @@ if (isset($_POST['field'])) {
                 pihole_execute('-a -sd '.trim($_POST['speedtestdays']));
             }
 
+            // default is always saved but only changed if requested
+            $charttype = 'line';
+            if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
+                $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+            }
+            if (isset($_POST['speedtestcharttypesave'])) {
+                $newtype = trim($_POST['speedtestcharttypesave']);
+                if (strlen($newtype) != 0) {
+                    $charttype = $newtype;
+                }
+            }
+            pihole_execute('-a -st '.trim($charttype));
+
             $success .= 'The Speedtest settings have been updated';
+
+            if (isset($_POST['speedtesttest'])) {
+                $success .= ' and a speedtest has been started';
+                pihole_execute('-a -sn');
+            }
+
+            if (isset($_POST['speedtestupdate'])) {
+                $success .= ' and Pi-hole will be updated';
+                if (isset($_POST['speedtestuninstall'])) {
+                    $success .= ', but the Mod will be uninstalled';
+                    if (isset($_POST['speedtestdelete'])) {
+                        $success .= ' and the database will be deleted';
+                        pihole_execute('-a -up un db', true);
+                    } else {
+                        pihole_execute('-a -up un', true);
+                    }
+                } else {
+                    if (isset($_POST['speedtestdelete'])) {
+                        $success .= ' and the database will be flushed';
+                        pihole_execute('-a -up db', true);
+                    } else {
+                        pihole_execute('-a -up', true);
+                    }
+                }
+            } elseif (isset($_POST['speedtestuninstall'])) {
+                $success .= ' and the Mod will be uninstalled';
+                if (isset($_POST['speedtestdelete'])) {
+                    $success .= ' and the database will be deleted';
+                    pihole_execute('-a -un db', true);
+                } else {
+                    pihole_execute('-a -un', true);
+                }
+            } elseif (isset($_POST['speedtestdelete'])) {
+                $success .= ' and the database will be flushed';
+                pihole_execute('-a -db', true);
+            }
             break;
         default:
             // Option not found

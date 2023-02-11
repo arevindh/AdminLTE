@@ -244,63 +244,63 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                             $FTLpid = intval(pidofFTL());
 if ($FTLpid !== 0) {
     $FTLversion = exec('/usr/bin/pihole-FTL version'); ?>
-                                            <table class="table table-striped table-bordered nowrap">
-                                                <tbody>
-                                                    <tr>
-                                                        <th scope="row">FTL version:</th>
-                                                        <td><?php echo $FTLversion; ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Process identifier (PID):</th>
-                                                        <td><?php echo $FTLpid; ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Time FTL started:</th>
-                                                        <td><?php print_r(get_FTL_data($FTLpid, 'lstart'));
+                                                <table class="table table-striped table-bordered nowrap">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="row">FTL version:</th>
+                                                            <td><?php echo $FTLversion; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Process identifier (PID):</th>
+                                                            <td><?php echo $FTLpid; ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Time FTL started:</th>
+                                                            <td><?php print_r(get_FTL_data($FTLpid, 'lstart'));
     echo ' '.$timezone; ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">User / Group:</th>
-                                                        <td><?php print_r(get_FTL_data($FTLpid, 'euser')); ?> / <?php print_r(get_FTL_data($FTLpid, 'egroup')); ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Total CPU utilization:</th>
-                                                        <td><?php print_r(get_FTL_data($FTLpid, '%cpu')); ?>%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">Memory utilization:</th>
-                                                        <td><?php print_r(get_FTL_data($FTLpid, '%mem')); ?>%</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">
-                                                            <span title="Resident memory is the portion of memory occupied by a process that is held in main memory (RAM). The rest of the occupied memory exists in the swap space or file system.">Used memory:</span>
-                                                        </th>
-                                                        <td><?php echo formatSizeUnits(1e3 * floatval(get_FTL_data($FTLpid, 'rss'))); ?></td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">
-                                                            <span title="Size of the DNS domain cache">DNS cache size:</span>
-                                                        </th>
-                                                        <td id="cache-size">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">
-                                                            <span title="Number of cache insertions">DNS cache insertions:</span>
-                                                        </th>
-                                                        <td id="cache-inserted">&nbsp;</td>
-                                                    </tr>
-                                                    <tr>
-                                                        <th scope="row">
-                                                            <span title="Number of cache entries that had to be removed although they are not expired (increase cache size to reduce this number)" lookatme-text="DNS cache evictions:">DNS cache evictions:</span>
-                                                        </th>
-                                                        <td id="cache-live-freed">&nbsp;</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            See also our <a href="https://docs.pi-hole.net/ftldns/dns-cache/" rel="noopener" target="_blank">DNS cache documentation</a>.
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">User / Group:</th>
+                                                            <td><?php print_r(get_FTL_data($FTLpid, 'euser')); ?> / <?php print_r(get_FTL_data($FTLpid, 'egroup')); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Total CPU utilization:</th>
+                                                            <td><?php print_r(get_FTL_data($FTLpid, '%cpu')); ?>%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">Memory utilization:</th>
+                                                            <td><?php print_r(get_FTL_data($FTLpid, '%mem')); ?>%</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <span title="Resident memory is the portion of memory occupied by a process that is held in main memory (RAM). The rest of the occupied memory exists in the swap space or file system.">Used memory:</span>
+                                                            </th>
+                                                            <td><?php echo formatSizeUnits(1e3 * floatval(get_FTL_data($FTLpid, 'rss'))); ?></td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <span title="Size of the DNS domain cache">DNS cache size:</span>
+                                                            </th>
+                                                            <td id="cache-size">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <span title="Number of cache insertions">DNS cache insertions:</span>
+                                                            </th>
+                                                            <td id="cache-inserted">&nbsp;</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <th scope="row">
+                                                                <span title="Number of cache entries that had to be removed although they are not expired (increase cache size to reduce this number)" lookatme-text="DNS cache evictions:">DNS cache evictions:</span>
+                                                            </th>
+                                                            <td id="cache-live-freed">&nbsp;</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                                See also our <a href="https://docs.pi-hole.net/ftldns/dns-cache/" rel="noopener" target="_blank">DNS cache documentation</a>.
                                             <?php
 } else { ?>
-                                            <div>The FTL service is offline!</div>
+                                                <div>The FTL service is offline!</div>
                                             <?php } ?>
                                         </div>
                                     </div>
@@ -547,13 +547,13 @@ if ($FTLpid !== 0) {
                                             <div class="col-md-12">
                                                 <div><input type="checkbox" name="DHCP_rapid_commit" id="DHCP_rapid_commit" class="DHCPgroup"
 <?php
-if ($DHCP_rapid_commit) { ?>checked<?php }
-if (!$DHCP) { ?> disabled<?php } ?>
+                                                                                                                            if ($DHCP_rapid_commit) { ?>checked<?php }
+                                                                                                                            if (!$DHCP) { ?> disabled<?php } ?>
 >&nbsp;<label for="DHCP_rapid_commit"><strong>Enable DHCPv4 rapid commit (fast address assignment)</strong></label></div>
                                                 <div><input type="checkbox" name="useIPv6" id="useIPv6" class="DHCPgroup"
 <?php
-if ($DHCPIPv6) { ?>checked<?php }
-if (!$DHCP) { ?> disabled<?php } ?>
+                                                                                                                                                                                                                                                        if ($DHCPIPv6) { ?>checked<?php }
+                                                                                                                                                                                                                                                        if (!$DHCP) { ?> disabled<?php } ?>
 >&nbsp;<label for="useIPv6"><strong>Enable IPv6 support (SLAAC + RA)</strong></label></div>
                                             </div>
                                         </div>
@@ -565,7 +565,7 @@ if (!$DHCP) { ?> disabled<?php } ?>
                         <!-- DHCP Leases Box -->
                         <div class="row">
                             <?php
-$dhcp_leases = array();
+                                                                                                                                                                                                                                                                                    $dhcp_leases = array();
 if ($DHCP) {
     // Read leases file
     $leasesfile = true;
@@ -618,30 +618,30 @@ readStaticLeasesFile();
                                             <div class="col-md-12">
                                                 <table id="DHCPLeasesTable" class="table table-striped table-bordered nowrap" width="100%">
                                                     <thead>
-                                                    <tr>
-                                                        <th>MAC address</th>
-                                                        <th>IP address</th>
-                                                        <th>Hostname</th>
-                                                        <td></td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>MAC address</th>
+                                                            <th>IP address</th>
+                                                            <th>Hostname</th>
+                                                            <td></td>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach ($dhcp_leases as $lease) { ?>
+                                                        <?php foreach ($dhcp_leases as $lease) { ?>
                                                         <tr data-placement="auto" data-container="body" data-toggle="tooltip"
                                                             title="Lease type: IPv<?php echo $lease['type']; ?><br/>Remaining lease time: <?php echo $lease['TIME']; ?><br/>DHCP UID: <?php echo $lease['clid']; ?>">
-                                                            <td id="MAC"><?php echo $lease['hwaddr']; ?></td>
-                                                            <td id="IP" data-order="<?php echo bin2hex(inet_pton($lease['IP'])); ?>"><?php echo $lease['IP']; ?></td>
-                                                            <td id="HOST"><?php echo $lease['host']; ?></td>
-                                                            <td>
-                                                                <button type="button" class="btn btn-danger btn-xs" id="removedynamic">
-                                                                    <span class="fas fas fa-trash-alt"></span>
-                                                                </button>
-                                                                <button type="button" id="button" class="btn btn-warning btn-xs" data-static="alert">
-                                                                    <span class="fas fas fa-file-import"></span>
-                                                                </button>
-                                                            </td>
-                                                        </tr>
-                                                    <?php } ?>
+                                                                <td id="MAC"><?php echo $lease['hwaddr']; ?></td>
+                                                                <td id="IP" data-order="<?php echo bin2hex(inet_pton($lease['IP'])); ?>"><?php echo $lease['IP']; ?></td>
+                                                                <td id="HOST"><?php echo $lease['host']; ?></td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-danger btn-xs" id="removedynamic">
+                                                                        <span class="fas fas fa-trash-alt"></span>
+                                                                    </button>
+                                                                    <button type="button" id="button" class="btn btn-warning btn-xs" data-static="alert">
+                                                                        <span class="fas fas fa-file-import"></span>
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
+                                                        <?php } ?>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -659,28 +659,28 @@ readStaticLeasesFile();
                                             <div class="col-md-12">
                                                 <table id="DHCPStaticLeasesTable" class="table table-striped table-bordered nowrap" width="100%">
                                                     <thead>
-                                                    <tr>
-                                                        <th>MAC address</th>
-                                                        <th>IP address</th>
-                                                        <th>Hostname</th>
-                                                        <td></td>
-                                                    </tr>
+                                                        <tr>
+                                                            <th>MAC address</th>
+                                                            <th>IP address</th>
+                                                            <th>Hostname</th>
+                                                            <td></td>
+                                                        </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <?php foreach ($dhcp_static_leases as $lease) { ?>
-                                                        <tr>
-                                                            <td><?php echo $lease['hwaddr']; ?></td>
-                                                            <td data-order="<?php echo bin2hex(inet_pton($lease['IP'])); ?>"><?php echo $lease['IP']; ?></td>
-                                                            <td><?php echo htmlentities($lease['host']); ?></td>
-                                                            <td><?php if (strlen($lease['hwaddr']) > 0) { ?>
+                                                        <?php foreach ($dhcp_static_leases as $lease) { ?>
+                                                            <tr>
+                                                                <td><?php echo $lease['hwaddr']; ?></td>
+                                                                <td data-order="<?php echo bin2hex(inet_pton($lease['IP'])); ?>"><?php echo $lease['IP']; ?></td>
+                                                                <td><?php echo htmlentities($lease['host']); ?></td>
+                                                                <td><?php if (strlen($lease['hwaddr']) > 0) { ?>
                                                                 <button type="submit" class="btn btn-danger btn-xs" name="removestatic"
                                                                         value="<?php echo $lease['hwaddr']; ?>">
-                                                                    <span class="far fa-trash-alt"></span>
-                                                                </button>
-                                                                <?php } ?>
-                                                            </td>
-                                                        </tr>
-                                                    <?php } ?>
+                                                                            <span class="far fa-trash-alt"></span>
+                                                                        </button>
+                                                                    <?php } ?>
+                                                                </td>
+                                                            </tr>
+                                                        <?php } ?>
                                                     </tbody>
                                                     <tfoot style="display: table-row-group">
                                                         <tr>
@@ -713,8 +713,8 @@ readStaticLeasesFile();
                 </div>
                 <!-- ######################################################### DNS ######################################################### -->
                 <?php
-                    // Use default
-                    $rate_limit_count = 1000;
+                // Use default
+                $rate_limit_count = 1000;
 $rate_limit_interval = 60;
 // Get rate limit from piholeFTL config array
 if (isset($piholeFTLConf['RATE_LIMIT'])) {
@@ -746,37 +746,37 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                     </thead>
                                                     <tbody>
                                                         <?php foreach ($DNSserverslist as $key => $value) { ?>
-                                                        <tr>
-                                                        <?php if (isset($value['v4_1'])) { ?>
-                                                            <td title="<?php echo $value['v4_1']; ?>">
-                                                                <div><input type="checkbox" name="DNSserver<?php echo $value['v4_1']; ?>" id="DNS4server<?php echo $value['v4_1']; ?>" value="true" <?php if (in_array($value['v4_1'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS4server<?php echo $value['v4_1']; ?>"></label></div>
-                                                            </td>
-                                                        <?php } else { ?>
-                                                            <td></td>
-                                                        <?php } ?>
-                                                        <?php if (isset($value['v4_2'])) { ?>
-                                                            <td title="<?php echo $value['v4_2']; ?>">
-                                                                <div><input type="checkbox" name="DNSserver<?php echo $value['v4_2']; ?>" id="DNS4server<?php echo $value['v4_2']; ?>" value="true" <?php if (in_array($value['v4_2'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS4server<?php echo $value['v4_2']; ?>"></label></div>
-                                                            </td>
-                                                        <?php } else { ?>
-                                                            <td></td>
-                                                        <?php } ?>
-                                                        <?php if (isset($value['v6_1'])) { ?>
-                                                            <td title="<?php echo $value['v6_1']; ?>">
-                                                                <div><input type="checkbox" name="DNSserver<?php echo $value['v6_1']; ?>" id="DNS6server<?php echo $value['v6_1']; ?>" value="true" <?php if (in_array($value['v6_1'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS6server<?php echo $value['v6_1']; ?>"></label></div>
-                                                            </td>
-                                                        <?php } else { ?>
-                                                            <td></td>
-                                                        <?php } ?>
-                                                        <?php if (isset($value['v6_2'])) { ?>
-                                                            <td title="<?php echo $value['v6_2']; ?>">
-                                                                <div><input type="checkbox" name="DNSserver<?php echo $value['v6_2']; ?>" id="DNS6server<?php echo $value['v6_2']; ?>" value="true" <?php if (in_array($value['v6_2'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS6server<?php echo $value['v6_2']; ?>"></label></div>
-                                                            </td>
-                                                        <?php } else { ?>
-                                                            <td></td>
-                                                        <?php } ?>
-                                                            <td><?php echo $key; ?></td>
-                                                        </tr>
+                                                            <tr>
+                                                                <?php if (isset($value['v4_1'])) { ?>
+                                                                    <td title="<?php echo $value['v4_1']; ?>">
+                                                                        <div><input type="checkbox" name="DNSserver<?php echo $value['v4_1']; ?>" id="DNS4server<?php echo $value['v4_1']; ?>" value="true" <?php if (in_array($value['v4_1'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS4server<?php echo $value['v4_1']; ?>"></label></div>
+                                                                    </td>
+                                                                <?php } else { ?>
+                                                                    <td></td>
+                                                                <?php } ?>
+                                                                <?php if (isset($value['v4_2'])) { ?>
+                                                                    <td title="<?php echo $value['v4_2']; ?>">
+                                                                        <div><input type="checkbox" name="DNSserver<?php echo $value['v4_2']; ?>" id="DNS4server<?php echo $value['v4_2']; ?>" value="true" <?php if (in_array($value['v4_2'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS4server<?php echo $value['v4_2']; ?>"></label></div>
+                                                                    </td>
+                                                                <?php } else { ?>
+                                                                    <td></td>
+                                                                <?php } ?>
+                                                                <?php if (isset($value['v6_1'])) { ?>
+                                                                    <td title="<?php echo $value['v6_1']; ?>">
+                                                                        <div><input type="checkbox" name="DNSserver<?php echo $value['v6_1']; ?>" id="DNS6server<?php echo $value['v6_1']; ?>" value="true" <?php if (in_array($value['v6_1'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS6server<?php echo $value['v6_1']; ?>"></label></div>
+                                                                    </td>
+                                                                <?php } else { ?>
+                                                                    <td></td>
+                                                                <?php } ?>
+                                                                <?php if (isset($value['v6_2'])) { ?>
+                                                                    <td title="<?php echo $value['v6_2']; ?>">
+                                                                        <div><input type="checkbox" name="DNSserver<?php echo $value['v6_2']; ?>" id="DNS6server<?php echo $value['v6_2']; ?>" value="true" <?php if (in_array($value['v6_2'], $DNSactive)) { ?>checked<?php } ?>><label for="DNS6server<?php echo $value['v6_2']; ?>"></label></div>
+                                                                    </td>
+                                                                <?php } else { ?>
+                                                                    <td></td>
+                                                                <?php } ?>
+                                                                <td><?php echo $key; ?></td>
+                                                            </tr>
                                                         <?php } ?>
                                                     </tbody>
                                                 </table>
@@ -797,7 +797,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <strong>Custom 1 (IPv4)</strong>
                                                 <div class="row">
                                                     <div class="col-md-1"><div>
-                                                        <input type="checkbox" name="custom1" id="custom1" value="Customv4" <?php if (isset($custom1)) { ?>checked<?php } ?>>
+                                                            <input type="checkbox" name="custom1" id="custom1" value="Customv4" <?php if (isset($custom1)) { ?>checked<?php } ?>>
                                                         <label for="custom1"></label></div>
                                                     </div>
                                                     <div class="col-md-11">
@@ -810,7 +810,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <strong>Custom 2 (IPv4)</strong>
                                                 <div class="row">
                                                     <div class="col-md-1"><div>
-                                                        <input type="checkbox" name="custom2" id="custom2" value="Customv4" <?php if (isset($custom2)) { ?>checked<?php } ?>>
+                                                            <input type="checkbox" name="custom2" id="custom2" value="Customv4" <?php if (isset($custom2)) { ?>checked<?php } ?>>
                                                         <label for="custom2"></label></div>
                                                     </div>
                                                     <div class="col-md-11">
@@ -825,7 +825,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <strong>Custom 3 (IPv6)</strong>
                                                 <div class="row">
                                                     <div class="col-md-1"><div>
-                                                        <input type="checkbox" name="custom3" id="custom3" value="Customv6" <?php if (isset($custom3)) { ?>checked<?php } ?>>
+                                                            <input type="checkbox" name="custom3" id="custom3" value="Customv6" <?php if (isset($custom3)) { ?>checked<?php } ?>>
                                                         <label for="custom3"></label></div>
                                                     </div>
                                                     <div class="col-md-11">
@@ -838,7 +838,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <strong>Custom 4 (IPv6)</strong>
                                                 <div class="row">
                                                     <div class="col-md-1"><div>
-                                                        <input type="checkbox" name="custom4" id="custom4" value="Customv6" <?php if (isset($custom4)) { ?>checked<?php } ?>>
+                                                            <input type="checkbox" name="custom4" id="custom4" value="Customv6" <?php if (isset($custom4)) { ?>checked<?php } ?>>
                                                         <label for="custom4"></label></div>
                                                     </div>
                                                     <div class="col-md-11">
@@ -925,7 +925,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                         which are not found in <code>/etc/hosts</code> or the DHCP leases are answered
                                                         with "no such domain" rather than being forwarded upstream. The set
                                                         of prefixes affected is the list given in <a href="https://tools.ietf.org/html/rfc6303">RFC6303</a>.</p>
-                                                        <p><strong>Important</strong>: Enabling these two options may increase your privacy,
+                                                    <p><strong>Important</strong>: Enabling these two options may increase your privacy,
                                                         but may also prevent you from being able to access
                                                         local hostnames if the Pi-hole is not used as DHCP server.</p>
                                                 </div>
@@ -946,7 +946,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 <h4><a id="ratelimit"></a>Rate-limiting</h4>
                                                 <p>Block clients making more than <input type="number" name="rate_limit_count" value="<?php echo $rate_limit_count; ?>" min="0" step="10" style="width: 5em;"> queries within
                                                     <input type="number" name="rate_limit_interval" value="<?php echo $rate_limit_interval; ?>" min="0" step="10" style="width: 4em;"> seconds.</p>
-                                                    <p>When a client makes too many queries in too short time, it
+                                                <p>When a client makes too many queries in too short time, it
                                                     gets rate-limited. Rate-limited queries are answered with a
                                                     <code>REFUSED</code> reply and not further processed by FTL
                                                     and prevent Pi-holes getting overwhelmed by rogue clients.
@@ -1081,8 +1081,8 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                             </div>
                                             <div class="col-lg-6">
                                                 <div>
-                                                <input type="checkbox" name="querylog-blocked" id="querylog-blocked" <?php if ($queryLog === 'blockedonly' || $queryLog === 'all') { ?>checked<?php } ?>>
-                                                <label for="querylog-blocked"><strong>Show blocked domain entries</strong></label>
+                                                    <input type="checkbox" name="querylog-blocked" id="querylog-blocked" <?php if ($queryLog === 'blockedonly' || $queryLog === 'all') { ?>checked<?php } ?>>
+                                                    <label for="querylog-blocked"><strong>Show blocked domain entries</strong></label>
                                                 </div>
                                             </div>
                                         </div>
@@ -1103,7 +1103,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                             <h4 class="modal-title" id="apiTokenModalHeaderLabel">API Token</h4>
                                         </div>
                                         <div class="modal-body">
-                                        <pre><iframe id="apiTokenIframe" name="apiToken_iframe" src="scripts/pi-hole/php/api_token.php"></iframe></pre>
+                                            <pre><iframe id="apiTokenIframe" name="apiToken_iframe" src="scripts/pi-hole/php/api_token.php"></iframe></pre>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
@@ -1288,7 +1288,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                 </div>
                                                 <p>The privacy level may be increased at any time without having to restart the DNS resolver. However, note that the DNS resolver needs to be restarted when lowering the privacy level. This restarting is automatically done when saving.</p>
                                                 <?php if ($privacylevel > 0 && $piHoleLogging) { ?>
-                                                <p class="lookatme" lookatme-text="Warning: Pi-hole's query logging is activated. Although the dashboard will hide the requested details, all queries are still fully logged to the pihole.log file.">Warning: Pi-hole's query logging is activated. Although the dashboard will hide the requested details, all queries are still fully logged to the pihole.log file.</p>
+                                                    <p class="lookatme" lookatme-text="Warning: Pi-hole's query logging is activated. Although the dashboard will hide the requested details, all queries are still fully logged to the pihole.log file.">Warning: Pi-hole's query logging is activated. Although the dashboard will hide the requested details, all queries are still fully logged to the pihole.log file.</p>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -1310,142 +1310,142 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                         <form role="form" method="post" id="takeoutform"
                             action="scripts/pi-hole/php/teleporter.php"
                             target="teleporter_iframe" enctype="multipart/form-data">
-                            <input type="hidden" name="token" value="<?php echo $token; ?>">
-                            <div class="col-lg-6 col-md-12">
-                                <div class="box box-warning">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Backup</h3>
-                                    </div>
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <p>Backup your Pi-hole configuration (settings &amp; lists) as a downloadable archive</p>
-                                                <button type="submit" class="btn btn-default">Backup</button>
+                                <input type="hidden" name="token" value="<?php echo $token; ?>">
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="box box-warning">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Backup</h3>
+                                        </div>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <p>Backup your Pi-hole configuration (settings &amp; lists) as a downloadable archive</p>
+                                                    <button type="submit" class="btn btn-default">Backup</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-6 col-md-12">
-                                <div class="box box-warning">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Restore</h3>
-                                    </div>
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <label>Restore...</label>
-                                            </div>
+                                <div class="col-lg-6 col-md-12">
+                                    <div class="box box-warning">
+                                        <div class="box-header with-border">
+                                            <h3 class="box-title">Restore</h3>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <input type="checkbox" name="whitelist" id="tele_whitelist" value="true" checked>
-                                                    <label for="tele_whitelist">Whitelist (exact)</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="regex_whitelist" id="tele_regex_whitelist" value="true" checked>
-                                                    <label for="tele_regex_whitelist">Whitelist (regex/wildcard)</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="blacklist" id="tele_blacklist" value="true" checked>
-                                                    <label for="tele_blacklist">Blacklist (exact)</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="regexlist" id="tele_regexlist" value="true" checked>
-                                                    <label for="tele_regexlist">Blacklist (regex/wildcard)</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="adlist" id="tele_adlist" value="true" checked>
-                                                    <label for="tele_adlist">Adlists</label>
+                                        <div class="box-body">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <label>Restore...</label>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div>
-                                                    <input type="checkbox" name="client" id="tele_client" value="true" checked>
-                                                    <label for="tele_client">Client</label>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div>
+                                                        <input type="checkbox" name="whitelist" id="tele_whitelist" value="true" checked>
+                                                        <label for="tele_whitelist">Whitelist (exact)</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="regex_whitelist" id="tele_regex_whitelist" value="true" checked>
+                                                        <label for="tele_regex_whitelist">Whitelist (regex/wildcard)</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="blacklist" id="tele_blacklist" value="true" checked>
+                                                        <label for="tele_blacklist">Blacklist (exact)</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="regexlist" id="tele_regexlist" value="true" checked>
+                                                        <label for="tele_regexlist">Blacklist (regex/wildcard)</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="adlist" id="tele_adlist" value="true" checked>
+                                                        <label for="tele_adlist">Adlists</label>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <input type="checkbox" name="group" id="tele_group" value="true" checked>
-                                                    <label for="tele_group">Group</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="auditlog" id="tele_auditlog" value="true" checked>
-                                                    <label for="tele_auditlog">Audit log</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="staticdhcpleases" id="tele_staticdhcpleases" value="true" checked>
-                                                    <label for="tele_staticdhcpleases">Static DHCP Leases</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="localdnsrecords" id="tele_localdnsrecords" value="true" checked>
-                                                    <label for="tele_localdnsrecords">Local DNS Records</label>
-                                                </div>
-                                                <div>
-                                                    <input type="checkbox" name="localcnamerecords" id="tele_localcnamerecords" value="true" checked>
-                                                    <label for="tele_localcnamerecords">Local CNAME Records</label>
+                                                <div class="col-lg-6">
+                                                    <div>
+                                                        <input type="checkbox" name="client" id="tele_client" value="true" checked>
+                                                        <label for="tele_client">Client</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="group" id="tele_group" value="true" checked>
+                                                        <label for="tele_group">Group</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="auditlog" id="tele_auditlog" value="true" checked>
+                                                        <label for="tele_auditlog">Audit log</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="staticdhcpleases" id="tele_staticdhcpleases" value="true" checked>
+                                                        <label for="tele_staticdhcpleases">Static DHCP Leases</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="localdnsrecords" id="tele_localdnsrecords" value="true" checked>
+                                                        <label for="tele_localdnsrecords">Local DNS Records</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="localcnamerecords" id="tele_localcnamerecords" value="true" checked>
+                                                        <label for="tele_localcnamerecords">Local CNAME Records</label>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <label for="zip_file">File input</label>
-                                                <div class="input-group">
-                                                    <span class="input-group-btn">
-                                                        <span class="btn btn-default btn-file" tabindex="0">Browse...
-                                                            <input type="file" name="zip_file" id="zip_file" accept="application/gzip" tabindex="-1">
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <label for="zip_file">File input</label>
+                                                    <div class="input-group">
+                                                        <span class="input-group-btn">
+                                                            <span class="btn btn-default btn-file" tabindex="0">Browse...
+                                                                <input type="file" name="zip_file" id="zip_file" accept="application/gzip" tabindex="-1">
+                                                            </span>
                                                         </span>
-                                                    </span>
                                                     <input type="text" id="zip_filename" class="form-control"
                                                         placeholder="no file selected" readonly="readonly" tabindex="-1">
-                                                </div>
-                                                <p class="help-block">Upload only Pi-hole backup files.</p>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-12">
-                                                <div>
-                                                    <input type="checkbox" name="flushtables" id="tele_flushtables" value="true" checked>
-                                                    <label for="tele_flushtables">Clear existing data</label>
+                                                    </div>
+                                                    <p class="help-block">Upload only Pi-hole backup files.</p>
                                                 </div>
                                             </div>
+                                            <div class="row">
+                                                <div class="col-lg-12">
+                                                    <div>
+                                                        <input type="checkbox" name="flushtables" id="tele_flushtables" value="true" checked>
+                                                        <label for="tele_flushtables">Clear existing data</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="box-footer clearfix">
+                                        <div class="box-footer clearfix">
                                         <button type="submit" class="btn btn-default" name="action"
                                             value="in" data-toggle="modal" data-target="#teleporterModal">Restore
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </form>
-                        <div class="modal fade" id="teleporterModal" role="dialog" data-keyboard="false"
-                            tabindex="-1" data-backdrop="static" aria-labelledby="teleporterModalLabel">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h4 class="modal-title" id="exampleModalLabel">Teleporter Import</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <label class="control-label">Output:</label>
-                                        <div class="box no-margin no-border no-shadow">
-                                            <pre class="no-margin no-padding"><iframe class="col-xs-12 no-border no-padding"
-                                                                                    name="teleporter_iframe" height="100"
-                                                                                    tabindex="-1"></iframe></pre>
-                                            <div class="overlay">
-                                                <i class="fa fa-spinner fa-pulse"></i>
-                                            </div>
+                                            </button>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
-                                        <button type="button" data-dismiss="modal" class="btn btn-default hidden">
-                                            <i class="fas fa-sync"></i> Reload page
-                                        </button>
+                                </div>
+                            </form>
+                        <div class="modal fade" id="teleporterModal" role="dialog" data-keyboard="false"
+                            tabindex="-1" data-backdrop="static" aria-labelledby="teleporterModalLabel">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h4 class="modal-title" id="exampleModalLabel">Teleporter Import</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <label class="control-label">Output:</label>
+                                            <div class="box no-margin no-border no-shadow">
+                                                <pre class="no-margin no-padding"><iframe class="col-xs-12 no-border no-padding"
+                                                                                    name="teleporter_iframe" height="100"
+                                                                                    tabindex="-1"></iframe></pre>
+                                                <div class="overlay">
+                                                    <i class="fa fa-spinner fa-pulse"></i>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+                                            <button type="button" data-dismiss="modal" class="btn btn-default hidden">
+                                                <i class="fas fa-sync"></i> Reload page
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
                         <?php } else { ?>
                             <div class="col-lg-12">
                                 <div class="box box-warning">
@@ -1464,30 +1464,27 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <!-- ######################################################### Speedtest ######################################################### -->
                 <?php
 
-                // Fix for select for not population on save
-                if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
-                    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
-                } else {
-                    $speedtestshedule = false;
-                }
+$speedtestshedule = false;
+$speedtestdays = 'official';
+$speedtestserver = '';
+$speedtestmode = 'python';
+$speedtestcharttype = 'line';
 
-                if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
-                    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
-                } else {
-                    $speedtestdays = 'official';
-                }
-
-                if (isset($setupVars['SPEEDTEST_SERVER'])) {
-                    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
-                } else {
-                    $speedtestserver = '';
-                }
-
-                if (isset($setupVars['SPEEDTEST_MODE'])) {
-                    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
-                } else {
-                    $speedtestmode = 'python';
-                }
+if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
+    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+}
+if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
+}
+if (isset($setupVars['SPEEDTEST_SERVER'])) {
+    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
+}
+if (isset($setupVars['SPEEDTEST_MODE'])) {
+    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
+}
+if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
+    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+}
 ?>
 
 
@@ -1508,67 +1505,85 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <h4>Speedtest</h4>
-                                                <div class="form-group col-md-6">
-                                                    <label>Speedtest Schedule</label>
-                                                    <select name="speedtestschedule" class="form-control" >
-                                                        <option value="0" <?php if ($speedtestshedule == 0) {?> selected <?php } ?>>Disabled</option>
-                                                        <option value="1" <?php if ($speedtestshedule == 1) {?> selected <?php } ?>>Every 1 Hour</option>
-                                                        <option value="2" <?php if ($speedtestshedule == 2) {?> selected <?php } ?>>Every 2 Hours</option>
-                                                        <option value="4" <?php if ($speedtestshedule == 4) {?> selected <?php } ?>>Every 4 Hours</option>
-                                                        <option value="6" <?php if ($speedtestshedule == 6) {?> selected <?php } ?>>Every 6 Hours</option>
-                                                        <option value="12" <?php if ($speedtestshedule == 12) {?> selected <?php } ?>>Every 12 Hours</option>
-                                                        <option value="24" <?php if ($speedtestshedule == 24) {?> selected <?php } ?>>Every 24 Hours</option>
-                                                    </select>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label>Speedtest Display Range</label>
-                                                    <select name="speedtestdays" class="form-control" >
-                                                        <option value="1" <?php if ($speedtestdays == 1) {?> selected <?php } ?>>1 Day</option>
-                                                        <option value="2" <?php if ($speedtestdays == 2) {?> selected <?php } ?>>2 Days</option>
-                                                        <option value="4" <?php if ($speedtestdays == 4) {?> selected <?php } ?>>4 Days</option>
-                                                        <option value="7" <?php if ($speedtestdays == 7) {?> selected <?php } ?>>7 Days</option>
-                                                        <option value="30" <?php if ($speedtestdays == 30) {?> selected <?php } ?>>30 Days</option>
-                                                    </select>
-                                                </div>
-                                                <h4>Custom Speedtest server </h4>
-
                                                 <div class="form-group col-md-12">
-                                                    <p > <span class="text-danger"> Expert only!!!</span>. Get list of supported servers <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank"> here</a></p>
+                                                    <label>Test the Test</label>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
+                                                        <label for="speedtesttest">Run Test Now</label>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label>Testing Schedule</label>
+                                                    <select name="speedtestschedule" class="form-control">
+                                                        <option value="0" <?php if ($speedtestshedule == 0) { ?> selected <?php } ?>>Disabled</option>
+                                                        <option value="1" <?php if ($speedtestshedule == 1) { ?> selected <?php } ?>>Every 1 Hour</option>
+                                                        <option value="2" <?php if ($speedtestshedule == 2) { ?> selected <?php } ?>>Every 2 Hours</option>
+                                                        <option value="4" <?php if ($speedtestshedule == 4) { ?> selected <?php } ?>>Every 4 Hours</option>
+                                                        <option value="6" <?php if ($speedtestshedule == 6) { ?> selected <?php } ?>>Every 6 Hours</option>
+                                                        <option value="12" <?php if ($speedtestshedule == 12) { ?> selected <?php } ?>>Every 12 Hours</option>
+                                                        <option value="24" <?php if ($speedtestshedule == 24) { ?> selected <?php } ?>>Every 24 Hours</option>
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-md-6">
+                                                    <label>Chart Display Range</label>
+                                                    <select name="speedtestdays" class="form-control">
+                                                        <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
+                                                        <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
+                                                        <option value="4" <?php if ($speedtestdays == 4) { ?> selected <?php } ?>>4 Days</option>
+                                                        <option value="7" <?php if ($speedtestdays == 7) { ?> selected <?php } ?>>7 Days</option>
+                                                        <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
+                                                    </select>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Custom Server</label>
+                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
                                                     <div class="form-group">
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
                                                                 echo $speedtestserver;
-                                                            } ?>"  placeholder="Keep this blank to autoselect" />
+                                                            } ?>" placeholder="Keep this blank to autoselect" />
                                                         </div>
                                                     </div>
                                                 </div>
-
-                                                <h4>Flush Speedtest history </h4>
-                                                <div class="form-group col-md-12">
-
-                                                    <div class="form-group">
-                                                            <input type="checkbox"  name="clearspeedtests" id="clearspeedtests" value="yes"/>
-                                                            <label for="clearspeedtests" class="text-danger">Flush Speedtest history</label>
+                                                <div class="form-group col-md-6">
+                                                    <label>Use Bar Chart</label>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
+                                                        <label for="speedtestcharttype">Enable bar chart (autosaved, per-browser)</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
+                                                        <label for="speedtestcharttypesave">Set choice as default (upon confirmation)</label>
                                                     </div>
                                                 </div>
-                                                <h4>Speedtest Mode (Beta)</h4>
+
                                                 <div class="form-group col-md-12">
-                                                    <label>Speedtest Mode</label>
-                                                    <select name="speedtestmode" class="form-control" >
-                                                        <option value="official" <?php if ($speedtestmode == 'official') {?> selected <?php } ?>>Official CLI</option>
-                                                    </select>
+                                                    <label>Mod the Mod</label>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
+                                                        <label for="speedtestupdate">(Re)install Latest</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
+                                                        <label for="speedtestuninstall">Uninstall Mod</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
+                                                        <label for="speedtestdelete">Clear History</label>
+                                                    </div>
+                                                    <p>Attach to a running process with</p>
+                                                    <pre><code>sudo tmux attach-session -t pimod</code></pre>
+                                                    <p>Or access the latest log whenever with</p>
+                                                    <pre><code>cat /var/log/pimod.log</code></pre>
                                                 </div>
-
-
                                             </div>
                                         </div>
+                                        <div class="box-footer clearfix">
+                                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">CONFIRM</button>
+                                        </div>
                                     </div>
-                                    <div class="box-footer clearfix">
-                                        <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                    </div>
-                                </div>
                             </form>
                         </div>
                     </div>

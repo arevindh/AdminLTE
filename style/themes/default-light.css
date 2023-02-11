@@ -306,9 +306,11 @@ select:-webkit-autofill {
 .speedtest-upload {
   background-color: #ff6384;
 }
+
 .speedtest-download {
   background-color: #3c8dbc;
 }
+
 .speedtest-ping {
   background-color: #00aa60;
 }
