@@ -103,7 +103,7 @@ $(function () {
           callbacks: {
             label: function (context) {
               const varParsed = context.parsed !== "undefined" && context.parsed !== "undefined" ? context.parsed.y : null;
-              return Math.round(y) + " " + context?.dataset?.label || null;
+              return Math.round(varParsed) + " " + context?.dataset?.label || null;
             },
           },
         },
