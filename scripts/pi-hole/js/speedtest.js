@@ -107,7 +107,6 @@ $(function () {
               }else{
                 return "0 " + context?.dataset?.label || null;
               }
-              
             },
           },
         },
