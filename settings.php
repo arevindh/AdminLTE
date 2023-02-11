@@ -196,7 +196,7 @@ if (isset($setupVars['API_QUERY_LOG_SHOW'])) {
 ?>
 
 <?php
-if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'web', 'api', 'privacy', 'speedtest','teleporter'))) {
+if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'web', 'api', 'privacy', 'speedtest', 'teleporter'))) {
     $tab = $_GET['tab'];
 } else {
     $tab = 'sysadmin';
