@@ -604,14 +604,16 @@ if (isset($_POST['field'])) {
 
             // default is always saved but only changed if requested
             $charttype = 'line';
-            if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
+            if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                 $charttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+            }
             if (isset($_POST['speedtestcharttypesave'])) {
                 $newtype = trim($_POST['speedtestcharttypesave']);
-                if (strlen($newtype) != 0)
+                if (strlen($newtype) != 0) {
                     $charttype = $newtype;
+                }
             }
-            pihole_execute('-a -st ' . trim($charttype));
+            pihole_execute('-a -st '.trim($charttype));
 
             $success .= 'The Speedtest settings have been updated';
 

@@ -41,7 +41,7 @@ if (empty($timezone)) {
 if (isset($_POST['submit'])) {
     if ($_POST['submit'] == 'saveupdate') {
         // If that is the case -> refresh to the gravity page and start updating immediately
-?>
+        ?>
         <meta http-equiv="refresh" content="1;url=gravity.php?go">
 <?php
     }
@@ -242,8 +242,8 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                         <div class="col-lg-12">
                                             <?php
                                             $FTLpid = intval(pidofFTL());
-                                            if ($FTLpid !== 0) {
-                                                $FTLversion = exec('/usr/bin/pihole-FTL version'); ?>
+if ($FTLpid !== 0) {
+    $FTLversion = exec('/usr/bin/pihole-FTL version'); ?>
                                                 <table class="table table-striped table-bordered nowrap">
                                                     <tbody>
                                                         <tr>
@@ -299,7 +299,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                                 </table>
                                                 See also our <a href="https://docs.pi-hole.net/ftldns/dns-cache/" rel="noopener" target="_blank">DNS cache documentation</a>.
                                             <?php
-                                            } else { ?>
+} else { ?>
                                                 <div>The FTL service is offline!</div>
                                             <?php } ?>
                                         </div>
@@ -448,7 +448,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                     } else {
                         $piHoleDomain = 'lan';
                     }
-                    ?>
+?>
                     <form role="form" method="post">
                         <div class="row">
                             <!-- DHCP Settings Box -->
@@ -547,13 +547,13 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                             <div class="col-md-12">
                                                 <div><input type="checkbox" name="DHCP_rapid_commit" id="DHCP_rapid_commit" class="DHCPgroup"
 <?php
-                                                                                                                                                if ($DHCP_rapid_commit) { ?>checked<?php }
-if (!$DHCP) { ?> disabled<?php } ?>
+                                                                                                                            if ($DHCP_rapid_commit) { ?>checked<?php }
+                                                                                                                            if (!$DHCP) { ?> disabled<?php } ?>
 >&nbsp;<label for="DHCP_rapid_commit"><strong>Enable DHCPv4 rapid commit (fast address assignment)</strong></label></div>
                                                 <div><input type="checkbox" name="useIPv6" id="useIPv6" class="DHCPgroup"
 <?php
-                                                                                                                            if ($DHCPIPv6) { ?>checked<?php }
-if (!$DHCP) { ?> disabled<?php } ?>
+                                                                                                                                                                                                                                                        if ($DHCPIPv6) { ?>checked<?php }
+                                                                                                                                                                                                                                                        if (!$DHCP) { ?> disabled<?php } ?>
 >&nbsp;<label for="useIPv6"><strong>Enable IPv6 support (SLAAC + RA)</strong></label></div>
                                             </div>
                                         </div>
@@ -565,49 +565,49 @@ if (!$DHCP) { ?> disabled<?php } ?>
                         <!-- DHCP Leases Box -->
                         <div class="row">
                             <?php
-                            $dhcp_leases = array();
-                            if ($DHCP) {
-                                // Read leases file
-                                $leasesfile = true;
-                                $dhcpleases = @fopen('/etc/pihole/dhcp.leases', 'r');
-                                if (!is_resource($dhcpleases)) {
-                                    $leasesfile = false;
-                                }
+                                                                                                                                                                                                                                                                                    $dhcp_leases = array();
+if ($DHCP) {
+    // Read leases file
+    $leasesfile = true;
+    $dhcpleases = @fopen('/etc/pihole/dhcp.leases', 'r');
+    if (!is_resource($dhcpleases)) {
+        $leasesfile = false;
+    }
 
-                                while (!feof($dhcpleases) && $leasesfile) {
-                                    $line = explode(' ', trim(fgets($dhcpleases)));
-                                    if (count($line) == 5) {
-                                        $counter = intval($line[0]);
-                                        if ($counter == 0) {
-                                            $time = 'Infinite';
-                                        } elseif ($counter <= 315360000) { // 10 years in seconds
-                                            $time = convertseconds($counter);
-                                        } else { // Assume time stamp
-                                            $time = convertseconds($counter - time());
-                                        }
+    while (!feof($dhcpleases) && $leasesfile) {
+        $line = explode(' ', trim(fgets($dhcpleases)));
+        if (count($line) == 5) {
+            $counter = intval($line[0]);
+            if ($counter == 0) {
+                $time = 'Infinite';
+            } elseif ($counter <= 315360000) { // 10 years in seconds
+                $time = convertseconds($counter);
+            } else { // Assume time stamp
+                $time = convertseconds($counter - time());
+            }
 
-                                        if (strpos($line[2], ':') !== false) {
-                                            // IPv6 address
-                                            $type = 6;
-                                        } else {
-                                            // IPv4 lease
-                                            $type = 4;
-                                        }
+            if (strpos($line[2], ':') !== false) {
+                // IPv6 address
+                $type = 6;
+            } else {
+                // IPv4 lease
+                $type = 4;
+            }
 
-                                        $host = htmlentities($line[3]);
+            $host = htmlentities($line[3]);
 
-                                        $clid = $line[4];
-                                        if ($clid == '*') {
-                                            $clid = '<i>unknown</i>';
-                                        }
+            $clid = $line[4];
+            if ($clid == '*') {
+                $clid = '<i>unknown</i>';
+            }
 
-                                        array_push($dhcp_leases, array('TIME' => $time, 'hwaddr' => strtoupper($line[1]), 'IP' => $line[2], 'host' => $host, 'clid' => $clid, 'type' => $type));
-                                    }
-                                }
-                            }
+            array_push($dhcp_leases, array('TIME' => $time, 'hwaddr' => strtoupper($line[1]), 'IP' => $line[2], 'host' => $host, 'clid' => $clid, 'type' => $type));
+        }
+    }
+}
 
-                            readStaticLeasesFile();
-                            ?>
+readStaticLeasesFile();
+?>
                             <div class="col-md-12">
                                 <div class="box box-warning">
                                     <div class="box-header with-border">
@@ -715,16 +715,16 @@ if (!$DHCP) { ?> disabled<?php } ?>
                 <?php
                 // Use default
                 $rate_limit_count = 1000;
-                $rate_limit_interval = 60;
-                // Get rate limit from piholeFTL config array
-                if (isset($piholeFTLConf['RATE_LIMIT'])) {
-                    $rl = explode('/', $piholeFTLConf['RATE_LIMIT']);
-                    if (count($rl) == 2) {
-                        $rate_limit_count = intval($rl[0]);
-                        $rate_limit_interval = intval($rl[1]);
-                    }
-                }
-                ?>
+$rate_limit_interval = 60;
+// Get rate limit from piholeFTL config array
+if (isset($piholeFTLConf['RATE_LIMIT'])) {
+    $rl = explode('/', $piholeFTLConf['RATE_LIMIT']);
+    if (count($rl) == 2) {
+        $rate_limit_count = intval($rl[0]);
+        $rate_limit_interval = intval($rl[1]);
+    }
+}
+?>
                 <div id="dns" class="tab-pane fade<?php if ($tab === 'dns') { ?> in active<?php } ?>">
                     <form role="form" method="post">
                         <div class="row">
@@ -1252,7 +1252,7 @@ if (!$DHCP) { ?> disabled<?php } ?>
                 } else {
                     $privacylevel = 0;
                 }
-                ?>
+?>
                 <div id="privacy" class="tab-pane fade<?php if ($tab === 'privacy') { ?> in active<?php } ?>">
                     <div class="row">
                         <div class="col-md-12">
@@ -1464,23 +1464,28 @@ if (!$DHCP) { ?> disabled<?php } ?>
                 <!-- ######################################################### Speedtest ######################################################### -->
                 <?php
 
-                $speedtestshedule = false;
-                $speedtestdays = 'official';
-                $speedtestserver = '';
-                $speedtestmode = 'python';
-                $speedtestcharttype = 'line';
+$speedtestshedule = false;
+$speedtestdays = 'official';
+$speedtestserver = '';
+$speedtestmode = 'python';
+$speedtestcharttype = 'line';
 
-                if (isset($setupVars['SPEEDTESTSCHEDULE']))
-                    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
-                if (isset($setupVars['SPEEDTEST_CHART_DAYS']))
-                    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
-                if (isset($setupVars['SPEEDTEST_SERVER']))
-                    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
-                if (isset($setupVars['SPEEDTEST_MODE']))
-                    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
-                if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
-                    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
-                ?>
+if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
+    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+}
+if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
+}
+if (isset($setupVars['SPEEDTEST_SERVER'])) {
+    $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
+}
+if (isset($setupVars['SPEEDTEST_MODE'])) {
+    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
+}
+if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
+    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+}
+?>
 
 
                 <!-- ######################################################### Speedtest ######################################################### -->
@@ -1537,8 +1542,8 @@ if (!$DHCP) { ?> disabled<?php } ?>
                                                         <div class="input-group">
                                                             <div class="input-group-addon">Speedtest.net Server</div>
                                                             <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
-                                                                                                                                                                echo $speedtestserver;
-                                                                                                                                                            } ?>" placeholder="Keep this blank to autoselect" />
+                                                                echo $speedtestserver;
+                                                            } ?>" placeholder="Keep this blank to autoselect" />
                                                         </div>
                                                     </div>
                                                 </div>

@@ -116,8 +116,9 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 <?php
 $speedtestcharttype = 'line';
-if (isset($setupVars['SPEEDTEST_CHART_TYPE']))
+if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
+}
 if ($auth && $speedtestshedule) { ?>
     <div class="row">
         <div class="col-md-12">

@@ -166,7 +166,7 @@ function pihole_execute($argument_string, $background = false)
     $escaped = escapeshellcmd($argument_string);
     $output = null;
     $return_status = -1;
-    $command = 'sudo pihole ' . $escaped;
+    $command = 'sudo pihole '.$escaped;
     if ($background) {
         $command .= ' &';
     }
