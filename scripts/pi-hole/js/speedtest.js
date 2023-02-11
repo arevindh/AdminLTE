@@ -102,7 +102,12 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
+              if (!isNaN(context?.parsed?.y)){
+                return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
+              }else{
+                return "0 " + context?.dataset?.label || null;
+              }
+              
             },
           },
         },
