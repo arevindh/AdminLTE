@@ -273,9 +273,9 @@ if ($auth && $speedtestshedule) { ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Requests</th>
-                                <th>Frequency</th>
+                            <th>Client</th>
+                            <th>Requests</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -302,9 +302,9 @@ if ($auth && $speedtestshedule) { ?>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
-                                <th>Client</th>
-                                <th>Requests</th>
-                                <th>Frequency</th>
+                            <th>Client</th>
+                            <th>Requests</th>
+                            <th>Frequency</th>
                             </tr>
                         </thead>
                         <tbody>
