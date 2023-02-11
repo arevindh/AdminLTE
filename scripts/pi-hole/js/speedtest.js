@@ -102,8 +102,8 @@ $(function () {
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              y = !isNaN(context?.parsed?.y) ? Math.round(context.parsed.y) : 0;
-              return y + context?.dataset?.label || null;
+              var parsed_y = !isNaN(context.parsed.y) ? Math.round(context.parsed.y) : 0;
+              return parsed_y + context?.dataset?.label || null;
             },
           },
         },
