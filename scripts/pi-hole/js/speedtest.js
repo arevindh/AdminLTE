@@ -1,4 +1,4 @@
-/* global Chart:false, moment:false */
+/* global Chart:false, moment:false, utils:false */
 
 $(function () {
   var speedlabels = [];
