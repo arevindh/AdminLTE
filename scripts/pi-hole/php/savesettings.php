@@ -205,7 +205,7 @@ if (isset($_POST['field'])) {
 
     // Process request
     switch ($_POST['field']) {
-            // Set DNS server
+        // Set DNS server
         case 'DNS':
             $DNSservers = array();
             // Add selected predefined servers to list
@@ -285,7 +285,7 @@ if (isset($_POST['field'])) {
                 $cidr = trim($_POST['rev_server_cidr']);
                 if (!validCIDRIP($cidr)) {
                     $error .= 'Conditional forwarding subnet ("'.htmlspecialchars($cidr).'") is invalid!<br>'.
-                        'This field requires CIDR notation for local subnets (e.g., 192.168.0.0/16).<br>';
+                    'This field requires CIDR notation for local subnets (e.g., 192.168.0.0/16).<br>';
                 }
 
                 // Validate target IP
