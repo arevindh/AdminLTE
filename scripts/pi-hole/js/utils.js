@@ -412,6 +412,13 @@ function changeBulkDeleteStates(table) {
   }
 }
 
+function getCSSval(cssclass, cssproperty) {
+  var elem = $("<div class='" + cssclass + "'></div>"),
+    val = elem.appendTo("body").css(cssproperty);
+  elem.remove();
+  return val;
+}
+
 window.utils = (function () {
   return {
     escapeHtml: escapeHtml,
@@ -436,5 +443,6 @@ window.utils = (function () {
     colorBar: colorBar,
     checkMessages: checkMessages,
     changeBulkDeleteStates: changeBulkDeleteStates,
+    getCSSval: getCSSval,
   };
 })();
