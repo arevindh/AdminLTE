@@ -12,14 +12,6 @@ require 'scripts/pi-hole/php/header_authenticated.php';
 require_once 'scripts/pi-hole/php/gravity.php';
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 ?>
-<!-- Sourceing CSS colors from stylesheet to be used in JS code -->
-<span class="queries-permitted"></span>
-<span class="queries-blocked"></span>
-<span class="graphs-grid"></span>
-<span class="graphs-ticks"></span>
-<span class="speedtest-upload"></span>
-<span class="speedtest-download"></span>
-<span class="speedtest-ping"></span>
 <!-- Small boxes (Stat box) -->
 <div class="row">
     <div class="col-lg-3 col-sm-6">
