@@ -16,6 +16,7 @@ $(function () {
         const last = moment(results.at(-1).start_time);
         if (last.diff(first, "hours") >= 24) format = "Do " + format;
       }
+
       return moment(itemdate).format(format);
     }
 
