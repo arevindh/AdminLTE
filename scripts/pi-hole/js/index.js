@@ -232,8 +232,8 @@ function updateQueriesOverTime() {
     timeLineChart.data.datasets = [];
 
     var labels = ["Blocked DNS Queries", "Permitted DNS Queries"];
-    var blockedColor = $(".queries-blocked").css("background-color");
-    var permittedColor = $(".queries-permitted").css("background-color");
+    var blockedColor = utils.getCSSval("queries-blocked", "background-color");
+    var permittedColor = utils.getCSSval("queries-permitted", "background-color");
     var colors = [blockedColor, permittedColor];
 
     // Collect values and colors, and labels
@@ -491,13 +491,13 @@ function updateTopClientsChart() {
         }
 
         client = utils.escapeHtml(client);
-        if (client.indexOf("|") !== -1) {
+        if (client.indexOf("|") === -1) {
+          clientname = client;
+          clientip = client;
+        } else {
           idx = client.indexOf("|");
           clientname = client.substr(0, idx);
           clientip = client.substr(idx + 1, client.length - idx);
-        } else {
-          clientname = client;
-          clientip = client;
         }
 
         url =
@@ -531,13 +531,13 @@ function updateTopClientsChart() {
         }
 
         client = utils.escapeHtml(client);
-        if (client.indexOf("|") !== -1) {
+        if (client.indexOf("|") === -1) {
+          clientname = client;
+          clientip = client;
+        } else {
           idx = client.indexOf("|");
           clientname = client.substr(0, idx);
           clientip = client.substr(idx + 1, client.length - idx);
-        } else {
-          clientname = client;
-          clientip = client;
         }
 
         url =
@@ -678,7 +678,6 @@ function updateSummaryData(runOnce) {
       updateTopLists();
     }
 
-    var formatter = new Intl.NumberFormat();
     //Element name might have a different name to the property of the API so we split it at |
     [
       "ads_blocked_today|queries_blocked_today",
@@ -691,9 +690,17 @@ function updateSummaryData(runOnce) {
       var apiName = apiElName[0];
       var elName = apiElName[1];
       var $todayElement = elName ? $("span#" + elName) : $("span#" + apiName);
-      // Round to one decimal place and format locale-aware
-      var text = formatter.format(Math.round(data[apiName] * 10) / 10);
-      var textData = idx === 2 && data[apiName] !== "to" ? text + "%" : text;
+
+      var textData = data[apiName];
+      if (!FTLoffline) {
+        // Only format as number if FTL is online
+        var formatter = new Intl.NumberFormat();
+
+        // Round to one decimal place and format locale-aware
+        var text = formatter.format(Math.round(data[apiName] * 10) / 10);
+        textData = idx === 2 && data[apiName] !== "to" ? text + "%" : text;
+      }
+
       if ($todayElement.text() !== textData && $todayElement.text() !== textData + "%") {
         $todayElement.addClass("glow");
         $todayElement.text(textData);
@@ -712,10 +719,10 @@ function updateSummaryData(runOnce) {
     }, 500);
   })
     .done(function () {
-      if (!FTLoffline) {
-        setTimer(1);
-      } else {
+      if (FTLoffline) {
         setTimer(10);
+      } else {
+        setTimer(1);
       }
     })
     .fail(function () {
@@ -862,8 +869,8 @@ $(function () {
   getMaxlogage();
   updateSummaryData();
 
-  var gridColor = $(".graphs-grid").css("background-color");
-  var ticksColor = $(".graphs-ticks").css("color");
+  var gridColor = utils.getCSSval("graphs-grid", "background-color");
+  var ticksColor = utils.getCSSval("graphs-ticks", "color");
   var ctx = document.getElementById("queryOverTimeChart").getContext("2d");
   timeLineChart = new Chart(ctx, {
     type: utils.getGraphType(),

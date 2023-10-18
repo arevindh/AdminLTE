@@ -24,12 +24,12 @@
     "testpr": "npm run prettier:fix && git diff --ws-error-highlight=all --color=always --exit-code && npm run xo"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.13",
-    "eslint-plugin-compat": "^4.0.2",
-    "postcss": "^8.4.21",
+    "autoprefixer": "^10.4.16",
+    "eslint-plugin-compat": "^4.2.0",
+    "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
-    "prettier": "2.8.3",
-    "xo": "^0.53.1"
+    "prettier": "3.0.3",
+    "xo": "^0.56.0"
   },
   "browserslist": [
     "defaults",
@@ -101,7 +101,8 @@
       "unicorn/prefer-string-slice": "off",
       "unicorn/prevent-abbreviations": "off",
       "unicorn/prefer-logical-operator-over-ternary": "off",
-      "unicorn/switch-case-braces": "off"
+      "unicorn/switch-case-braces": "off",
+      "unicorn/no-negated-condition": "off"
     }
   },
   "dependencies": {}

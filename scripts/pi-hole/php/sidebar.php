@@ -5,7 +5,7 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="img/logo.svg" alt="Pi-hole logo">
+                    <img class="logo-img" src="img/logo.svg" alt="Pi-hole logo">
                 </div>
                 <div class="pull-left info">
                     <p>Status</p>
@@ -57,6 +57,7 @@
                         }
                         echo '<span id="temperature"><i class="fa fa-w fa-fire '.$tempcolor.'" style="width: 1em !important"></i> ';
                         echo 'Temp:&nbsp;<span id="rawtemp" hidden>'.$celsius.'</span>';
+                        echo '<span id="tempunit" hidden>'.$temperatureunit.'</span>';
                         echo '<span id="tempdisplay"></span></span>';
                     }
                     ?>

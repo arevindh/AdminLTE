@@ -107,13 +107,14 @@ function checkfile($filename)
     if (is_readable($filename)) {
         return $filename;
     }
+
     // substitute dummy file
     return '/dev/null';
 }
 
 // Avoid browser caching old versions of a file, using the last modification time
 //   Receive the file URL (without "/admin/");
-//   Return the string containin URL + "?v=xxx", where xxx is the last modified time of the file.
+//   Return the string containing URL + "?v=xxx", where xxx is the last modified time of the file.
 function fileversion($url)
 {
     $filename = $_SERVER['DOCUMENT_ROOT'].'/admin/'.$url;
@@ -223,7 +224,7 @@ function getCustomDNSEntries()
     return $entries;
 }
 
-function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true)
+function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true, $teleporter = false)
 {
     try {
         if (isset($_REQUEST['ip'])) {
@@ -282,7 +283,8 @@ function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true)
         foreach ($domains as $domain) {
             pihole_execute('-a addcustomdns '.$ip.' '.$domain.' '.$reload);
         }
-        if ($num > 0) {
+        // restart only if not called from teleporter.php as it handles restarts itself
+        if (($num > 0) && (!$teleporter)) {
             pihole_execute('restartdns');
         }
 
@@ -400,7 +402,7 @@ function getCustomCNAMEEntries()
     return $entries;
 }
 
-function addCustomCNAMEEntry($domain = '', $target = '', $reload = '', $json = true)
+function addCustomCNAMEEntry($domain = '', $target = '', $reload = '', $json = true, $teleporter = false)
 {
     try {
         if (isset($_REQUEST['domain'])) {
@@ -463,7 +465,8 @@ function addCustomCNAMEEntry($domain = '', $target = '', $reload = '', $json = t
             pihole_execute('-a addcustomcname '.$d.' '.$target.' '.$reload);
         }
 
-        if ($num > 0) {
+        // restart only if not called from teleporter.php as it handles restarts itself
+        if (($num > 0) && (!$teleporter)) {
             pihole_execute('restartdns');
         }
 
@@ -636,10 +639,28 @@ function getGateway()
     if (array_key_exists('FTLnotrunning', $gateway)) {
         $ret = array('ip' => -1);
     } else {
-        $ret = array_combine(array('ip', 'iface'), explode(' ', $gateway[0]));
+        $ret = array_combine(array('ip', 'iface'), array_pad(explode(' ', $gateway[0]), 2, ''));
     }
 
     return $ret;
+}
+
+// Returns the maxlogage used by FTL
+function getMaxlogage()
+{
+    $api_return = callFTLAPI('maxlogage');
+
+    if (array_key_exists('FTLnotrunning', $api_return)) {
+        // FTL is offline. Return "-1"
+        $maxlogage = -1;
+    } else {
+        // Convert seconds to hours and rounds to one decimal place.
+        $maxlogage = round(intval($api_return[0]) / 3600, 1);
+        // Return 24h if value is 0, empty, null or non numeric.
+        $maxlogage = $maxlogage ?: 24;
+    }
+
+    return $maxlogage;
 }
 
 // Try to convert possible IDNA domain to Unicode

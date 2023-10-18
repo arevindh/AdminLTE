@@ -196,7 +196,7 @@ if (isset($setupVars['API_QUERY_LOG_SHOW'])) {
 ?>
 
 <?php
-if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'api', 'privacy', 'teleporter', 'speedtest'))) {
+if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piholedhcp', 'web', 'api', 'privacy', 'teleporter', 'speedtest'))) {
     $tab = $_GET['tab'];
 } else {
     $tab = 'sysadmin';
@@ -215,8 +215,11 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                 <li role="presentation"<?php if ($tab === 'piholedhcp') { ?> class="active"<?php } ?>>
                     <a href="#piholedhcp" aria-controls="piholedhcp" aria-expanded="<?php echo $tab === 'piholedhcp' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">DHCP</a>
                 </li>
+                <li role="presentation"<?php if ($tab === 'web') { ?> class="active"<?php } ?>>
+                    <a href="#web" aria-controls="web" aria-expanded="<?php echo $tab === 'web' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Web interface</a>
+                </li>
                 <li role="presentation"<?php if ($tab === 'api') { ?> class="active"<?php } ?>>
-                    <a href="#api" aria-controls="api" aria-expanded="<?php echo $tab === 'api' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">API / Web interface</a>
+                    <a href="#api" aria-controls="api" aria-expanded="<?php echo $tab === 'api' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">API</a>
                 </li>
                 <li role="presentation"<?php if ($tab === 'privacy') { ?> class="active"<?php } ?>>
                     <a href="#privacy" aria-controls="privacy" aria-expanded="<?php echo $tab === 'privacy' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Privacy</a>
@@ -240,68 +243,80 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                                 <div class="box-body">
                                     <div class="row">
                                         <div class="col-lg-12">
-                                            <?php
-                                            $FTLpid = intval(pidofFTL());
+<?php
+// Try to get FTL PID
+$FTLpid = intval(pidofFTL());
+
 if ($FTLpid !== 0) {
-    $FTLversion = exec('/usr/bin/pihole-FTL version'); ?>
-                                                <table class="table table-striped table-bordered nowrap">
-                                                    <tbody>
-                                                        <tr>
-                                                            <th scope="row">FTL version:</th>
-                                                            <td><?php echo $FTLversion; ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Process identifier (PID):</th>
-                                                            <td><?php echo $FTLpid; ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Time FTL started:</th>
-                                                            <td><?php print_r(get_FTL_data($FTLpid, 'lstart'));
-    echo ' '.$timezone; ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">User / Group:</th>
-                                                            <td><?php print_r(get_FTL_data($FTLpid, 'euser')); ?> / <?php print_r(get_FTL_data($FTLpid, 'egroup')); ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Total CPU utilization:</th>
-                                                            <td><?php print_r(get_FTL_data($FTLpid, '%cpu')); ?>%</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">Memory utilization:</th>
-                                                            <td><?php print_r(get_FTL_data($FTLpid, '%mem')); ?>%</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">
-                                                                <span title="Resident memory is the portion of memory occupied by a process that is held in main memory (RAM). The rest of the occupied memory exists in the swap space or file system.">Used memory:</span>
-                                                            </th>
-                                                            <td><?php echo formatSizeUnits(1e3 * floatval(get_FTL_data($FTLpid, 'rss'))); ?></td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">
-                                                                <span title="Size of the DNS domain cache">DNS cache size:</span>
-                                                            </th>
-                                                            <td id="cache-size">&nbsp;</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">
-                                                                <span title="Number of cache insertions">DNS cache insertions:</span>
-                                                            </th>
-                                                            <td id="cache-inserted">&nbsp;</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <th scope="row">
-                                                                <span title="Number of cache entries that had to be removed although they are not expired (increase cache size to reduce this number)" lookatme-text="DNS cache evictions:">DNS cache evictions:</span>
-                                                            </th>
-                                                            <td id="cache-live-freed">&nbsp;</td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                                See also our <a href="https://docs.pi-hole.net/ftldns/dns-cache/" rel="noopener" target="_blank">DNS cache documentation</a>.
-                                            <?php
-} else { ?>
-                                                <div>The FTL service is offline!</div>
-                                            <?php } ?>
+    $FTLversion = exec('/usr/bin/pihole-FTL version');
+    ?>
+                                            <table class="table table-striped table-bordered nowrap">
+                                                <tbody>
+                                                    <tr>
+                                                        <th scope="row">FTL version:</th>
+                                                        <td><?php echo $FTLversion; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Process identifier (PID):</th>
+                                                        <td><?php echo $FTLpid; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Time FTL started:</th>
+                                                        <td><?php echo get_FTL_data($FTLpid, 'lstart').' '.$timezone; ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">User / Group:</th>
+                                                        <td><?php echo get_FTL_data($FTLpid, 'euser').' / '.get_FTL_data($FTLpid, 'egroup'); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Total CPU utilization:</th>
+                                                        <td><?php echo get_FTL_data($FTLpid, '%cpu'); ?>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">Memory utilization:</th>
+                                                        <td><?php echo get_FTL_data($FTLpid, '%mem'); ?>%</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">
+                                                            <span title="Resident memory is the portion of memory occupied by a process that is held in main memory (RAM). The rest of the occupied memory exists in the swap space or file system.">Used memory:</span>
+                                                        </th>
+                                                        <td><?php echo formatSizeUnits(1e3 * floatval(get_FTL_data($FTLpid, 'rss'))); ?></td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">
+                                                            <span title="Size of the DNS domain cache">DNS cache size:</span>
+                                                        </th>
+                                                        <td id="cache-size">&nbsp;</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">
+                                                            <span title="Number of cache insertions">DNS cache insertions:</span>
+                                                        </th>
+                                                        <td id="cache-inserted">&nbsp;</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th scope="row">
+                                                            <span title="Number of cache entries that had to be removed although they are not expired (increase cache size to reduce this number)" lookatme-text="DNS cache evictions:">DNS cache evictions:</span>
+                                                        </th>
+                                                        <td id="cache-live-freed">&nbsp;</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                            See also our <a href="https://docs.pi-hole.net/ftldns/dns-cache/" rel="noopener" target="_blank">DNS cache documentation</a>.
+<?php
+} elseif ($FTLrestarted) {
+    // Show a countdown and a message if FTL was restarted
+    ?>
+                                            <div id="restart-countdown"></div>
+                                            <script src="<?php echo fileversion('scripts/pi-hole/js/restartdns.js'); ?>"></script>
+<?php
+} else {
+    // Show a message if FTL is offline
+    ?>
+                                            <div>The FTL service is offline!</div>
+<?php
+}
+?>
                                         </div>
                                     </div>
                                 </div>
@@ -428,16 +443,18 @@ if ($FTLpid !== 0) {
                         }
                     } else {
                         $DHCP = false;
+                        $DHCPstart = '';
+                        $DHCPend = '';
+                        $DHCProuter = '';
+
                         // Try to guess initial settings
                         if ($IPv4GW !== 'unknown') {
                             $DHCPparts = explode('.', $IPv4GW);
-                            $DHCPstart = $DHCPparts[0].'.'.$DHCPparts[1].'.'.$DHCPparts[2].'.201';
-                            $DHCPend = $DHCPparts[0].'.'.$DHCPparts[1].'.'.$DHCPparts[2].'.251';
-                            $DHCProuter = $IPv4GW;
-                        } else {
-                            $DHCPstart = '';
-                            $DHCPend = '';
-                            $DHCProuter = '';
+                            if (isset($DHCPparts[0]) && isset($DHCPparts[1]) && isset($DHCPparts[2])) {
+                                $DHCPstart = $DHCPparts[0].'.'.$DHCPparts[1].'.'.$DHCPparts[2].'.201';
+                                $DHCPend = $DHCPparts[0].'.'.$DHCPparts[1].'.'.$DHCPparts[2].'.251';
+                                $DHCProuter = $IPv4GW;
+                            }
                         }
                         $DHCPleasetime = 24;
                         $DHCPIPv6 = false;
@@ -940,7 +957,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                                         Use an upstream DNS server which supports DNSSEC when activating DNSSEC. Note that
                                                         the size of your log might increase significantly
                                                         when enabling DNSSEC. A DNSSEC resolver test can be found
-                                                        <a href="https://dnssec.vs.uni-due.de/" rel="noopener" target="_blank">here</a>.</p>
+                                                        <a href="https://wander.science/projects/dns/dnssec-resolver-test/" rel="noopener" target="_blank">here</a>.</p>
                                                 </div>
                                                 <br>
                                                 <h4><a id="ratelimit"></a>Rate-limiting</h4>
@@ -1029,10 +1046,162 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                         </div>
                     </form>
                 </div>
-                <!-- ######################################################### API and Web ######################################################### -->
-                <div id="api" class="tab-pane fade<?php if ($tab === 'api') { ?> in active<?php } ?>">
+                <!-- ######################################################## Web Interface ######################################################## -->
+                <div id="web" class="tab-pane fade<?php if ($tab === 'web') { ?> in active<?php } ?>">
                     <div class="row">
                         <div class="col-md-6">
+                            <form role="form" method="post">
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Theme and Layout</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <?php theme_selection(); ?>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <div>
+                                                    <input type="checkbox" name="boxedlayout" id="boxedlayout" value="yes" <?php if ($boxedlayout) { ?>checked<?php } ?>>
+                                                    <label for="boxedlayout"><strong>Use boxed layout (for large screens)</strong></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <input type="hidden" name="field" value="webUI">
+                                        <input type="hidden" name="token" value="<?php echo $token; ?>">
+                                    </div>
+                                    <div class="box-footer clearfix">
+                                        <button type="submit" class="btn btn-primary pull-right">Save</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="box box-warning">
+                                <div class="box-header with-border">
+                                    <h3 class="box-title">Interface settings (auto saved)</h3>
+                                </div>
+                                <div class="box-body">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>Global Settings</h4>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="icheck-default">
+                                                <label for="tempunit-selector"><strong>CPU Temperature Unit:</strong> </label>
+                                                <select id="tempunit-selector">
+                                                    <option value="C">Celsius</option>
+                                                    <option value="K">Kelvin</option>
+                                                    <option value="F">Fahrenheit</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <hr class="faint-border">
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <h4>Per Browser Settings</h4>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="icheck-default">
+                                                <label for="iCheckStyle"><strong>Checkbox and radio buttons: </strong> </label>
+                                                <select id="iCheckStyle">
+                                                    <option>default</option>
+                                                    <option>primary</option>
+                                                    <option>success</option>
+                                                    <option>info</option>
+                                                    <option>warning</option>
+                                                    <option>danger</option>
+                                                    <option>turquoise</option>
+                                                    <option>emerland</option>
+                                                    <option>peterriver</option>
+                                                    <option>amethyst</option>
+                                                    <option>wetasphalt</option>
+                                                    <option>greensea</option>
+                                                    <option>nephritis</option>
+                                                    <option>belizehole</option>
+                                                    <option>wisteria</option>
+                                                    <option>midnightblue</option>
+                                                    <option>sunflower</option>
+                                                    <option>carrot</option>
+                                                    <option>alizarin</option>
+                                                    <option>clouds</option>
+                                                    <option>concrete</option>
+                                                    <option>orange</option>
+                                                    <option>pumpkin</option>
+                                                    <option>pomegranate</option>
+                                                    <option>silver</option>
+                                                    <option>asbestos</option>
+
+                                                    <option>material-red</option>
+                                                    <option>material-pink</option>
+                                                    <option>material-purple</option>
+                                                    <option>material-deeppurple</option>
+                                                    <option>material-indigo</option>
+                                                    <option>material-blue</option>
+                                                    <option>material-lightblue</option>
+                                                    <option>material-cyan</option>
+                                                    <option>material-teal</option>
+                                                    <option>material-green</option>
+                                                    <option>material-lightgreen</option>
+                                                    <option>material-lime</option>
+                                                    <option>material-yellow</option>
+                                                    <option>material-amber</option>
+                                                    <option>material-orange</option>
+                                                    <option>material-deeporange</option>
+                                                    <option>material-brown</option>
+                                                    <option>material-grey</option>
+                                                    <option>material-bluegrey</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div>
+                                                <input type="checkbox" name="bargraphs" id="bargraphs" value="yes">
+                                                <label for="bargraphs"><strong>Use new Bar charts on dashboard</strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div>
+                                                <input type="checkbox" name="colorfulQueryLog" id="colorfulQueryLog" value="no">
+                                                <label for="colorfulQueryLog"><strong>Colorful Query Log</strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div>
+                                                <input type="checkbox" name="hideNonfatalDnsmasqWarnings" id="hideNonfatalDnsmasqWarnings" value="no">
+                                                <label for="hideNonfatalDnsmasqWarnings"><strong>Hide non-fatal <code>dnsmasq</code> warnings (warnings listed <a target="_blank" href="https://docs.pi-hole.net/ftldns/dnsmasq_warn">here</a>)</strong></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ############################################################# API ############################################################# -->
+                <div id="api" class="tab-pane fade<?php if ($tab === 'api') { ?> in active<?php } ?>">
+                    <div class="row">
+                        <div class="col-md-12">
                             <form role="form" method="post">
                                 <div class="box box-warning">
                                     <div class="box-header with-border">
@@ -1112,138 +1281,9 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <form role="form" method="post">
-                                <div class="box box-warning">
-                                    <div class="box-header with-border">
-                                        <h3 class="box-title">Web interface settings</h3>
-                                    </div>
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <h4>Interface appearance</h4>
-                                                <?php theme_selection(); ?>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div>
-                                                    <input type="checkbox" name="boxedlayout" id="boxedlayout" value="yes" <?php if ($boxedlayout) { ?>checked<?php } ?>>
-                                                    <label for="boxedlayout"><strong>Use boxed layout (for large screens)</strong></label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <input type="hidden" name="field" value="webUI">
-                                        <input type="hidden" name="token" value="<?php echo $token; ?>">
-                                    </div>
-                                    <div class="box-footer clearfix">
-                                        <button type="submit" class="btn btn-primary pull-right">Save</button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="box box-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Per-browser settings (auto saved)</h3>
-                                </div>
-                                <div class="box-body">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p>Checkbox and radio buttons</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select id="iCheckStyle">
-                                                <option>default</option>
-                                                <option>primary</option>
-                                                <option>success</option>
-                                                <option>info</option>
-                                                <option>warning</option>
-                                                <option>danger</option>
-                                                <option>turquoise</option>
-                                                <option>emerland</option>
-                                                <option>peterriver</option>
-                                                <option>amethyst</option>
-                                                <option>wetasphalt</option>
-                                                <option>greensea</option>
-                                                <option>nephritis</option>
-                                                <option>belizehole</option>
-                                                <option>wisteria</option>
-                                                <option>midnightblue</option>
-                                                <option>sunflower</option>
-                                                <option>carrot</option>
-                                                <option>alizarin</option>
-                                                <option>clouds</option>
-                                                <option>concrete</option>
-                                                <option>orange</option>
-                                                <option>pumpkin</option>
-                                                <option>pomegranate</option>
-                                                <option>silver</option>
-                                                <option>asbestos</option>
-
-                                                <option>material-red</option>
-                                                <option>material-pink</option>
-                                                <option>material-purple</option>
-                                                <option>material-deeppurple</option>
-                                                <option>material-indigo</option>
-                                                <option>material-blue</option>
-                                                <option>material-lightblue</option>
-                                                <option>material-cyan</option>
-                                                <option>material-teal</option>
-                                                <option>material-green</option>
-                                                <option>material-lightgreen</option>
-                                                <option>material-lime</option>
-                                                <option>material-yellow</option>
-                                                <option>material-amber</option>
-                                                <option>material-orange</option>
-                                                <option>material-deeporange</option>
-                                                <option>material-brown</option>
-                                                <option>material-grey</option>
-                                                <option>material-bluegrey</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <p>CPU Temperature Unit</p>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <select id="tempunit-selector">
-                                                <option value="C">Celsius</option>
-                                                <option value="K">Kelvin</option>
-                                                <option value="F">Fahrenheit</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div>
-                                                <input type="checkbox" name="bargraphs" id="bargraphs" value="yes">
-                                                <label for="bargraphs"><strong>Use new Bar charts on dashboard</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div>
-                                                <input type="checkbox" name="colorfulQueryLog" id="colorfulQueryLog" value="no">
-                                                <label for="colorfulQueryLog"><strong>Colorful Query Log</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div>
-                                                <input type="checkbox" name="hideNonfatalDnsmasqWarnings" id="hideNonfatalDnsmasqWarnings" value="no">
-                                                <label for="hideNonfatalDnsmasqWarnings"><strong>Hide non-fatal <code>dnsmasq</code> warnings (warnings listed <a target="_blank" href="https://docs.pi-hole.net/ftldns/dnsmasq_warn">here</a>)</strong></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+
                 <!-- ######################################################### Privacy (may be expanded further later on) ######################################################### -->
                 <?php
                 // Get privacy level from piholeFTL config array
