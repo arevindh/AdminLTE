@@ -13,7 +13,7 @@ $(function () {
       let format = "HH:mm";
       if (results.length > 1) {
         const first = moment(results[0].start_time);
-        const last = moment(results[results.length - 1].start_time);
+        const last = moment(results.at(-1).start_time);
         if (last.diff(first, "hours") >= 24) format = "Do " + format;
       }
 
