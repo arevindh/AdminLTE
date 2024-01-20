@@ -1,4 +1,4 @@
-/* global Chart:false, moment:false, utils:false */
+/* global Chart:false, moment:false */
 
 $(function () {
   var speedlabels = [];
@@ -17,7 +17,8 @@ $(function () {
         if (last.diff(first, "hours") >= 24) format = "Do " + format;
       }
 
-      return moment(itemdate).format(format);
+      // always return the time in the browser's timezone
+      return moment(itemdate).utcOffset(moment().utcOffset()).format(format);
     }
 
     $.ajax({
@@ -97,18 +98,13 @@ $(function () {
           },
         },
         tooltip: {
-          mode: "index",
+          mode: 'index',
           intersect: utils.getGraphType(1) === "bar",
-          yAlign: "bottom",
+          yAlign: 'bottom',
           callbacks: {
             label: function (context) {
-              const varParsed =
-                context.parsed !== "undefined" && context.parsed !== "undefined"
-                  ? context.parsed.y
-                  : null;
-              const varLabel = context.dataset !== "undefined" ? context.dataset.label : null;
-              return Math.round(varParsed) + " " + varLabel;
-            },
+              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
+            }
           },
         },
       },

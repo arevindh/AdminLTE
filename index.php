@@ -119,7 +119,7 @@ if ($auth && $speedtestshedule) { ?>
                     <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
                 </div>
                 <div class="box-body">
-                    <div class="chart" style="width: 100%; height: 180px">
+                    <div class="chart" style="position: relative; width: 100%; height: 180px">
                         <canvas id="speedOverTimeChart" value=<?php echo $speedtestcharttype; ?>></canvas>
                     </div>
                     <div class="overlay">
