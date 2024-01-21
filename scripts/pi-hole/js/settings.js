@@ -474,15 +474,16 @@ $(function () {
 $(function () {
   const speedtestChartType = $("#speedtestcharttype");
   const speedtestChartTypeSave = $("#speedtestcharttypesave");
-  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
-
-  speedtestChartType.prop("checked", type === "bar");
-  localStorage.setItem("speedtest_chart_type", type);
-
   const speedtestUpdate = $("#speedtestupdate");
   const speedtestUninstall = $("#speedtestuninstall");
   const speedtestDelete = $("#speedtestdelete");
   const speedtestTest = $("#speedtesttest");
+  const speedtestServer = $("#speedtestserver");
+  const speedtestSubmit = $("#st-submit");
+
+  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
+  speedtestChartType.prop("checked", type === "bar");
+  localStorage.setItem("speedtest_chart_type", type);
 
   document.addEventListener("DOMContentLoaded", function () {
     speedtestChartTypeSave.attr("value", null);
@@ -512,21 +513,75 @@ $(function () {
 
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
-  });
-
-  speedtestDelete.on("click", function () {
-    speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
-    $("#st-submit").toggleClass("btn-primary");
-    $("#st-submit").toggleClass("btn-danger");
+    if (speedtestUninstall.attr("value")) {
+      if (!speedtestSubmit.hasClass("btn-warning")) {
+        speedtestSubmit.addClass("btn-warning");
+      }
+    } else {
+      speedtestSubmit.removeClass("btn-warning");
+    }
   });
 
   speedtestTest.on("click", function () {
     speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
   });
 
-  const speedtestServer = $("#speedtestserver");
-
   speedtestServer.on("change", function () {
     speedtestServer.attr("value", speedtestServer.val());
   });
+
+  canRestore = () => {
+    return new Promise((resolve, reject) => {
+      $.ajax({
+        url: "api.php?getAllSpeedTestData&PHP",
+        dataType: "json",
+      }).done(function (results) {
+        resolve(localStorage.getItem("speedtest_flushed") === "true" && results?.data?.length === 0);
+      }).fail(function (error) {
+        resolve(false);
+      });
+    });
+  };
+
+  speedtestDelete.on("click", function () {
+    speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
+    if (speedtestDelete.attr("value")) {
+      canRestore().then(didFlush => {
+        if (didFlush) {
+          if (!speedtestSubmit.hasClass("btn-success")) {
+            speedtestSubmit.addClass("btn-success");
+          }
+        } else {
+          if (!speedtestSubmit.hasClass("btn-danger")) {
+            speedtestSubmit.addClass("btn-danger");
+          }
+        }
+      }).catch(error => {
+        console.error("Error in canRestore:", error);
+      });
+    } else {
+      speedtestSubmit.removeClass("btn-danger");
+      speedtestSubmit.removeClass("btn-success");
+    }
+  });
+
+  $("#speedtestform").on("submit", function (e) {
+    e.preventDefault(); // prevent the form from submitting immediately
+    if (speedtestDelete.attr("value")) {
+      canRestore().then(didFlush => {
+        localStorage.setItem("speedtest_flushed", !didFlush);
+          this.submit(); // submit the form after the localStorage is set
+      }).catch(error => {
+        console.error("Error in canRestore:", error);
+      });
+    }
+  });
+
+  setInterval(() => {
+    canRestore().then(didFlush => {
+      speedtestDelete.parent().children("label").text(didFlush ? "Restore History (Available until the next speedtest)" : "Clear History");
+    }).catch(error => {
+      console.error("Error in canRestore:", error);
+    });
+  }, 1000);
 });

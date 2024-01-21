@@ -630,14 +630,14 @@ if (isset($_POST['field'])) {
                 if (isset($_POST['speedtestuninstall'])) {
                     $success .= ', but the Mod will be uninstalled';
                     if (isset($_POST['speedtestdelete'])) {
-                        $success .= ' and the database will be deleted';
+                        $success .= ' and its history will be deleted';
                         pihole_execute('-a -up un db', true);
                     } else {
                         pihole_execute('-a -up un', true);
                     }
                 } else {
                     if (isset($_POST['speedtestdelete'])) {
-                        $success .= ' and the database will be flushed';
+                        $success .= ' and its history will be modified';
                         pihole_execute('-a -up db', true);
                     } else {
                         pihole_execute('-a -up', true);
@@ -646,13 +646,13 @@ if (isset($_POST['field'])) {
             } elseif (isset($_POST['speedtestuninstall'])) {
                 $success .= ' and the Mod will be uninstalled';
                 if (isset($_POST['speedtestdelete'])) {
-                    $success .= ' and the database will be deleted';
+                    $success .= ' and its history will be deleted';
                     pihole_execute('-a -un db', true);
                 } else {
                     pihole_execute('-a -un', true);
                 }
             } elseif (isset($_POST['speedtestdelete'])) {
-                $success .= ' and the database will be flushed';
+                $success .= ' and its history will be modified';
                 pihole_execute('-a -db', true);
             }
             break;

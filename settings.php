@@ -1533,7 +1533,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                     <div class="row">
                         <div class="col-md-12">
-                            <form role="form" method="post">
+                            <form id="speedtestform" role="form" method="post">
                                 <input type="hidden" name="field" value="speedtest">
                                 <input type="hidden" name="token" value="<?php echo $token; ?>">
                                 <div class="box box-warning">
