@@ -8,17 +8,17 @@ $(function () {
 
   function updateSpeedTestData() {
     function formatDate(itemdate, results) {
-      // if the the first and last time are 24 hours apart or more
-      // then return the date and time, otherwise return the time
-      let format = "HH:mm";
+      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) { // Test for Safari
+        return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset()).format("HH:mm");
+      }
+
+      let output = "HH:mm";
       if (results.length > 1) {
         const first = moment(results[0].start_time);
         const last = moment(results.at(-1).start_time);
-        if (last.diff(first, "hours") >= 24) format = "Do " + format;
+        if (last.diff(first, "hours") >= 24) output = "Do " + output;
       }
-
-      // always return the time in the browser's timezone
-      return moment(itemdate).utcOffset(moment().utcOffset()).format(format);
+      return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
     }
 
     $.ajax({
@@ -43,9 +43,8 @@ $(function () {
     updateSpeedTestData();
   }, 6000);
 
-  var gridColor = $(".graphs-grid").css("background-color");
-  var ticksColor = $(".graphs-ticks").css("color");
-
+  var gridColor = utils.getCSSval("graphs-grid", "background-color");
+  var ticksColor = utils.getCSSval("graphs-ticks", "color");
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
     type: utils.getGraphType(1),

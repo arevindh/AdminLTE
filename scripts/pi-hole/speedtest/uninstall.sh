@@ -1,67 +1,90 @@
 #!/bin/bash
 
-clone() {
-	local path=$1
-	local dest=$2
-	local src=$3
-	local name=${4-} # if set, will keep local tag if older than latest
+setTags() {
+    local path=${1-}
+    local name=${2-}
 
-	cd "$path"
-	rm -rf "$dest"
-	git clone --depth=1 "$src" "$dest"
-	cd "$dest"
-	git fetch --tags -q
-	local latestTag=$(git describe --tags $(git rev-list --tags --max-count=1))
-	if [ ! -z "$name" ]; then
-		local localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 6)
-		[ "$localTag" == "HEAD" ] && localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 7)
-		if [[ "$localTag" == *.* ]] && [[ "$localTag" < "$latestTag" ]]; then
-			latestTag=$localTag
-			git fetch --unshallow
-		fi
-	fi
-	git -c advice.detachedHead=false checkout $latestTag
+    if [ ! -z "$path" ]; then
+        cd "$path"
+        git fetch --tags -q
+        latestTag=$(git describe --tags $(git rev-list --tags --max-count=1))
+    fi
+    if [ ! -z "$name" ]; then
+        localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 6)
+        [ "$localTag" == "HEAD" ] && localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 7)
+    fi
+}
+
+refresh() {
+    local path=$1
+    local name=$2
+    local url=$3
+    local src=${4-}
+    local dest=$path/$name
+
+    if [ ! -d $dest ]; then # replicate
+        cd "$path"
+        rm -rf "$name"
+        git clone --depth=1 "$url" "$name"
+        setTags "$name" "$src"
+        if [ ! -z "$src" ]; then
+            if [[ "$localTag" == *.* ]] && [[ "$localTag" < "$latestTag" ]]; then
+                latestTag=$localTag
+                git fetch --unshallow
+            fi
+        fi
+    elif [ ! -z "$src" ]; then # revert
+        setTags $dest
+        git remote | grep -q upstream && git remote remove upstream
+        git remote add upstream $url
+        git fetch upstream -q
+        git reset --hard upstream/master
+    else # reset
+        setTags $dest
+        git reset --hard origin/master
+    fi
+
+    git -c advice.detachedHead=false checkout $latestTag
+}
+
+manageHistory() {
+    local init_db=/var/www/html/admin/scripts/pi-hole/speedtest/speedtest.db
+    local curr_db=/etc/pihole/speedtest.db
+    local last_db=/etc/pihole/speedtest.db.old
+    if [ "${1-}" == "db" ]; then
+        if [ -f $curr_db ] && [ -f $init_db ] && [ "$(hashFile $curr_db)" != "$(hashFile $init_db)" ]; then
+            echo "$(date) - Flushing Database..."
+            mv -f $curr_db $last_db
+        elif [ -f $last_db ]; then
+            echo "$(date) - Restoring Database..."
+            mv -f $last_db $curr_db
+        fi
+    fi
 }
 
 uninstall() {
-	if cat /opt/pihole/webpage.sh | grep -q SpeedTest; then
-		echo "$(date) - Uninstalling Current Speedtest Mod..."
+    if cat /opt/pihole/webpage.sh | grep -q SpeedTest; then
+        echo "$(date) - Uninstalling Current Speedtest Mod..."
 
-		if [ ! -f /opt/pihole/webpage.sh.org ]; then
-			clone /opt org_pihole https://github.com/pi-hole/pi-hole Pi-hole
-			cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
-			cd ..
-			rm -rf org_pihole
-		fi
+        if [ ! -f /opt/pihole/webpage.sh.org ]; then
+            if [ ! -d /opt/org_pihole ]; then
+                refresh /opt org_pihole https://github.com/pi-hole/pi-hole Pi-hole
+            fi
+            cd /opt/org_pihole
+            cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
+            cd ..
+            rm -rf org_pihole
+        fi
 
-		if [ ! -d /var/www/html/org_admin ]; then
-			clone /var/www/html org_admin https://github.com/pi-hole/AdminLTE web
-		fi
+        refresh /var/www/html admin https://github.com/pi-hole/AdminLTE web
+        cd /opt/pihole/
+        mv webpage.sh.org webpage.sh
+        chmod +x webpage.sh
+    fi
 
-		cd /var/www/html
-		if [ -d /var/www/html/admin ]; then
-			rm -rf mod_admin
-			mv admin mod_admin
-		fi
-		mv org_admin admin
-		cd /opt/pihole/
-		cp webpage.sh webpage.sh.mod
-		mv webpage.sh.org webpage.sh
-		chmod +x webpage.sh
-	fi
-
-	if [ "${1-}" == "db" ]; then
-		if [ -f /etc/pihole/speedtest.db ] && [ "$(hashFile /etc/pihole/speedtest.db)" != "$(hashFile /var/www/html/admin/scripts/pi-hole/speedtest/speedtest.db)" ]; then
-			echo "$(date) - Flushing Database..."
-			mv -f /etc/pihole/speedtest.db /etc/pihole/speedtest.db.old
-		elif [ -f /etc/pihole/speedtest.db.old ]; then
-			echo "$(date) - Restoring Database..."
-			mv -f /etc/pihole/speedtest.db.old /etc/pihole/speedtest.db
-		fi
-	fi
-
-     echo "$(date) - Speedtest Mod is Uninstalled!"
+    manageHistory ${1-}
 }
 
 uninstall ${1-}
+echo "$(date) - Done!"
 exit 0

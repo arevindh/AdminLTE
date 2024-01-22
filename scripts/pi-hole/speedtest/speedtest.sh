@@ -21,7 +21,7 @@ speedtest() {
 }
 
 internet() {
-    stop=$(date +"%Y-%m-%d %H:%M:%S")
+    stop=$(date +"%Y-%m-%d %H:%M:%S %Z")
     res="$(<$FILE)"
     server_name=$(jq -r '.server.name' <<< "$res")
     server_dist=0
