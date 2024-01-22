@@ -211,7 +211,7 @@ function getCustomDNSEntries()
                 continue;
             }
 
-            $data = new \stdClass();
+            $data = new stdClass();
             $data->ip = $explodedLine[0];
             $data->domain = $explodedLine[1];
             $data->domains = array_slice($explodedLine, 0, -1);
@@ -289,7 +289,7 @@ function addCustomDNSEntry($ip = '', $domain = '', $reload = '', $json = true, $
         }
 
         return returnSuccess('', $json);
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage(), $json);
     }
 }
@@ -328,7 +328,7 @@ function deleteCustomDNSEntry()
         pihole_execute('-a removecustomdns '.$ip.' '.$domain);
 
         return returnSuccess();
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage());
     }
 }
@@ -345,7 +345,7 @@ function deleteAllCustomDNSEntries($reload = '')
         foreach ($existingEntries as $entry) {
             pihole_execute('-a removecustomdns '.$entry->ip.' '.$entry->domain.' '.$reload);
         }
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage());
     }
 
@@ -389,7 +389,7 @@ function getCustomCNAMEEntries()
                 continue;
             }
 
-            $data = new \stdClass();
+            $data = new stdClass();
             $data->domains = array_slice($explodedLine, 0, -1);
             $data->domain = implode(',', $data->domains);
             $data->target = $explodedLine[count($explodedLine) - 1];
@@ -471,7 +471,7 @@ function addCustomCNAMEEntry($domain = '', $target = '', $reload = '', $json = t
         }
 
         return returnSuccess('', $json);
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage(), $json);
     }
 }
@@ -510,7 +510,7 @@ function deleteCustomCNAMEEntry()
         pihole_execute('-a removecustomcname '.$domain.' '.$target);
 
         return returnSuccess();
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage());
     }
 }
@@ -527,7 +527,7 @@ function deleteAllCustomCNAMEEntries($reload = '')
         foreach ($existingEntries as $entry) {
             pihole_execute('-a removecustomcname '.$entry->domain.' '.$entry->target.' '.$reload);
         }
-    } catch (\Exception $ex) {
+    } catch (Exception $ex) {
         return returnError($ex->getMessage());
     }
 

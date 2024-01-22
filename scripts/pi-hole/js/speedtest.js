@@ -1,5 +1,21 @@
 /* global Chart:false, moment:false */
 
+function getGraphType(speedtest = 0) {
+  // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
+  if (!speedtest) {
+    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  }
+
+  return localStorage?.getItem("speedtest_chart_type") || "line";
+}
+
+function getCSSval(cssclass, cssproperty) {
+  var elem = $("<div class='" + cssclass + "'></div>"),
+    val = elem.appendTo("body").css(cssproperty);
+  elem.remove();
+  return val;
+}
+
 $(function () {
   var speedlabels = [];
   var downloadspeed = [];
@@ -8,8 +24,10 @@ $(function () {
 
   function updateSpeedTestData() {
     function formatDate(itemdate, results) {
-      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) { // Test for Safari
-        return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset()).format("HH:mm");
+      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+        return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z")
+          .utcOffset(moment().utcOffset())
+          .format("HH:mm");
       }
 
       let output = "HH:mm";
@@ -18,6 +36,7 @@ $(function () {
         const last = moment(results.at(-1).start_time);
         if (last.diff(first, "hours") >= 24) output = "Do " + output;
       }
+
       return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
     }
 
@@ -43,11 +62,11 @@ $(function () {
     updateSpeedTestData();
   }, 6000);
 
-  var gridColor = utils.getCSSval("graphs-grid", "background-color");
-  var ticksColor = utils.getCSSval("graphs-ticks", "color");
+  var gridColor = getCSSval("graphs-grid", "background-color");
+  var ticksColor = getCSSval("graphs-ticks", "color");
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: utils.getGraphType(1),
+    type: getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
@@ -97,13 +116,15 @@ $(function () {
           },
         },
         tooltip: {
-          mode: 'index',
-          intersect: utils.getGraphType(1) === "bar",
-          yAlign: 'bottom',
+          mode: "index",
+          intersect: getGraphType(1) === "bar",
+          yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              return Math.round(context?.parsed?.y) + " " + context?.dataset?.label || null;
-            }
+              return (
+                Math.round(context?.parsed?.y ?? 0) + " " + (context?.dataset?.label ?? "") || null
+              );
+            },
           },
         },
       },

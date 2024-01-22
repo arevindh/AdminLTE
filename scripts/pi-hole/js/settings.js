@@ -524,47 +524,59 @@ $(function () {
     speedtestServer.attr("value", speedtestServer.val());
   });
 
-  hasBackup = () => {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: "api.php?hasSpeedTestBackup&PHP",
-        dataType: "json",
-      }).done(function (backupExists) {
-        resolve(backupExists);
-      }).fail(function (error) {
-        resolve(false);
+  const hasBackup = callback => {
+    $.ajax({
+      url: "api.php?hasSpeedTestBackup&PHP",
+      dataType: "json",
+    })
+      .done(function (backupExists) {
+        callback(true, backupExists);
+      })
+      .fail(function () {
+        callback(true, false);
       });
-    });
-  }
+  };
 
-  hasHistory = () => {
-    return new Promise((resolve, reject) => {
-      $.ajax({
-        url: "api.php?getAllSpeedTestData&PHP",
-        dataType: "json",
-      }).done(function (results) {
-        resolve(results?.data?.length !== 0);
-      }).fail(function (error) {
-        resolve(false);
+  const hasHistory = callback => {
+    $.ajax({
+      url: "api.php?getAllSpeedTestData&PHP",
+      dataType: "json",
+    })
+      .done(function (results) {
+        callback(null, results?.data?.length !== 0);
+      })
+      .fail(function () {
+        callback(true, false);
       });
-    });
-  }
+  };
 
-  canRestore = () => {
-    hasBackup().then(backupExists => {
-      hasHistory().then(historyExists => {
+  const canRestore = () => {
+    hasBackup((errorBackup, backupExists) => {
+      hasHistory((errorHistory, historyExists) => {
+        if (errorBackup && errorHistory && !errorHistory) {
+          return;
+        }
+
         const didFlush = backupExists && !historyExists;
         let newClass = defaultClass;
-        speedtestDeleteLabel.text(didFlush ? "Restore History (available until the next speedtest)" : "Clear History");
+        speedtestDeleteLabel.text(
+          didFlush ? "Restore History (available until the next speedtest)" : "Clear History"
+        );
+
         if (speedtestUninstall.attr("value")) {
-          newClass = (didFlush && speedtestDelete.attr("value")) || (historyExists && !speedtestDelete.attr("value")) ? colorClasses[1] : colorClasses[2];
+          newClass =
+            (didFlush && speedtestDelete.attr("value")) ||
+            (historyExists && !speedtestDelete.attr("value"))
+              ? colorClasses[1]
+              : colorClasses[2];
         } else if (speedtestDelete.attr("value")) {
           newClass = didFlush ? colorClasses[0] : colorClasses[1];
         }
+
         speedtestSubmit.removeClass([...colorClasses, defaultClass].join(" ")).addClass(newClass);
       });
     });
-  }
+  };
 
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
