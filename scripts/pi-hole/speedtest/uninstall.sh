@@ -15,7 +15,7 @@ setTags() {
     fi
 }
 
-refresh() {
+download() {
     local path=$1
     local name=$2
     local url=$3
@@ -39,7 +39,7 @@ refresh() {
         git remote add upstream $url
         git fetch upstream -q
         git reset --hard upstream/master
-    else # reset
+    else # refresh
         setTags $dest
         git reset --hard origin/master
     fi
@@ -68,17 +68,16 @@ uninstall() {
 
         if [ ! -f /opt/pihole/webpage.sh.org ]; then
             if [ ! -d /opt/org_pihole ]; then
-                refresh /opt org_pihole https://github.com/pi-hole/pi-hole Pi-hole
+                download /opt org_pihole https://github.com/pi-hole/pi-hole Pi-hole
             fi
-            cd /opt/org_pihole
-            cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
-            cd ..
+            cd /opt
+            cp org_pihole/advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
             rm -rf org_pihole
         fi
 
-        refresh /var/www/html admin https://github.com/pi-hole/AdminLTE web
+        download /var/www/html admin https://github.com/pi-hole/AdminLTE web
         cd /opt/pihole/
-        mv webpage.sh.org webpage.sh
+        cp webpage.sh.org webpage.sh
         chmod +x webpage.sh
     fi
 
