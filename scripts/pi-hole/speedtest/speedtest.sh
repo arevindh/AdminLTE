@@ -61,10 +61,10 @@ nointernet(){
 }
 
 tryagain(){
-    if dpkg -s speedtest &> /dev/null; then
+    if apt-cache policy speedtest-cli | grep -q 'Installed: (none)'; then
         apt-get install -y speedtest-cli speedtest-
     else
-        apt-get install -y speedtest-cli- speedtest
+        apt-get install -y speedtest speedtest-cli-
     fi
     speedtest > "$FILE" && internet || nointernet
 }
