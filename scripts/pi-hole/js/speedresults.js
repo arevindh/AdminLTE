@@ -48,12 +48,34 @@ $(document).ready(function () {
       null,
       {
         render: function (data, type, _full, _meta) {
-          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+          if (type === "display") {
+            if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            } else {
+              data = moment(data)
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            }
+          }
+          return data;
         },
       },
       {
         render: function (data, type, _full, _meta) {
-          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+          if (type === "display") {
+            if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            } else {
+              data = moment(data)
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            }
+          }
+          return data;
         },
       },
       null,
