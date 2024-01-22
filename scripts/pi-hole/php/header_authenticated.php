@@ -155,9 +155,9 @@ if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
     $speedtestshedule = false;
 }
 if (isset($setupVars['SPEEDTEST_CHART_DAYS']) && $setupVars['SPEEDTEST_CHART_DAYS'] > 1) {
-    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' Days';
+    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' days';
 } else {
-    $speedtestdays = '24 Hours';
+    $speedtestdays = '24 hours';
 }
 
 $piholeFTLConf = piholeFTLConfig();
