@@ -2,7 +2,7 @@
 FILE=/tmp/speedtest.log
 readonly setupVars="/etc/pihole/setupVars.conf"
 serverid=$(grep 'SPEEDTEST_SERVER' ${setupVars} | cut -d '=' -f2)
-start=$(date +"%Y-%m-%d %H:%M:%S")
+start=$(date +"%Y-%m-%d %H:%M:%S %Z")
 
 speedtest() {
     if grep -q official <<< "$(/usr/bin/speedtest --version)"; then
@@ -21,7 +21,7 @@ speedtest() {
 }
 
 internet() {
-    stop=$(date +"%Y-%m-%d %H:%M:%S")
+    stop=$(date +"%Y-%m-%d %H:%M:%S %Z")
     res="$(<$FILE)"
     server_name=$(jq -r '.server.name' <<< "$res")
     server_dist=0
@@ -54,15 +54,15 @@ internet() {
 }
 
 nointernet(){
-    stop=$(date +"%Y-%m-%d %H:%M:%S")
+    stop=$(date +"%Y-%m-%d %H:%M:%S %Z")
     echo "No Internet"
     sqlite3 /etc/pihole/speedtest.db "insert into speedtest values (NULL, '${start}', '${stop}', 'No Internet', '-', '-', 0, 0, 0, 0, '#');"
     exit 1
 }
 
 tryagain(){
-    start=$(date +"%Y-%m-%d %H:%M:%S")
-    speedtest > $FILE && internet || nointernet
+    start=$(date +"%Y-%m-%d %H:%M:%S %Z")
+    speedtest > "$FILE" && internet || nointernet
 }
 
 main() {

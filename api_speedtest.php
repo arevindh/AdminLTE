@@ -13,6 +13,7 @@ if (!isset($api)) {
 // $data = array();
 
 $dbSpeedtest = '/etc/pihole/speedtest.db';
+$dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
@@ -26,6 +27,11 @@ if (isset($_GET['getLastSpeedtestResult']) && $auth) {
 
 if (isset($_GET['getAllSpeedTestData']) && $auth) {
     $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+}
+
+function hasSpeedTestBackup($dbSpeedtestOld)
+{
+    return file_exists($dbSpeedtestOld);
 }
 
 function getAllSpeedTestData($dbSpeedtest)

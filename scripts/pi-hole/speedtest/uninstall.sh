@@ -1,55 +1,90 @@
 #!/bin/bash
 
-echo "$(date) - Restoring Pi-hole..."
+setTags() {
+    local path=${1-}
+    local name=${2-}
 
-cd /opt/
-if [ ! -f /opt/pihole/webpage.sh.org ]; then
-    rm -rf org_pihole
-    git clone https://github.com/pi-hole/pi-hole org_pihole
-    cd org_pihole
-    git fetch --tags -q
-    localVer=$(pihole -v | grep "Pi-hole" | cut -d ' ' -f 6)
-    remoteVer=$(curl -s https://api.github.com/repos/pi-hole/pi-hole/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-    if [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]]; then
-        remoteVer=$localVer
+    if [ ! -z "$path" ]; then
+        cd "$path"
+        git fetch --tags -q
+        latestTag=$(git describe --tags $(git rev-list --tags --max-count=1))
     fi
-    git checkout -q $remoteVer
-    cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
-    cd - > /dev/null
-    rm -rf org_pihole
-fi
-
-cd /var/www/html
-if [ ! -d /var/www/html/org_admin ]; then
-    rm -rf org_admin
-    git clone https://github.com/pi-hole/AdminLTE org_admin
-    cd org_admin
-    git fetch --tags -q
-    localVer=$(pihole -v | grep "AdminLTE" | cut -d ' ' -f 6)
-    remoteVer=$(curl -s https://api.github.com/repos/pi-hole/AdminLTE/releases/latest | grep "tag_name" | cut -d '"' -f 4)
-    if [[ "$localVer" < "$remoteVer" && "$localVer" == *.* ]]; then
-        remoteVer=$localVer
+    if [ ! -z "$name" ]; then
+        localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 6)
+        [ "$localTag" == "HEAD" ] && localTag=$(pihole -v | grep "$name" | cut -d ' ' -f 7)
     fi
-    git checkout -q $remoteVer
-    cd - > /dev/null
-fi
+}
 
-if [ "${1-}" == "db" ] && [ -f /etc/pihole/speedtest.db ]; then
-    mv /etc/pihole/speedtest.db /etc/pihole/speedtest.db.old
-    echo "$(date) - Configured Database..."
-fi
+refresh() {
+    local path=$1
+    local name=$2
+    local url=$3
+    local src=${4-}
+    local dest=$path/$name
 
-echo "$(date) - Uninstalling Current Speedtest Mod..."
+    if [ ! -d $dest ]; then # replicate
+        cd "$path"
+        rm -rf "$name"
+        git clone --depth=1 "$url" "$name"
+        setTags "$name" "$src"
+        if [ ! -z "$src" ]; then
+            if [[ "$localTag" == *.* ]] && [[ "$localTag" < "$latestTag" ]]; then
+                latestTag=$localTag
+                git fetch --unshallow
+            fi
+        fi
+    elif [ ! -z "$src" ]; then # revert
+        setTags $dest
+        git remote | grep -q upstream && git remote remove upstream
+        git remote add upstream $url
+        git fetch upstream -q
+        git reset --hard upstream/master
+    else # reset
+        setTags $dest
+        git reset --hard origin/master
+    fi
 
-if [ -d /var/www/html/admin ]; then
-    rm -rf mod_admin
-    mv admin mod_admin
-fi
-mv org_admin admin
-cd /opt/pihole/
-cp webpage.sh webpage.sh.mod
-mv webpage.sh.org webpage.sh
-chmod +x webpage.sh
+    git -c advice.detachedHead=false checkout $latestTag
+}
 
-echo "$(date) - Uninstall Complete"
+manageHistory() {
+    local init_db=/var/www/html/admin/scripts/pi-hole/speedtest/speedtest.db
+    local curr_db=/etc/pihole/speedtest.db
+    local last_db=/etc/pihole/speedtest.db.old
+    if [ "${1-}" == "db" ]; then
+        if [ -f $curr_db ] && [ -f $init_db ] && [ "$(hashFile $curr_db)" != "$(hashFile $init_db)" ]; then
+            echo "$(date) - Flushing Database..."
+            mv -f $curr_db $last_db
+        elif [ -f $last_db ]; then
+            echo "$(date) - Restoring Database..."
+            mv -f $last_db $curr_db
+        fi
+    fi
+}
+
+uninstall() {
+    if cat /opt/pihole/webpage.sh | grep -q SpeedTest; then
+        echo "$(date) - Uninstalling Current Speedtest Mod..."
+
+        if [ ! -f /opt/pihole/webpage.sh.org ]; then
+            if [ ! -d /opt/org_pihole ]; then
+                refresh /opt org_pihole https://github.com/pi-hole/pi-hole Pi-hole
+            fi
+            cd /opt/org_pihole
+            cp advanced/Scripts/webpage.sh ../pihole/webpage.sh.org
+            cd ..
+            rm -rf org_pihole
+        fi
+
+        refresh /var/www/html admin https://github.com/pi-hole/AdminLTE web
+        cd /opt/pihole/
+        mv webpage.sh.org webpage.sh
+        chmod +x webpage.sh
+    fi
+
+    manageHistory ${1-}
+}
+
+uninstall ${1-}
+echo "$(date) - Done!"
 exit 0

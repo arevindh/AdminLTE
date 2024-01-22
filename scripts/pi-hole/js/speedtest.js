@@ -1,4 +1,20 @@
-/* global Chart:false, moment:false, utils:false */
+/* global Chart:false, moment:false */
+
+function getGraphType(speedtest = 0) {
+  // Only return line if `barchart_chkbox` is explicitly set to false. Else return bar
+  if (!speedtest) {
+    return localStorage?.getItem("barchart_chkbox") === "false" ? "line" : "bar";
+  }
+
+  return localStorage?.getItem("speedtest_chart_type") || "line";
+}
+
+function getCSSval(cssclass, cssproperty) {
+  var elem = $("<div class='" + cssclass + "'></div>"),
+    val = elem.appendTo("body").css(cssproperty);
+  elem.remove();
+  return val;
+}
 
 $(function () {
   var speedlabels = [];
@@ -8,16 +24,20 @@ $(function () {
 
   function updateSpeedTestData() {
     function formatDate(itemdate, results) {
-      // if the the first and last time are 24 hours apart or more
-      // then return the date and time, otherwise return the time
-      let format = "HH:mm";
+      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+        return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z")
+          .utcOffset(moment().utcOffset())
+          .format("HH:mm");
+      }
+
+      let output = "HH:mm";
       if (results.length > 1) {
         const first = moment(results[0].start_time);
         const last = moment(results.at(-1).start_time);
-        if (last.diff(first, "hours") >= 24) format = "Do " + format;
+        if (last.diff(first, "hours") >= 24) output = "Do " + output;
       }
 
-      return moment(itemdate).format(format);
+      return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
     }
 
     $.ajax({
@@ -42,12 +62,11 @@ $(function () {
     updateSpeedTestData();
   }, 6000);
 
-  var gridColor = $(".graphs-grid").css("background-color");
-  var ticksColor = $(".graphs-ticks").css("color");
-
+  var gridColor = getCSSval("graphs-grid", "background-color");
+  var ticksColor = getCSSval("graphs-ticks", "color");
   var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
   var speedChart = new Chart(speedChartctx, {
-    type: utils.getGraphType(1),
+    type: getGraphType(1),
     data: {
       labels: speedlabels,
       datasets: [
@@ -98,16 +117,13 @@ $(function () {
         },
         tooltip: {
           mode: "index",
-          intersect: utils.getGraphType(1) === "bar",
+          intersect: getGraphType(1) === "bar",
           yAlign: "bottom",
           callbacks: {
             label: function (context) {
-              const varParsed =
-                context.parsed !== "undefined" && context.parsed !== "undefined"
-                  ? context.parsed.y
-                  : null;
-              const varLabel = context.dataset !== "undefined" ? context.dataset.label : null;
-              return Math.round(varParsed) + " " + varLabel;
+              return (
+                Math.round(context?.parsed?.y ?? 0) + " " + (context?.dataset?.label ?? "") || null
+              );
             },
           },
         },

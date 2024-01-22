@@ -28,7 +28,7 @@
     "eslint-plugin-compat": "^4.2.0",
     "postcss": "^8.4.31",
     "postcss-cli": "^10.1.0",
-    "prettier": "3.1.0",
+    "prettier": "^3.1.0",
     "xo": "^0.56.0"
   },
   "browserslist": [
@@ -104,6 +104,5 @@
       "unicorn/switch-case-braces": "off",
       "unicorn/no-negated-condition": "off"
     }
-  },
-  "dependencies": {}
+  }
 }
