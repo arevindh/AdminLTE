@@ -62,9 +62,9 @@ nointernet(){
 
 tryagain(){
     if dpkg -s speedtest &> /dev/null; then
-        apt-get install -y speedtest-cli speedtest- || nointernet
+        apt-get install -y speedtest-cli speedtest-
     else
-        apt-get install -y speedtest-cli- speedtest || nointernet
+        apt-get install -y speedtest-cli- speedtest
     fi
     speedtest > "$FILE" && internet || nointernet
 }
