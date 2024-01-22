@@ -26,7 +26,7 @@ $(document).ready(function () {
   // Do we want to filter queries?
   var GETDict = {};
   location.search
-    .substr(1)
+    .slice(1)
     .split("&")
     .forEach(function (item) {
       GETDict[item.split("=")[0]] = item.split("=")[1];

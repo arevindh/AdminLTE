@@ -485,7 +485,6 @@ $(function () {
   const speedtestSubmit = $("#st-submit");
   const defaultClass = "btn-primary";
   const colorClasses = ["btn-success", "btn-warning", "btn-danger"];
-  let activeClass = defaultClass;
 
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
   speedtestChartType.prop("checked", type === "bar");
@@ -538,62 +537,46 @@ $(function () {
     });
   }
 
-  canRestore = () => {
+  hasHistory = () => {
     return new Promise((resolve, reject) => {
-      hasBackup().then(backupExists => {
-        if (backupExists) {
-          $.ajax({
-            url: "api.php?getAllSpeedTestData&PHP",
-            dataType: "json",
-          }).done(function (results) {
-            resolve(results?.data?.length === 0);
-          }).fail(function (error) {
-            resolve(false);
-          });
-        } else {
-          resolve(false);
-        }
-      }).catch(error => {
+      $.ajax({
+        url: "api.php?getAllSpeedTestData&PHP",
+        dataType: "json",
+      }).done(function (results) {
+        resolve(results?.data?.length !== 0);
+      }).fail(function (error) {
         resolve(false);
       });
     });
   }
 
-  checkCanRestore = () => {
-    canRestore().then(didFlush => {
-      let newClass = defaultClass;
-      let setClass = false;
-      speedtestDeleteLabel.text(didFlush ? "Restore History (available until the next speedtest)" : "Clear History");
-      didFlush = speedtestDelete.attr("value") ? didFlush : undefined;
-
-      if (speedtestUninstall.attr("value")) {
-          newClass = (didFlush !== undefined && !didFlush) ? colorClasses[2] : colorClasses[1];
-      } else if (didFlush !== undefined) {
+  canRestore = () => {
+    hasBackup().then(backupExists => {
+      hasHistory().then(historyExists => {
+        const didFlush = backupExists && !historyExists;
+        let newClass = defaultClass;
+        speedtestDeleteLabel.text(didFlush ? "Restore History (available until the next speedtest)" : "Clear History");
+        if (speedtestUninstall.attr("value")) {
+          newClass = (didFlush && speedtestDelete.attr("value")) || (historyExists && !speedtestDelete.attr("value")) ? colorClasses[1] : colorClasses[2];
+        } else if (speedtestDelete.attr("value")) {
           newClass = didFlush ? colorClasses[0] : colorClasses[1];
-          setClass = true;
-      } else if (speedtestDelete.attr("value")) {
-          newClass = activeClass;
-      }
-
-      speedtestSubmit.removeClass([...colorClasses, defaultClass].join(" ")).addClass(newClass);
-
-      if (setClass || !speedtestDelete.attr("value")) {
-          activeClass = newClass;
-      }
+        }
+        speedtestSubmit.removeClass([...colorClasses, defaultClass].join(" ")).addClass(newClass);
+      });
     });
   }
 
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
-    checkCanRestore();
+    canRestore();
   });
 
   speedtestDelete.on("click", function () {
     speedtestDelete.attr("value", speedtestDelete.attr("value") ? null : "db");
-    checkCanRestore();
+    canRestore();
   });
 
   setInterval(() => {
-    checkCanRestore();
+    canRestore();
   }, 1000);
 });
