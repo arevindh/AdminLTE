@@ -16,7 +16,7 @@ require 'scripts/pi-hole/php/header_authenticated.php';
     <div class="col-md-12">
         <div class="box" id="recent-queries">
             <div class="box-header with-border">
-                <h3 class="box-title">Recent Speedtests <?php echo $showing; ?>, <a href="/admin/api.php?csv-export=1">Export as CSV</a></h3>
+                <h3 class="box-title">Recent Speedtests <?php echo $showing; ?>| <a href="/admin/api.php?csv-export=1">Export as CSV</a></h3>
             </div>
             <!-- /.box-header -->
             <div class="box-body">
