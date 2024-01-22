@@ -61,7 +61,11 @@ nointernet(){
 }
 
 tryagain(){
-    start=$(date +"%Y-%m-%d %H:%M:%S %Z")
+    if dpkg -s speedtest &> /dev/null; then
+        apt-get install -y speedtest-cli speedtest- || nointernet
+    else
+        apt-get install -y speedtest-cli- speedtest || nointernet
+    fi
     speedtest > "$FILE" && internet || nointernet
 }
 
