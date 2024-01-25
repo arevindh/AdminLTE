@@ -1546,18 +1546,15 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                         <div class="row">
                                             <div class="col-md-12">
                                                 <div class="form-group col-md-12">
-                                                    <label>Test the Test</label>
+                                                    <label>Run Once</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Run Test Now</label>
+                                                        <label for="speedtesttest">Start a test now</label>
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label for="speedtestschedule">Testing Schedule</label>
+                                                    <label for="speedtestschedule">Run Every X Hours</label>
                                                     <div class="input-group mb-3">
-                                                        <div class="input-group-prepend">
-                                                            <span class="input-group-text">Every</span>
-                                                        </div>
                                                         <input
                                                             type="number"
                                                             name="speedtestschedule"
@@ -1565,9 +1562,6 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                             value="<?php echo htmlspecialchars($speedtestshedule); ?>"
                                                             min="0"
                                                         >
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">Hours</span>
-                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-md-6">
