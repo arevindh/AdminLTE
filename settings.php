@@ -1566,7 +1566,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Chart Display Range (When X > 0)</label>
-                                                    <select name="speedtestdays" class="form-control">
+                                                    <select name="speedtestdays" class="form-control col-md-3">
                                                         <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
                                                         <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
                                                         <option value="4" <?php if ($speedtestdays == 4) { ?> selected <?php } ?>>4 Days</option>
@@ -1588,6 +1588,19 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
 
                                                 <div class="form-group col-md-6">
+                                                    <label>Custom Server</label>
+                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">Speedtest.net Server</div>
+                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>" placeholder="Keep this blank to autoselect" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
                                                     <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
@@ -1600,19 +1613,6 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <div>
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
                                                         <label for="speedtestdelete">Clear History</label>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
-                                                    <label>Custom Server</label>
-                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
-                                                                echo $speedtestserver;
-                                                            } ?>" placeholder="Keep this blank to autoselect" />
-                                                        </div>
                                                     </div>
                                                 </div>
 
