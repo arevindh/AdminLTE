@@ -1545,7 +1545,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="form-group col-md-12">
+                                                <div class="form-group col-md-6">
                                                     <label>Run Once</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest" />
@@ -1554,7 +1554,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label for="speedtestschedule">Run Every X Hours</label>
-                                                    <div class="input-group mb-3">
+                                                    <div class="input-group mb-1">
                                                         <input
                                                             type="number"
                                                             name="speedtestschedule"
@@ -1576,18 +1576,6 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Custom Server</label>
-                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
-                                                                echo $speedtestserver;
-                                                            } ?>" placeholder="Keep this blank to autoselect" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-6">
                                                     <label>Use Bar Chart</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
@@ -1599,7 +1587,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group col-md-12">
+                                                <div class="form-group col-md-6">
                                                     <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
@@ -1613,6 +1601,22 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Custom Server</label>
+                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
+                                                    <div class="form-group">
+                                                        <div class="input-group">
+                                                            <div class="input-group-addon">Speedtest.net Server</div>
+                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>" placeholder="Keep this blank to autoselect" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-12">
                                                     <p>Attach to a running process with</p>
                                                     <pre><code>sudo tmux attach-session -t pimod</code></pre>
                                                     <p>Or access the latest log whenever with</p>
