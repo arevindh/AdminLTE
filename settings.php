@@ -1553,16 +1553,22 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                 </div>
                                                 <div class="form-group col-md-6">
-                                                    <label>Testing Schedule</label>
-                                                    <select name="speedtestschedule" class="form-control">
-                                                        <option value="0" <?php if ($speedtestshedule == 0) { ?> selected <?php } ?>>Disabled</option>
-                                                        <option value="1" <?php if ($speedtestshedule == 1) { ?> selected <?php } ?>>Every 1 Hour</option>
-                                                        <option value="2" <?php if ($speedtestshedule == 2) { ?> selected <?php } ?>>Every 2 Hours</option>
-                                                        <option value="4" <?php if ($speedtestshedule == 4) { ?> selected <?php } ?>>Every 4 Hours</option>
-                                                        <option value="6" <?php if ($speedtestshedule == 6) { ?> selected <?php } ?>>Every 6 Hours</option>
-                                                        <option value="12" <?php if ($speedtestshedule == 12) { ?> selected <?php } ?>>Every 12 Hours</option>
-                                                        <option value="24" <?php if ($speedtestshedule == 24) { ?> selected <?php } ?>>Every 24 Hours</option>
-                                                    </select>
+                                                    <label for="speedtestschedule">Testing Schedule</label>
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text">Every</span>
+                                                        </div>
+                                                        <input
+                                                            type="number"
+                                                            name="speedtestschedule"
+                                                            class="form-control"
+                                                            value="<?php echo htmlspecialchars($speedtestshedule); ?>"
+                                                            min="0"
+                                                        >
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">Hours</span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div class="form-group col-md-6">
                                                     <label>Chart Display Range</label>
