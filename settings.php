@@ -1545,14 +1545,14 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="form-group col-md-3">
+                                                <div class="form-group col-md-6">
                                                     <label>Run Once</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest" />
                                                         <label for="speedtesttest">Start a test now</label>
                                                     </div>
                                                 </div>
-                                                <div class="form-group col-md-9">
+                                                <div class="form-group col-md-6">
                                                     <label for="speedtestschedule">Run Every X Hours</label>
                                                     <div class="input-group mb-1">
                                                         <input
@@ -1564,9 +1564,9 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         >
                                                     </div>
                                                 </div>
-                                                <div class="form-group col-md-3">
+                                                <div class="form-group col-md-6">
                                                     <label>Chart Display Range (When X > 0)</label>
-                                                    <select name="speedtestdays" class="form-control col-md-3">
+                                                    <select name="speedtestdays" class="form-control mb-3">
                                                         <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
                                                         <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
                                                         <option value="4" <?php if ($speedtestdays == 4) { ?> selected <?php } ?>>4 Days</option>
@@ -1575,7 +1575,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </select>
                                                 </div>
 
-                                                <div class="form-group col-md-9">
+                                                <div class="form-group col-md-6">
                                                     <label>Use Bar Chart</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
@@ -1587,7 +1587,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group col-md-3">
+                                                <div class="form-group col-md-6">
                                                     <label>Custom Server</label>
                                                     <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
                                                     <div class="form-group">
@@ -1600,7 +1600,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                 </div>
 
-                                                <div class="form-group col-md-9">
+                                                <div class="form-group col-md-6">
                                                     <label>Mod the Mod</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
