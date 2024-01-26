@@ -1625,7 +1625,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                             </div>
                                         </div>
                                         <div class="box-footer clearfix">
-                                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">CONFIRM</button>
+                                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">Confirm</button>
                                         </div>
                                     </div>
                             </form>
