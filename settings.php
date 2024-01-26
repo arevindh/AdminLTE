@@ -1561,6 +1561,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                             class="form-control"
                                                             value="<?php echo htmlspecialchars($speedtestshedule); ?>"
                                                             min="0"
+                                                            step="0.00027778"
                                                         >
                                                     </div>
                                                 </div>
