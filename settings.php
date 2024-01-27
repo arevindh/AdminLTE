@@ -1530,108 +1530,133 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                 <!-- ######################################################### Speedtest ######################################################### -->
                 <div id="speedtest" class="tab-pane fade<?php if ($tab === 'speedtest') { ?> in active<?php } ?>">
-
-                    <div class="row">
-                        <div class="col-md-12">
-                            <form role="form" method="post">
-                                <input type="hidden" name="field" value="speedtest">
-                                <input type="hidden" name="token" value="<?php echo $token; ?>">
+                    <form role="form" method="post">
+                        <input type="hidden" name="field" value="speedtest">
+                        <input type="hidden" name="token" value="<?php echo $token; ?>">
+                        <div class="row">
+                            <!-- Basic Box -->
+                            <div class="col-md-6">
                                 <div class="box box-warning">
                                     <div class="box-header with-border">
-
-                                        <h3 class="box-title">Speedtest settings</h3>
-
+                                        <h3 class="box-title">Basic</h3>
                                     </div>
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
+
                                                 <div class="form-group col-md-6">
-                                                    <label>Run Once</label>
-                                                    <div>
-                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest" />
-                                                        <label for="speedtesttest">Start a test now</label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group col-md-6">
-                                                    <label for="speedtestschedule">Run Every X Hours</label>
-                                                    <div class="input-group mb-1">
+                                                    <label for="speedtestschedule">Testing interval</label>
+                                                    <p>Any real number, down to a minute</p>
+                                                    <div class="input-group mb-6">
+                                                        <div class="input-group-addon">Hours</div>
                                                         <input
                                                             type="number"
                                                             name="speedtestschedule"
                                                             class="form-control"
                                                             value="<?php echo htmlspecialchars($speedtestshedule); ?>"
                                                             min="0"
-                                                            step="0.00027778"
+                                                            step="0.01"
+                                                            placeholder="0 = disable schedule"
                                                         >
                                                     </div>
                                                 </div>
+
                                                 <div class="form-group col-md-6">
-                                                    <label>Chart Display Range (When X > 0)</label>
-                                                    <select name="speedtestdays" class="form-control mb-3">
-                                                        <option value="1" <?php if ($speedtestdays == 1) { ?> selected <?php } ?>>1 Day</option>
-                                                        <option value="2" <?php if ($speedtestdays == 2) { ?> selected <?php } ?>>2 Days</option>
-                                                        <option value="4" <?php if ($speedtestdays == 4) { ?> selected <?php } ?>>4 Days</option>
-                                                        <option value="7" <?php if ($speedtestdays == 7) { ?> selected <?php } ?>>7 Days</option>
-                                                        <option value="30" <?php if ($speedtestdays == 30) { ?> selected <?php } ?>>30 Days</option>
-                                                    </select>
+                                                    <label for="speedtestdays">Chart range</label>
+                                                    <p>Integers only, max number to show</p>
+                                                    <div class="input-group mb-6">
+                                                        <div class="input-group-addon">Days</div>
+                                                        <input
+                                                            type="number"
+                                                            name="speedtestdays"
+                                                            class="form-control"
+                                                            value="<?php echo htmlspecialchars($speedtestdays); ?>"
+                                                            min="0"
+                                                            step="1"
+                                                            placeholder="0 = hide chart"
+                                                        >
+                                                    </div>
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Use Bar Chart</label>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtesttest" id="speedtesttest">
+                                                        <label for="speedtesttest"><strong>Run a test now</strong></label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label>Bar chart</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
-                                                        <label for="speedtestcharttype">Enable bar chart (autosaved, per-browser)</label>
+                                                        <label for="speedtestcharttype">Enable (autosaved, per-browser)</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
                                                         <label for="speedtestcharttypesave">Set choice as default (upon confirmation)</label>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Advanced Box -->
+                            <div class="col-md-6">
+                                <div class="box box-warning">
+                                    <div class="box-header with-border">
+                                        <h3 class="box-title">Advanced</h3>
+                                    </div>
+                                    <div class="box-body">
+                                        <div class="row">
+                                            <div class="col-md-12">
 
-                                                <div class="form-group col-md-6">
-                                                    <label>Custom Server</label>
-                                                    <p>You can find the closest servers with <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a>. <span class="text-danger">Experts only!</span></p>
-                                                    <div class="form-group">
-                                                        <div class="input-group">
-                                                            <div class="input-group-addon">Speedtest.net Server</div>
-                                                            <input type="number" class="form-control" id="speedtestserver" name="speedtestserver" value="<?php if ($speedtestserver) {
-                                                                echo $speedtestserver;
-                                                            } ?>" placeholder="Keep this blank to autoselect" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
+                                                <div class="form-group col-md-12">
                                                     <label>Mod the Mod</label>
                                                     <div>
-                                                        <input type="checkbox" name="speedtestupdate" id="speedtestupdate" />
+                                                        <input type="checkbox" name="speedtestupdate" id="speedtestupdate">
                                                         <label for="speedtestupdate">(Re)install Latest</label>
                                                     </div>
                                                     <div>
-                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall" />
+                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall">
                                                         <label for="speedtestuninstall">Uninstall Mod</label>
                                                     </div>
                                                     <div>
-                                                        <input type="checkbox" name="speedtestdelete" id="speedtestdelete" />
+                                                        <input type="checkbox" name="speedtestdelete" id="speedtestdelete">
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
+                                                    <p>Follow the process (if fast enough) and check the log with</p>
+                                                    <pre><code>sudo tmux attach-session -t pimod
+cat /var/log/pimod.log</code></pre>
                                                 </div>
 
                                                 <div class="form-group col-md-12">
-                                                    <p>Attach to a running process with</p>
-                                                    <pre><code>sudo tmux attach-session -t pimod</code></pre>
-                                                    <p>Or access the latest log whenever with</p>
-                                                    <pre><code>cat /var/log/pimod.log</code></pre>
+                                                    <label for="speedtestserver">Set custom server</label>
+                                                    <p>The closest servers can be found using <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a></p>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">id</div>
+                                                        <input
+                                                            type="number"
+                                                            class="form-control"
+                                                            id="speedtestserver"
+                                                            name="speedtestserver"
+                                                            value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>"
+                                                            placeholder="Keep this blank to autoselect"
+                                                        >
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="box-footer clearfix">
-                                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">Confirm</button>
-                                        </div>
                                     </div>
-                            </form>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        <div class="box-footer clearfix">
+                            <button id="st-submit" type="submit" class="btn btn-primary pull-right">Confirm</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
