@@ -205,7 +205,7 @@ function speedtestExecute($command)
 {
     $output = array();
     $return_status = -1;
-    exec('/bin/bash -c \''.$command.'\' 2>&1', $output, $return_status);
+    exec('/bin/bash -c \''.$command.'\'', $output, $return_status);
 
     if ($return_status !== 0) {
         trigger_error("Executing {$command} failed.", E_USER_WARNING);
@@ -226,7 +226,7 @@ function getLatestLog()
 
 function getClosestServers()
 {
-    $closestServers = speedtestExecute('sudo speedtest -h | grep -q official && sudo speedtest -L || speedtest --list');
+    $closestServers = speedtestExecute('speedtest -h | grep -q official && sudo speedtest -L || speedtest --list');
     // $closestServers = speedtestExecute('echo "set -x" > /tmp/speedtest.sh && echo "speedtest -h | grep -q speedtest-cli && speedtest --list || speedtest -L" >> /tmp/speedtest.sh && chmod +x /tmp/speedtest.sh && /tmp/speedtest.sh');
 
     $closestServers = array_filter($closestServers);
