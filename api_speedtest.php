@@ -14,24 +14,29 @@ if (!isset($api)) {
 
 $dbSpeedtest = '/etc/pihole/speedtest.db';
 $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
+$url = 'https://c.speedtest.net/speedtest-servers-static.php';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
-if (isset($_GET['getSpeedData24hrs']) && $auth) {
-    $data = array_merge($data, getSpeedData24hrs($dbSpeedtest));
-}
-
-if (isset($_GET['getLastSpeedtestResult']) && $auth) {
-    $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
-}
-
-if (isset($_GET['getAllSpeedTestData']) && $auth) {
-    $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+if ($auth) {
+    if (isset($_GET['hasSpeedTestBackup'])) {
+        $data = array_merge($data, hasSpeedTestBackup($dbSpeedtestOld));
+    } else if (isset($_GET['getSpeedData24hrs'])) {
+        $data = array_merge($data, getSpeedData24hrs($dbSpeedtest));
+    } else if (isset($_GET['getLastSpeedtestResult'])) {
+        $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
+    } else if (isset($_GET['getAllSpeedTestData'])) {
+        $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+    } else if (isset($_GET['getClosestServers'])) {
+        $data = array_merge($data, getClosestServers($url));
+    }
 }
 
 function hasSpeedTestBackup($dbSpeedtestOld)
 {
-    return file_exists($dbSpeedtestOld);
+    $data = file_exists($dbSpeedtestOld);
+
+    return array('data' => $data);
 }
 
 function getAllSpeedTestData($dbSpeedtest)
@@ -188,4 +193,29 @@ function exportData()
 function print_titles($row)
 {
     echo implode(',', array_keys($row))."\n";
+}
+
+function getClosestServers($url)
+{
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+    $xmlContent = curl_exec($ch);
+    curl_close($ch);
+
+    if ($xmlContent === FALSE) {
+        return ["error" => "Error fetching XML"];
+    } else {
+        $xml = simplexml_load_string($xmlContent);
+        if ($xml === FALSE) {
+            return ["error" => "Error parsing XML"];
+        }
+
+        // Convert XML to JSON and then to an associative array
+        $json = json_encode($xml);
+        $data = json_decode($json, true);
+
+        return $data;
+    }
 }

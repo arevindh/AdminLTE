@@ -1593,7 +1593,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
-                                                        <label for="speedtestcharttypesave">Set choice as default (upon confirmation)</label>
+                                                        <label for="speedtestcharttypesave">Set choice as default</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -1631,8 +1631,9 @@ cat /var/log/pimod.log</code></pre>
                                                 </div>
 
                                                 <div class="form-group col-md-12">
-                                                    <label for="speedtestserver">Set custom server</label>
-                                                    <p>The closest servers can be found using <code>speedtest</code> or <a href="https://www.speedtest.net/speedtest-servers.php" target="_blank" rel="noopener">here</a></p>
+                                                    <label for="speedtestserver">Select specific server</label>
+                                                    <button id="closestServersBtn" type="button">Show closest servers</button>
+                                                    <div id="closestServers"></div>
                                                     <div class="input-group">
                                                         <div class="input-group-addon">id</div>
                                                         <input

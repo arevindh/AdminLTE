@@ -496,6 +496,47 @@ $(function () {
     speedtestUninstall.attr("value", null);
     speedtestDelete.attr("value", null);
     speedtestTest.attr("value", null);
+
+    const btn = document.getElementById('closestServersBtn');
+    const container = document.getElementById('closestServers');
+
+    btn.addEventListener('click', function() {
+      if (container.innerHTML) {
+        while (container.firstChild) {
+          container.removeChild(container.firstChild);
+        }
+      } else {
+        const xhr = new XMLHttpRequest();
+        const dafaultStr = `<p>You can find them <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">here</a></p>`;
+
+        xhr.open("GET", "api.php?getClosestServers", true);
+
+        xhr.onload = function () {
+          if (xhr.status === 200) {
+            const jsonData = JSON.parse(xhr.responseText);
+            if (!jsonData.error) {
+              jsonData.servers.server.forEach(server => {
+                const serverInfo = document.createElement('div');
+                serverInfo.className = 'server';
+                serverInfo.textContent = `${server.id}: ${server.name}, ${server.cc} (${server.sponsor})`;
+                container.appendChild(serverInfo);
+              });
+            }
+          }
+          container.innerHTML = dafaultStr;
+        };
+
+        xhr.onerror = function () {
+          container.innerHTML = dafaultStr;
+        };
+
+        xhr.ontimeout = function () {
+          container.innerHTML = dafaultStr;
+        };
+
+        xhr.send();
+      }
+    });
   });
 
   speedtestChartType.on("click", function () {
