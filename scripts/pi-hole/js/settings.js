@@ -474,6 +474,8 @@ $(function () {
 $(function () {
   const speedtestTest = $("#speedtesttest");
   const speedtestServer = $("#speedtestserver");
+  const speedtestServerBtn = $("#closestServersBtn");
+  const speedtestServerCtr = $("#closestServers");
   const speedtestChartType = $("#speedtestcharttype");
   const speedtestChartTypeSave = $("#speedtestcharttypesave");
 
@@ -482,92 +484,88 @@ $(function () {
   const speedtestDelete = $("#speedtestdelete");
   const speedtestDeleteLabel = speedtestDelete.parent().children("label");
 
+  const speedtestLog = $("#latestLog");
+  const speedtestLogBtn = $("#latestLogBtn");
+
   const speedtestSubmit = $("#st-submit");
   const defaultClass = "btn-primary";
   const colorClasses = ["btn-success", "btn-warning", "btn-danger"];
 
-  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
-  speedtestChartType.prop("checked", type === "bar");
-  localStorage.setItem("speedtest_chart_type", type);
-
-  document.addEventListener("DOMContentLoaded", function () {
-    speedtestChartTypeSave.attr("value", null);
-    speedtestUpdate.attr("value", null);
-    speedtestUninstall.attr("value", null);
-    speedtestDelete.attr("value", null);
-    speedtestTest.attr("value", null);
-
-    const btn = document.getElementById('closestServersBtn');
-    const container = document.getElementById('closestServers');
-
-    btn.addEventListener('click', function() {
-      if (container.innerHTML) {
-        while (container.firstChild) {
-          container.removeChild(container.firstChild);
+  const latestLog = () => {
+    $.ajax({
+      url: "api.php?getLatestLog",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const log = data?.data;
+        speedtestLogBtn.text("Hide output");
+        if (speedtestLog.find("pre").length > 0) {
+          speedtestLog.find("pre code").text(log);
+        } else if (log) {
+          const pre = document.createElement("pre");
+          const code = document.createElement("code");
+          code.textContent = log;
+          code.style.whiteSpace = "pre";
+          pre.appendChild(code);
+          pre.style.width = "100%";
+          pre.style.maxWidth = "100%";
+          pre.style.overflowX = "auto";
+          pre.style.whiteSpace = "pre";
+          pre.style.overflowWrap = "normal";
+          pre.style.marginTop = "1vw";
+          speedtestLog.find("p").remove();
+          speedtestLog.append(pre);
         }
-      } else {
-        const xhr = new XMLHttpRequest();
-        const dafaultStr = `<p>You can find them <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">here</a></p>`;
+      })
+      .fail(function () {
+        speedtestLogBtn.text("No log found");
+      });
+  };
 
-        xhr.open("GET", "api.php?getClosestServers", true);
-
-        xhr.onload = function () {
-          if (xhr.status === 200) {
-            const jsonData = JSON.parse(xhr.responseText);
-            if (!jsonData.error) {
-              jsonData.servers.server.forEach(server => {
-                const serverInfo = document.createElement('div');
-                serverInfo.className = 'server';
-                serverInfo.textContent = `${server.id}: ${server.name}, ${server.cc} (${server.sponsor})`;
-                container.appendChild(serverInfo);
-              });
-            }
+  const closestServers = () => {
+    $.ajax({
+      url: "api.php?getClosestServers",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const serversInfo = data?.data;
+        if (serversInfo) {
+          const pre = document.createElement("pre");
+          const code = document.createElement("code");
+          code.textContent = serversInfo;
+          code.style.whiteSpace = "pre";
+          pre.appendChild(code);
+          pre.style.width = "100%";
+          pre.style.maxWidth = "100%";
+          pre.style.overflowX = "auto";
+          pre.style.whiteSpace = "pre";
+          pre.style.overflowWrap = "normal";
+          pre.style.marginTop = "1vw";
+          speedtestServerCtr.find("p").remove();
+          speedtestServerCtr.append(pre);
+          speedtestServerBtn.text("Hide servers");
+        } else {
+          speedtestServerBtn.text("Failed to get servers");
+          if (speedtestServerCtr.find("p").length === 0) {
+            speedtestServerCtr.append(
+              `<p>You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
+            );
           }
-          container.innerHTML = dafaultStr;
-        };
-
-        xhr.onerror = function () {
-          container.innerHTML = dafaultStr;
-        };
-
-        xhr.ontimeout = function () {
-          container.innerHTML = dafaultStr;
-        };
-
-        xhr.send();
-      }
-    });
-  });
-
-  speedtestChartType.on("click", function () {
-    // if type null, set to "bar", else toggle
-    type = type ? (type === "bar" ? "line" : "bar") : "bar";
-    speedtestChartType.attr("value", type);
-    localStorage.setItem("speedtest_chart_type", type);
-
-    // Call check messages to make new setting effective
-    checkMessages();
-  });
-
-  speedtestChartTypeSave.on("click", function () {
-    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
-  });
-
-  speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
-  });
-
-  speedtestTest.on("click", function () {
-    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
-  });
-
-  speedtestServer.on("change", function () {
-    speedtestServer.attr("value", speedtestServer.val());
-  });
+        }
+      })
+      .fail(function () {
+        speedtestServerBtn.text("Failed to get servers");
+        if (speedtestServerCtr.find("p").length === 0) {
+          speedtestServerCtr.append(
+            `<p>You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
+          );
+        }
+      });
+  };
 
   const hasBackup = callback => {
     $.ajax({
-      url: "api.php?hasSpeedTestBackup&PHP",
+      url: "api.php?hasSpeedTestBackup",
       dataType: "json",
     })
       .done(function (backupExists) {
@@ -580,7 +578,7 @@ $(function () {
 
   const hasHistory = callback => {
     $.ajax({
-      url: "api.php?getAllSpeedTestData&PHP",
+      url: "api.php?getAllSpeedTestData",
       dataType: "json",
     })
       .done(function (results) {
@@ -619,6 +617,64 @@ $(function () {
     });
   };
 
+  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
+  speedtestChartType.prop("checked", type === "bar");
+  localStorage.setItem("speedtest_chart_type", type);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    speedtestChartTypeSave.attr("value", null);
+    speedtestUpdate.attr("value", null);
+    speedtestUninstall.attr("value", null);
+    speedtestDelete.attr("value", null);
+    speedtestTest.attr("value", null);
+  });
+
+  speedtestChartType.on("click", function () {
+    // if type null, set to "bar", else toggle
+    type = type ? (type === "bar" ? "line" : "bar") : "bar";
+    speedtestChartType.attr("value", type);
+    localStorage.setItem("speedtest_chart_type", type);
+
+    // Call check messages to make new setting effective
+    checkMessages();
+  });
+
+  speedtestChartTypeSave.on("click", function () {
+    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
+  });
+
+  speedtestUpdate.on("click", function () {
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
+  });
+
+  speedtestTest.on("click", function () {
+    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
+  });
+
+  speedtestServer.on("change", function () {
+    speedtestServer.attr("value", speedtestServer.val());
+  });
+
+  speedtestLogBtn.on("click", function () {
+    const log = speedtestLog.find("pre");
+    if (log.length > 0) {
+      log.remove();
+      speedtestLogBtn.text("Show latest log");
+    } else {
+      latestLog();
+    }
+  });
+
+  speedtestServerBtn.on("click", function () {
+    const closestServersList = speedtestServerCtr.find("pre");
+    if (closestServersList.length > 0) {
+      closestServersList.remove();
+      speedtestServerBtn.text("Show closest servers");
+    } else {
+      closestServers();
+    }
+  });
+
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
     canRestore();
@@ -630,6 +686,9 @@ $(function () {
   });
 
   setInterval(() => {
+    if (speedtestLog.find("pre").length > 0) {
+      latestLog();
+    }
     canRestore();
   }, 1000);
 });

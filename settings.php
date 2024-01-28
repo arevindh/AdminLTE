@@ -1611,8 +1611,9 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                         <div class="row">
                                             <div class="col-md-12">
 
-                                                <div class="form-group col-md-12">
+                                                <div class="form-group col-md-6">
                                                     <label>Mod the Mod</label>
+                                                    <p>For the adventurous</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate">
                                                         <label for="speedtestupdate">(Re)install Latest</label>
@@ -1625,15 +1626,14 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete">
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
-                                                    <p>Follow the process (if fast enough) and check the log with</p>
-                                                    <pre><code>sudo tmux attach-session -t pimod
-cat /var/log/pimod.log</code></pre>
+                                                    <p id="latestLog" style="margin-top: 1vw;">
+                                                        <button class="btn btn-default" id="latestLogBtn" type="button">Show latest log</button>
+                                                    </p>
                                                 </div>
 
-                                                <div class="form-group col-md-12">
-                                                    <label for="speedtestserver">Select specific server</label>
-                                                    <button id="closestServersBtn" type="button">Show closest servers</button>
-                                                    <div id="closestServers"></div>
+                                                <div class="form-group col-md-6">
+                                                    <label for="speedtestserver">Set specific server</label>
+                                                    <p>If you know better</p>
                                                     <div class="input-group">
                                                         <div class="input-group-addon">id</div>
                                                         <input
@@ -1644,9 +1644,12 @@ cat /var/log/pimod.log</code></pre>
                                                             value="<?php if ($speedtestserver) {
                                                                 echo $speedtestserver;
                                                             } ?>"
-                                                            placeholder="Keep this blank to autoselect"
+                                                            placeholder="Leave blank to autoselect"
                                                         >
                                                     </div>
+                                                    <p id="closestServers" style="margin-top: 1vw;">
+                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show closest servers</button>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>

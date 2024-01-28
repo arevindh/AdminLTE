@@ -14,21 +14,27 @@ if (!isset($api)) {
 
 $dbSpeedtest = '/etc/pihole/speedtest.db';
 $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
-$url = 'https://c.speedtest.net/speedtest-servers-static.php';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 if ($auth) {
     if (isset($_GET['hasSpeedTestBackup'])) {
         $data = array_merge($data, hasSpeedTestBackup($dbSpeedtestOld));
-    } else if (isset($_GET['getSpeedData24hrs'])) {
+    }
+    if (isset($_GET['getSpeedData24hrs'])) {
         $data = array_merge($data, getSpeedData24hrs($dbSpeedtest));
-    } else if (isset($_GET['getLastSpeedtestResult'])) {
+    }
+    if (isset($_GET['getLastSpeedtestResult'])) {
         $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
-    } else if (isset($_GET['getAllSpeedTestData'])) {
+    }
+    if (isset($_GET['getAllSpeedTestData'])) {
         $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
-    } else if (isset($_GET['getClosestServers'])) {
-        $data = array_merge($data, getClosestServers($url));
+    }
+    if (isset($_GET['getLatestLog'])) {
+        $data = array_merge($data, getLatestLog());
+    }
+    if (isset($_GET['getClosestServers'])) {
+        $data = array_merge($data, getClosestServers());
     }
 }
 
@@ -195,27 +201,39 @@ function print_titles($row)
     echo implode(',', array_keys($row))."\n";
 }
 
-function getClosestServers($url)
+function speedtestExecute($command)
 {
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $output = array();
+    $return_status = -1;
+    exec('/bin/bash -c \''.$command.'\' 2>&1', $output, $return_status);
 
-    $xmlContent = curl_exec($ch);
-    curl_close($ch);
-
-    if ($xmlContent === FALSE) {
-        return ["error" => "Error fetching XML"];
-    } else {
-        $xml = simplexml_load_string($xmlContent);
-        if ($xml === FALSE) {
-            return ["error" => "Error parsing XML"];
-        }
-
-        // Convert XML to JSON and then to an associative array
-        $json = json_encode($xml);
-        $data = json_decode($json, true);
-
-        return $data;
+    if ($return_status !== 0) {
+        trigger_error("Executing {$command} failed.", E_USER_WARNING);
     }
+
+    return $output;
+}
+
+function getLatestLog()
+{
+    $log = speedtestExecute('cat /var/log/pimod.log');
+
+    $log = array_reverse($log);
+    $log = implode("\n", $log);
+
+    return array('data' => $log);
+}
+
+function getClosestServers()
+{
+    $closestServers = speedtestExecute('speedtest -h | grep -q official && speedtest -L || speedtest --list');
+    // $closestServers = speedtestExecute('echo "set -x" > /tmp/speedtest.sh && echo "speedtest -h | grep -q speedtest-cli && speedtest --list || speedtest -L" >> /tmp/speedtest.sh && chmod +x /tmp/speedtest.sh && /tmp/speedtest.sh');
+
+    $closestServers = array_filter($closestServers);
+    if (count($closestServers) > 1) {
+        $closestServers = array_slice($closestServers, 1);
+    }
+    $closestServers = implode("\n", $closestServers);
+
+    return array('data' => $closestServers);
 }
