@@ -205,7 +205,7 @@ function speedtestExecute($command)
 {
     $output = array();
     $return_status = -1;
-    exec('sudo /bin/bash -c \''.$command.'\' 2>&1', $output, $return_status);
+    exec('/bin/bash -c \''.$command.'\' 2>&1', $output, $return_status);
 
     if ($return_status !== 0) {
         trigger_error("Executing {$command} failed.", E_USER_WARNING);
