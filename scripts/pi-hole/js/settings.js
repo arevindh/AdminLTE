@@ -506,7 +506,7 @@ $(function () {
           const code = document.createElement("code");
           code.textContent = log;
           code.style.whiteSpace = "pre";
-          pre.appendChild(code);
+          pre.append(code);
           pre.style.width = "100%";
           pre.style.maxWidth = "100%";
           pre.style.overflowX = "auto";
@@ -534,7 +534,7 @@ $(function () {
           const code = document.createElement("code");
           code.textContent = serversInfo;
           code.style.whiteSpace = "pre";
-          pre.appendChild(code);
+          pre.append(code);
           pre.style.width = "100%";
           pre.style.maxWidth = "100%";
           pre.style.overflowX = "auto";
@@ -689,6 +689,7 @@ $(function () {
     if (speedtestLog.find("pre").length > 0) {
       latestLog();
     }
+
     canRestore();
   }, 1000);
 });
