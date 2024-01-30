@@ -540,7 +540,7 @@ $(function () {
             ? " awaiting confirmation"
             : triggerMatch
               ? ` in ${triggerMatch[1]}`
-              : " disabled";
+              : " active";
           //const lastRunText = lastRunMatch ? ` ${lastRunMatch[1]} ago, it ${lastRunMatch[2].toLowerCase()}` : ' never';
           pre = codeBlock(`Schedule is ${scheduleStatusText}\nNext run is${triggerText}`); //\nLast run was${lastRunText}`);
         }
