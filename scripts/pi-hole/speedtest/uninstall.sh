@@ -89,21 +89,21 @@ manageHistory() {
     if [ "${1-}" == "db" ]; then
         if [ -f $curr_db ] && ! isEmpty $curr_db; then
             if [ -z "${2-}" ]; then
-                echo "$(date) - Flushing Database..."
+                echo "Flushing Database..."
                 mv -f $curr_db $last_db
             fi
         elif [ -f $last_db ]; then
-            echo "$(date) - Restoring Database..."
+            echo "Restoring Database..."
             mv -f $last_db $curr_db
         fi
-        echo "$(date) - Configuring Database..."
+        echo "Configuring Database..."
         sqlite3 "$curr_db" "$create_table"
     fi
 }
 
 uninstall() {
     if [ -f $curr_wp ] && cat $curr_wp | grep -q SpeedTest; then
-        echo "$(date) - Uninstalling Current Speedtest Mod..."
+        echo "Restoring Pi-hole..."
 
         if [ ! -f $org_wp ]; then
             if [ ! -d /opt/org_pihole ]; then
@@ -127,7 +127,6 @@ uninstall() {
 }
 
 purge() {
-    echo "$(date) - Cleaning up..."
     rm -rf "$curr_wp".*
     rm -rf "$admin_dir"*_admin
     rm -rf "$curr_db".*
@@ -139,7 +138,9 @@ purge() {
     fi
 }
 
+echo "$(date)"
 uninstall ${1-}
 purge
-echo "$(date) - Done!"
+echo "Done!"
+echo "$(date)"
 exit 0
