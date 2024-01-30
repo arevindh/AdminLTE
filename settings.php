@@ -1586,7 +1586,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         <label for="speedtesttest">Run a test now</label>
                                                     </div>
                                                     <p id="speedteststatus" style="margin-top: 1vw;">
-                                                        <button class="btn btn-default" id="speedteststatusBtn" type="button">Show schedule status</button>
+                                                        <button class="btn btn-default" id="speedteststatusBtn" type="button">Show service status</button>
                                                     </p>
                                                 </div>
 
