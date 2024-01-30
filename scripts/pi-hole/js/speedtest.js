@@ -155,7 +155,10 @@ function updateSpeedTestData() {
       }
     });
     if (speedChart && days === "-2") speedChart.update();
-    else createChart(speedlabels);
+    else {
+      if (speedChart) speedChart.destroy();
+      createChart(speedlabels);
+    }
   });
 }
 
