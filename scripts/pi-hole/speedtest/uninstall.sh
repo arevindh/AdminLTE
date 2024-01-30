@@ -1,4 +1,5 @@
 #!/bin/bash
+LOG_FILE="/var/log/pimod.log"
 
 admin_dir=/var/www/html
 curr_wp=/opt/pihole/webpage.sh
@@ -21,6 +22,13 @@ download real,
 upload real,
 share_url text
 );"
+
+help() {
+    echo "Uninstall Latest Speedtest Mod."
+    echo "Usage: sudo $0 [db]"
+    echo "db - flush database (restore for a short while after)"
+    echo "If no option is specified, the mod will simply be uninstalled."
+}
 
 setTags() {
     local path=${1-}
@@ -128,20 +136,76 @@ uninstall() {
 }
 
 purge() {
-    rm -rf "$curr_wp".*
     rm -rf "$admin_dir"*_admin
-    rm -rf "$curr_db".*
-    rm -rf "$curr_db"_*
     rm -rf /opt/mod_pihole
+    if [ -f /etc/systemd/system/pihole-speedtest.timer ]; then
+        rm -f /etc/systemd/system/pihole-speedtest.service
+        rm -f /etc/systemd/system/pihole-speedtest.timer
+        systemctl daemon-reload
+    fi
 
+    rm -f "$curr_wp".*
+    rm -f "$curr_db".*
+    rm -f "$curr_db"_*
     if isEmpty $curr_db; then
         rm -f $curr_db
     fi
 }
 
-echo "$(date)"
-uninstall ${1-}
-purge
-echo "Done!"
-echo "$(date)"
-exit 0
+abort() {
+    echo "Process Aborting..."
+
+    if [ -f $last_wp ]; then
+        cp $last_wp $curr_wp
+        chmod +x $curr_wp
+        rm -f $last_wp
+    fi
+    if [ -f $last_db ] && [ ! -f $curr_db ]; then
+        mv $last_db $curr_db
+    fi
+    if [ ! -f $curr_wp ] || ! cat $curr_wp | grep -q SpeedTest; then
+        purge
+    fi
+    if [ -d $admin_dir/admin/.git/refs/remotes/old ]; then
+        download $admin_dir admin old web
+    fi
+
+    if (($aborted == 0)); then
+        pihole restartdns
+        printf "Please try again or try manually.\n\n$(date)\n"
+    fi
+    aborted=1
+    exit 1
+}
+
+commit() {
+    cd $admin_dir/admin
+    git remote -v | grep -q "old" && git remote remove old
+    rm -f $last_wp
+    pihole restartdns
+    printf "Done!\n\n$(date)\n"
+    exit 0
+}
+
+main() {
+    printf "Thanks for using Speedtest Mod!\nScript by @ipitio\n\n$(date)\n\n"
+    local db=${1-}
+    if [ "$op" == "-h" ] || [ "$op" == "--help" ]; then
+        help
+        exit 0
+    fi
+    if [ $EUID != 0 ]; then
+        sudo "$0" "$@"
+        exit $?
+    fi
+    aborted=0
+    set -Eeuo pipefail
+    trap '[ "$?" -eq "0" ] && commit || abort' EXIT
+    trap 'abort' INT TERM
+
+    uninstall $db
+    purge
+    exit 0
+}
+
+main "$@" 2>&1 | sudo tee -- "$LOG_FILE"

@@ -512,7 +512,6 @@ $(function () {
     pre.style.maxWidth = "100%";
     pre.style.overflowX = "auto";
     pre.style.whiteSpace = "pre";
-    pre.style.overflowWrap = "normal";
     pre.style.marginTop = "1vw";
     return pre;
   };
@@ -529,20 +528,20 @@ $(function () {
         if (status) {
           const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
           const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
-          //const lastRunPattern = /pihole-speedtest\.service.*?Active: inactive \(dead\) since.*?;\s+([\w\s]+ago).*?pihole-speedtest\.service: (\w+)/s;
 
           const scheduleStatusMatch = status.match(scheduleStatusPattern);
           const triggerMatch = status.match(triggerPattern);
-          //const lastRunMatch = status.match(lastRunPattern);
 
-          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "off";
-          triggerText = speedtestTest.attr("value")
-            ? " awaiting confirmation"
-            : triggerMatch
-              ? ` in ${triggerMatch[1]}`
-              : " active";
-          //const lastRunText = lastRunMatch ? ` ${lastRunMatch[1]} ago, it ${lastRunMatch[2].toLowerCase()}` : ' never';
-          pre = codeBlock(`Schedule is ${scheduleStatusText}\nNext run is${triggerText}`); //\nLast run was${lastRunText}`);
+          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
+          if (!speedtestTest.attr("value")) {
+            if (triggerMatch) {
+              triggerText = ` in ${triggerMatch[1]}`;
+            } else if (scheduleStatusText === "active") {
+              triggerText = " running";
+            }
+          }
+
+          pre = codeBlock(`Schedule is ${scheduleStatusText}\nNext run is${triggerText}`);
         }
 
         speedtestStatus.find("pre").remove();
@@ -555,10 +554,15 @@ $(function () {
 
   const previewChart = preview => {
     if (!preview) {
+      localStorage.setItem("speedtest_preview_hidden", "true");
+      localStorage.setItem("speedtest_preview_shown", "false");
       speedtestChartPreview.find("div").remove();
     } else {
       let speedtestdays = speedtestDays.val();
       const speedtestcharttype = speedtestChartType.val();
+      localStorage.setItem("speedtest_days", speedtestdays);
+      localStorage.setItem("speedtest_chart_type", speedtestcharttype);
+      localStorage.setItem("speedtest_preview_shown", "true");
 
       if (speedtestdays === "1") {
         speedtestdays = "24 hours";
@@ -575,6 +579,8 @@ $(function () {
       const boxBodyDiv = document.createElement("div");
       const chartDiv = document.createElement("div");
       const canvas = document.createElement("canvas");
+      const overlayDiv = document.createElement("div");
+      const i = document.createElement("i");
 
       colDiv.className = "col-md-12";
       boxDiv.className = "box";
@@ -589,6 +595,9 @@ $(function () {
       chartDiv.style.height = "180px";
       canvas.id = "speedOverTimeChart";
       canvas.setAttribute("value", speedtestcharttype);
+      overlayDiv.className = "overlay";
+      overlayDiv.id = "speedOverTimeChartOverlay";
+      i.className = "fa fa-sync fa-spin";
 
       colDiv.style.marginTop = "1vw";
 
@@ -598,6 +607,8 @@ $(function () {
       boxDiv.append(boxBodyDiv);
       boxBodyDiv.append(chartDiv);
       chartDiv.append(canvas);
+      chartDiv.append(overlayDiv);
+      overlayDiv.append(i);
 
       speedtestChartPreview.find("div").remove();
       speedtestChartPreview.append(colDiv);
@@ -641,7 +652,7 @@ $(function () {
           speedtestServerBtn.text("Hide servers");
         } else {
           $.ajax({
-            url: "api.php?curlClosestServers",
+            url: "api.php?JSONClosestServers",
             dataType: "json",
           })
             .done(function (data) {
@@ -757,7 +768,6 @@ $(function () {
     type = type ? (type === "bar" ? "line" : "bar") : "bar";
     speedtestChartType.attr("value", type);
     localStorage.setItem("speedtest_chart_type", type);
-
     // Call check messages to make new setting effective
     checkMessages();
     previewChart(speedtestChartPreview.find("div").length > 0);

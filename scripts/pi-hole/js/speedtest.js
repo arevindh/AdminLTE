@@ -137,8 +137,10 @@ function formatDate(itemdate, results) {
 function updateSpeedTestData() {
   const daysIsTheSame = days === localStorage?.getItem("speedtest_days");
   const typeIsTheSame = type === localStorage?.getItem("speedtest_chart_type");
+  const beenHidden = localStorage?.getItem("speedtest_preview_hidden") === "true";
   days = localStorage?.getItem("speedtest_days") || "-2";
   type = localStorage?.getItem("speedtest_chart_type") || "line";
+
   speedlabels = [];
   downloadspeed = [];
   uploadspeed = [];
@@ -157,10 +159,22 @@ function updateSpeedTestData() {
         serverPing.push(parseFloat(packet.server_ping));
       }
     });
-    if (speedChart && days === "-2") speedChart.update();
-    else if (!daysIsTheSame || !typeIsTheSame || !speedChart) {
-      if (speedChart) speedChart.destroy();
-      createChart(speedlabels);
+    if (speedChart && (!daysIsTheSame || !typeIsTheSame || beenHidden) && days !== "-2") {
+      speedChart.destroy();
+      speedChart = null;
+    }
+
+    if (!speedChart || beenHidden) {
+      localStorage.setItem(
+        "speedtest_preview_hidden",
+        !localStorage?.getItem("speedtest_preview_shown")
+      );
+      createChart();
+    }
+
+    if (speedChart) {
+      speedChart.update();
+      $("#speedOverTimeChartOverlay").css("display", "none");
     }
   });
 }

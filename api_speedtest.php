@@ -22,6 +22,7 @@ $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest
 $cmdStatus = 'systemctl status pihole-speedtest.timer ; systemctl status pihole-speedtest --no-pager -l';
 $cmdRun = 'cat /tmp/speedtest.log';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
+$cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-GPC: 1'";
 
 if ($auth) {
     if (isset($_GET['hasSpeedTestBackup'])) {
@@ -50,6 +51,9 @@ if ($auth) {
     }
     if (isset($_GET['curlClosestServers'])) {
         $data = array_merge($data, curlServers($cmdServersCurl));
+    }
+    if (isset($_GET['JSONClosestServers'])) {
+        $data = array_merge($data, JSONServers($cmdServersJSON));
     }
 }
 
@@ -264,6 +268,28 @@ function curlServers($cmdServersCurl)
         $serverList = array();
         foreach ($xml->servers->server as $server) {
             $serverList[] = str_pad($server['id'], 5, ' ', STR_PAD_LEFT).') '.$server['sponsor'].' ('.$server['name'].', '.$server['cc'].') ('.$server['lat'].', '.$server['lon'].')';
+        }
+
+        return array('data' => implode("\n", $serverList));
+    }
+}
+
+function JSONServers($cmdServersJSON)
+{
+    $array = speedtestExecute($cmdServersJSON);
+    $jsonContent = $array['data'];
+
+    if ($jsonContent === false) {
+        return array('error' => 'Error fetching JSON');
+    } else {
+        $json = json_decode($jsonContent);
+        if ($json === false) {
+            return array('error' => 'Error parsing JSON');
+        }
+
+        $serverList = array();
+        foreach ($json as $server) {
+            $serverList[] = str_pad($server->id, 5, ' ', STR_PAD_LEFT).') '.$server->sponsor.' ('.$server->name.', '.$server->cc.') [Distance '.$server->distance.']';
         }
 
         return array('data' => implode("\n", $serverList));
