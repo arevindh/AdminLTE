@@ -32,7 +32,7 @@ $(document).ready(function () {
       GETDict[item.split("=")[0]] = item.split("=")[1];
     });
 
-  var APIstring = "api.php?getAllSpeedTestData&PHP";
+  var APIstring = "api.php?getAllSpeedTestData";
 
   tableApi = $("#all-queries").DataTable({
     dom:

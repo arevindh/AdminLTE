@@ -162,6 +162,9 @@ if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
     if ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
         $speedtestdays = '24 hours';
     }
+    if ($setupVars['SPEEDTEST_CHART_DAYS'] == -1) {
+        $speedtestdays = 'however many days';
+    }
 }
 if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];

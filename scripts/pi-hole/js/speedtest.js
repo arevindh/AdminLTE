@@ -16,56 +16,17 @@ function getCSSval(cssclass, cssproperty) {
   return val;
 }
 
-$(function () {
-  var speedlabels = [];
-  var downloadspeed = [];
-  var uploadspeed = [];
-  var serverPing = [];
-
-  function updateSpeedTestData() {
-    function formatDate(itemdate, results) {
-      if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-        return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z")
-          .utcOffset(moment().utcOffset())
-          .format("HH:mm");
-      }
-
-      let output = "HH:mm";
-      if (results.length > 1) {
-        const first = moment(results[0].start_time);
-        const last = moment(results.at(-1).start_time);
-        if (last.diff(first, "hours") >= 24) output = "Do " + output;
-      }
-
-      return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
-    }
-
-    $.ajax({
-      url: "api.php?getSpeedData24hrs&PHP",
-      dataType: "json",
-    }).done(function (results) {
-      results.forEach(function (packet) {
-        // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
-        if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
-          speedlabels.push(formatDate(packet.start_time, results));
-          uploadspeed.push(parseFloat(packet.upload));
-          downloadspeed.push(parseFloat(packet.download));
-          serverPing.push(parseFloat(packet.server_ping));
-        }
-      });
-      speedChart.update();
-    });
-  }
-
-  setInterval(function () {
-    // console.log('updateSpeedTestData');
-    updateSpeedTestData();
-  }, 6000);
-
+var speedChart = null;
+var speedlabels = [];
+var downloadspeed = [];
+var uploadspeed = [];
+var serverPing = [];
+function createChart() {
   var gridColor = getCSSval("graphs-grid", "background-color");
   var ticksColor = getCSSval("graphs-ticks", "color");
-  var speedChartctx = document.getElementById("speedOverTimeChart").getContext("2d");
-  var speedChart = new Chart(speedChartctx, {
+  var speedChartctx = document.getElementById("speedOverTimeChart")?.getContext("2d");
+  if (speedChartctx === null || speedChartctx === undefined) return;
+  speedChart = new Chart(speedChartctx, {
     type: getGraphType(1),
     data: {
       labels: speedlabels,
@@ -154,6 +115,53 @@ $(function () {
       },
     },
   });
+}
 
+function formatDate(itemdate, results) {
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z")
+      .utcOffset(moment().utcOffset())
+      .format("HH:mm");
+  }
+
+  let output = "HH:mm";
+  if (results.length > 1) {
+    const first = moment(results[0].start_time, "YYYY-MM-DD HH:mm:ss Z");
+    const last = moment(results.at(-1).start_time, "YYYY-MM-DD HH:mm:ss Z");
+    if (last.diff(first, "hours") >= 24) output = "Do " + output;
+  }
+
+  return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
+}
+
+function updateSpeedTestData() {
+  const days = localStorage?.getItem("speedtest_days") || -1;
+  speedlabels = [];
+  downloadspeed = [];
+  uploadspeed = [];
+  serverPing = [];
+
+  $.ajax({
+    url: "api.php?getSpeedData=" + days,
+    dataType: "json",
+  }).done(function (results) {
+    results.forEach(function (packet) {
+      // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
+      if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
+        speedlabels.push(formatDate(packet.start_time, results));
+        uploadspeed.push(parseFloat(packet.upload));
+        downloadspeed.push(parseFloat(packet.download));
+        serverPing.push(parseFloat(packet.server_ping));
+      }
+    });
+    if (speedChart && !days) speedChart.update();
+    else createChart(speedlabels);
+  });
+}
+
+$(function () {
   updateSpeedTestData();
+  setInterval(function () {
+    updateSpeedTestData();
+  }, 6000);
 });

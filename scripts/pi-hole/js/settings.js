@@ -472,12 +472,19 @@ $(function () {
 
 // Speedtest toggles
 $(function () {
+  const speedtestDays = $("#speedtestdays");
   const speedtestTest = $("#speedtesttest");
+  const speedtestStatus = $("#speedteststatus");
+  const speedtestStatusBtn = $("#speedteststatusBtn");
+
   const speedtestServer = $("#speedtestserver");
   const speedtestServerBtn = $("#closestServersBtn");
   const speedtestServerCtr = $("#closestServers");
+
   const speedtestChartType = $("#speedtestcharttype");
   const speedtestChartTypeSave = $("#speedtestcharttypesave");
+  const speedtestChartPreview = $("#speedtestchartpreview");
+  const speedtestChartPreviewBtn = $("#speedtestchartpreviewBtn");
 
   const speedtestUpdate = $("#speedtestupdate");
   const speedtestUninstall = $("#speedtestuninstall");
@@ -491,6 +498,114 @@ $(function () {
   const defaultClass = "btn-primary";
   const colorClasses = ["btn-success", "btn-warning", "btn-danger"];
 
+  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
+  speedtestChartType.prop("checked", type === "bar");
+  localStorage.setItem("speedtest_chart_type", type);
+
+  const codeBlock = text => {
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.textContent = text;
+    code.style.whiteSpace = "pre";
+    pre.append(code);
+    pre.style.width = "100%";
+    pre.style.maxWidth = "100%";
+    pre.style.overflowX = "auto";
+    pre.style.whiteSpace = "pre";
+    pre.style.overflowWrap = "normal";
+    pre.style.marginTop = "1vw";
+    return pre;
+  };
+
+  const serviceStatus = () => {
+    $.ajax({
+      url: "api.php?getSpeedTestStatus",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const status = data?.data;
+        let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
+        let pre = codeBlock("Schedule is inactive\nNext run is" + triggerText);
+        if (status) {
+          const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
+          const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
+          //const lastRunPattern = /pihole-speedtest\.service.*?Active: inactive \(dead\) since.*?;\s+([\w\s]+ago).*?pihole-speedtest\.service: (\w+)/s;
+
+          const scheduleStatusMatch = status.match(scheduleStatusPattern);
+          const triggerMatch = status.match(triggerPattern);
+          //const lastRunMatch = status.match(lastRunPattern);
+
+          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "off";
+          triggerText = speedtestTest.attr("value")
+            ? " awaiting confirmation"
+            : triggerMatch
+              ? ` in ${triggerMatch[1]}`
+              : " disabled";
+          //const lastRunText = lastRunMatch ? ` ${lastRunMatch[1]} ago, it ${lastRunMatch[2].toLowerCase()}` : ' never';
+          pre = codeBlock(`Schedule is ${scheduleStatusText}\nNext run is${triggerText}`); //\nLast run was${lastRunText}`);
+        }
+
+        speedtestStatus.find("pre").remove();
+        speedtestStatus.append(pre);
+      })
+      .fail(function () {
+        speedtestStatusBtn.text("Failed to get status");
+      });
+  };
+
+  const previewChart = preview => {
+    if (!preview) {
+      speedtestChartPreview.find("div").remove();
+    } else {
+      let speedtestdays = speedtestDays.val();
+      const speedtestcharttype = speedtestChartType.val();
+
+      if (speedtestdays === "1") {
+        speedtestdays = "24 hours";
+      } else if (speedtestdays === "-1") {
+        speedtestdays = "however many days";
+      } else {
+        speedtestdays += " days";
+      }
+
+      const colDiv = document.createElement("div");
+      const boxDiv = document.createElement("div");
+      const boxHeaderDiv = document.createElement("div");
+      const h3 = document.createElement("h3");
+      const boxBodyDiv = document.createElement("div");
+      const chartDiv = document.createElement("div");
+      const canvas = document.createElement("canvas");
+
+      colDiv.className = "col-md-12";
+      boxDiv.className = "box";
+      boxDiv.id = "queries-over-time";
+      boxHeaderDiv.className = "box-header with-border";
+      h3.className = "box-title";
+      h3.textContent = `Speedtest results over last ${speedtestdays}`;
+      boxBodyDiv.className = "box-body";
+      chartDiv.className = "chart";
+      chartDiv.style.position = "relative";
+      chartDiv.style.width = "100%";
+      chartDiv.style.height = "180px";
+      canvas.id = "speedOverTimeChart";
+      canvas.setAttribute("value", speedtestcharttype);
+
+      colDiv.style.marginTop = "1vw";
+
+      colDiv.append(boxDiv);
+      boxDiv.append(boxHeaderDiv);
+      boxHeaderDiv.append(h3);
+      boxDiv.append(boxBodyDiv);
+      boxBodyDiv.append(chartDiv);
+      chartDiv.append(canvas);
+
+      speedtestChartPreview.find("div").remove();
+      speedtestChartPreview.append(colDiv);
+    }
+
+    speedtestChartPreviewBtn.text(preview ? "Hide preview" : "Show chart preview");
+  };
+
   const latestLog = () => {
     $.ajax({
       url: "api.php?getLatestLog",
@@ -502,17 +617,7 @@ $(function () {
         if (speedtestLog.find("pre").length > 0) {
           speedtestLog.find("pre code").text(log);
         } else if (log) {
-          const pre = document.createElement("pre");
-          const code = document.createElement("code");
-          code.textContent = log;
-          code.style.whiteSpace = "pre";
-          pre.append(code);
-          pre.style.width = "100%";
-          pre.style.maxWidth = "100%";
-          pre.style.overflowX = "auto";
-          pre.style.whiteSpace = "pre";
-          pre.style.overflowWrap = "normal";
-          pre.style.marginTop = "1vw";
+          const pre = codeBlock(log);
           speedtestLog.find("p").remove();
           speedtestLog.append(pre);
         }
@@ -530,34 +635,46 @@ $(function () {
       .done(function (data) {
         const serversInfo = data?.data;
         if (serversInfo) {
-          const pre = document.createElement("pre");
-          const code = document.createElement("code");
-          code.textContent = serversInfo;
-          code.style.whiteSpace = "pre";
-          pre.append(code);
-          pre.style.width = "100%";
-          pre.style.maxWidth = "100%";
-          pre.style.overflowX = "auto";
-          pre.style.whiteSpace = "pre";
-          pre.style.overflowWrap = "normal";
-          pre.style.marginTop = "1vw";
+          const pre = codeBlock(serversInfo);
           speedtestServerCtr.find("p").remove();
           speedtestServerCtr.append(pre);
           speedtestServerBtn.text("Hide servers");
         } else {
-          speedtestServerBtn.text("Failed to get servers");
-          if (speedtestServerCtr.find("p").length === 0) {
-            speedtestServerCtr.append(
-              `<p>You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
-            );
-          }
+          $.ajax({
+            url: "api.php?curlClosestServers",
+            dataType: "json",
+          })
+            .done(function (data) {
+              const serversInfo = data?.data;
+              if (serversInfo) {
+                const pre = codeBlock(serversInfo);
+                speedtestServerCtr.find("p").remove();
+                speedtestServerCtr.append(pre);
+                speedtestServerBtn.text("Hide servers");
+              } else {
+                speedtestServerBtn.text("Failed to get servers");
+                if (speedtestServerCtr.find("p").length === 0) {
+                  speedtestServerCtr.append(
+                    `<p style="margin-top: .5vw;">You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
+                  );
+                }
+              }
+            })
+            .fail(function () {
+              speedtestServerBtn.text("Failed to get servers");
+              if (speedtestServerCtr.find("p").length === 0) {
+                speedtestServerCtr.append(
+                  `<p style="margin-top: .5vw;">You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
+                );
+              }
+            });
         }
       })
       .fail(function () {
         speedtestServerBtn.text("Failed to get servers");
         if (speedtestServerCtr.find("p").length === 0) {
           speedtestServerCtr.append(
-            `<p>You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
+            `<p style="margin-top: .5vw;">You can also open <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">this XML file</a> to see them</p>`
           );
         }
       });
@@ -617,16 +734,22 @@ $(function () {
     });
   };
 
-  let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
-  speedtestChartType.prop("checked", type === "bar");
-  localStorage.setItem("speedtest_chart_type", type);
-
   document.addEventListener("DOMContentLoaded", function () {
+    speedtestDays.attr("value", speedtestDays.val());
     speedtestChartTypeSave.attr("value", null);
     speedtestUpdate.attr("value", null);
     speedtestUninstall.attr("value", null);
     speedtestDelete.attr("value", null);
     speedtestTest.attr("value", null);
+  });
+
+  localStorage.setItem("speedtest_days", speedtestDays.val());
+  speedtestDays.on("change", function () {
+    speedtestDays.attr("value", speedtestDays.val());
+    if (speedtestDays.val()) {
+      localStorage.setItem("speedtest_days", speedtestDays.val());
+      previewChart(speedtestChartPreview.find("div").length > 0);
+    }
   });
 
   speedtestChartType.on("click", function () {
@@ -637,10 +760,15 @@ $(function () {
 
     // Call check messages to make new setting effective
     checkMessages();
+    previewChart(speedtestChartPreview.find("div").length > 0);
   });
 
   speedtestChartTypeSave.on("click", function () {
     speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
+  });
+
+  speedtestChartPreviewBtn.on("click", function () {
+    previewChart(speedtestChartPreview.find("div").length === 0);
   });
 
   speedtestUpdate.on("click", function () {
@@ -649,6 +777,21 @@ $(function () {
 
   speedtestTest.on("click", function () {
     speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
+    const status = speedtestStatus.find("pre");
+    if (status.length > 0) {
+      serviceStatus();
+    }
+  });
+
+  speedtestStatusBtn.on("click", function () {
+    const status = speedtestStatus.find("pre");
+    if (status.length > 0) {
+      speedtestStatusBtn.text("Show service status");
+      status.remove();
+    } else {
+      speedtestStatusBtn.text("Hide status");
+      serviceStatus();
+    }
   });
 
   speedtestServer.on("change", function () {
@@ -671,6 +814,7 @@ $(function () {
       closestServersList.remove();
       speedtestServerBtn.text("Show closest servers");
     } else {
+      speedtestServerBtn.text("Retrieving servers...");
       closestServers();
     }
   });
@@ -686,6 +830,10 @@ $(function () {
   });
 
   setInterval(() => {
+    if (speedtestStatus.find("pre").length > 0) {
+      serviceStatus();
+    }
+
     if (speedtestLog.find("pre").length > 0) {
       latestLog();
     }

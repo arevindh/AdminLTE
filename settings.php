@@ -1567,26 +1567,31 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <div class="input-group mb-6">
                                                         <div class="input-group-addon">Days</div>
                                                         <input
+                                                            id="speedtestdays"
                                                             type="number"
                                                             name="speedtestdays"
                                                             class="form-control"
                                                             value="<?php echo htmlspecialchars($speedtestdays); ?>"
-                                                            min="0"
+                                                            min="-1"
                                                             step="1"
-                                                            placeholder="0 = hide chart"
+                                                            placeholder="-1 = all, 0 = hide"
                                                         >
                                                     </div>
                                                 </div>
 
                                                 <div class="form-group col-md-6">
+                                                    <label>Health check</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest">
-                                                        <label for="speedtesttest"><strong>Run a test now</strong></label>
+                                                        <label for="speedtesttest">Run a test now</label>
                                                     </div>
+                                                    <p id="speedteststatus" style="margin-top: 1vw;">
+                                                        <button class="btn btn-default" id="speedteststatusBtn" type="button">Show schedule status</button>
+                                                    </p>
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Bar chart</label>
+                                                    <label>Bar graph</label>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
                                                         <label for="speedtestcharttype">Enable (autosaved, per-browser)</label>
@@ -1595,6 +1600,9 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         <input type="checkbox" name="speedtestcharttypesave" id="speedtestcharttypesave" />
                                                         <label for="speedtestcharttypesave">Set choice as default</label>
                                                     </div>
+                                                    <p id="speedtestchartpreview" style="margin-top: 1vw;">
+                                                        <button class="btn btn-default" id="speedtestchartpreviewBtn" type="button">Show chart preview</button>
+                                                    </p>
                                                 </div>
                                             </div>
                                         </div>
@@ -1673,3 +1681,6 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 <?php
 require 'scripts/pi-hole/php/footer.php';
 ?>
+
+<script src="scripts/pi-hole/js/speedtest.js"></script>
+<script src="scripts/vendor/moment.min.js"></script>

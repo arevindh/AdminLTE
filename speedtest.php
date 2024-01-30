@@ -21,7 +21,7 @@ require 'scripts/pi-hole/php/header_authenticated.php';
                         <thead>
                             <tr>
                                 <th>ID</th>
-                                <th>Timestamp</th>
+                                <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Provider</th>
                                 <th>Your IP</th>
@@ -36,7 +36,7 @@ require 'scripts/pi-hole/php/header_authenticated.php';
                         <tfoot>
                             <tr>
                                 <th>ID</th>
-                                <th>Timestamp</th>
+                                <th>Start Time</th>
                                 <th>End Time</th>
                                 <th>Provider</th>
                                 <th>Your IP</th>
