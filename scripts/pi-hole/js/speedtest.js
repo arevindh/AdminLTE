@@ -135,7 +135,7 @@ function formatDate(itemdate, results) {
 }
 
 function updateSpeedTestData() {
-  const days = localStorage?.getItem("speedtest_days") || -2;
+  const days = localStorage?.getItem("speedtest_days") || "-2";
   speedlabels = [];
   downloadspeed = [];
   uploadspeed = [];
