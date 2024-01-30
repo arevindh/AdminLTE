@@ -154,7 +154,7 @@ function updateSpeedTestData() {
         serverPing.push(parseFloat(packet.server_ping));
       }
     });
-    if (speedChart && !days) speedChart.update();
+    if (speedChart && days === "-2") speedChart.update();
     else createChart(speedlabels);
   });
 }
