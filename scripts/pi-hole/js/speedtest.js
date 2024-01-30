@@ -135,7 +135,10 @@ function formatDate(itemdate, results) {
 }
 
 function updateSpeedTestData() {
-  const days = localStorage?.getItem("speedtest_days") || "-2";
+  const daysIsTheSame = days === localStorage?.getItem("speedtest_days");
+  const typeIsTheSame = type === localStorage?.getItem("speedtest_chart_type");
+  days = localStorage?.getItem("speedtest_days") || "-2";
+  type = localStorage?.getItem("speedtest_chart_type") || "line";
   speedlabels = [];
   downloadspeed = [];
   uploadspeed = [];
@@ -155,12 +158,15 @@ function updateSpeedTestData() {
       }
     });
     if (speedChart && days === "-2") speedChart.update();
-    else {
+    else if (!daysIsTheSame || !typeIsTheSame || !speedChart) {
       if (speedChart) speedChart.destroy();
       createChart(speedlabels);
     }
   });
 }
+
+var days = "";
+var type = "";
 
 $(function () {
   updateSpeedTestData();
