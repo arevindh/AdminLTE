@@ -1231,4 +1231,4 @@ window.addEventListener("resize", function () {
   $(".chartjs-tooltip").remove();
 });
 
-localStorage.setItem("speedtest_days", -1);
+localStorage.setItem("speedtest_days", '-2');
