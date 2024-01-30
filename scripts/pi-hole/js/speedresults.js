@@ -54,7 +54,7 @@ $(document).ready(function () {
                 .utcOffset(moment().utcOffset())
                 .format("YYYY-MM-DD HH:mm:ss Z");
             } else {
-              data = moment(data).utcOffset(moment().utcOffset()).format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(new Date(data)).utcOffset(moment().utcOffset()).format("YYYY-MM-DD HH:mm:ss Z");
             }
           }
 
@@ -69,7 +69,7 @@ $(document).ready(function () {
                 .utcOffset(moment().utcOffset())
                 .format("YYYY-MM-DD HH:mm:ss Z");
             } else {
-              data = moment(data).utcOffset(moment().utcOffset()).format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(new Date(data)).utcOffset(moment().utcOffset()).format("YYYY-MM-DD HH:mm:ss Z");
             }
           }
 
