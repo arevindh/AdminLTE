@@ -30,6 +30,9 @@ if ($auth) {
     if (isset($_GET['getSpeedData'])) {
         $data = array_merge($data, getSpeedData($dbSpeedtest, $_GET['getSpeedData']));
     }
+    if (isset($_GET['getAllSpeedTestData'])) {
+        $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+    }
     if (isset($_GET['getLastSpeedtestResult'])) {
         $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
     }
