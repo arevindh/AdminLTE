@@ -33,9 +33,6 @@ if ($auth) {
     if (isset($_GET['getLastSpeedtestResult'])) {
         $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
     }
-    if (isset($_GET['getAllSpeedTestData'])) {
-        $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
-    }
     if (isset($_GET['getLatestLog'])) {
         $data = array_merge($data, speedtestExecute($cmdLog));
     }
@@ -63,7 +60,7 @@ function hasSpeedTestBackup($dbSpeedtestOld)
 function getAllSpeedTestData($dbSpeedtest)
 {
     $data = getSpeedTestData($dbSpeedtest, -1);
-    if (isset($data['errr'])) {
+    if (isset($data['error'])) {
         return array();
     }
     $newarr = array();
