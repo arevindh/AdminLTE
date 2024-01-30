@@ -131,7 +131,7 @@ function formatDate(itemdate, results) {
     if (last.diff(first, "hours") >= 24) output = "Do " + output;
   }
 
-  return moment(itemdate).utcOffset(moment().utcOffset()).format(output);
+  return moment(new Date(itemdate)).utcOffset(moment().utcOffset()).format(output);
 }
 
 function updateSpeedTestData() {
