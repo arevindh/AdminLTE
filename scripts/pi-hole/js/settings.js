@@ -472,15 +472,27 @@ $(function () {
 
 // Speedtest toggles
 $(function () {
+  const speedtestDays = $("#speedtestdays");
   const speedtestTest = $("#speedtesttest");
+  const speedtestStatus = $("#speedteststatus");
+  const speedtestStatusBtn = $("#speedteststatusBtn");
+
   const speedtestServer = $("#speedtestserver");
+  const speedtestServerBtn = $("#closestServersBtn");
+  const speedtestServerCtr = $("#closestServers");
+
   const speedtestChartType = $("#speedtestcharttype");
   const speedtestChartTypeSave = $("#speedtestcharttypesave");
+  const speedtestChartPreview = $("#speedtestchartpreview");
+  const speedtestChartPreviewBtn = $("#speedtestchartpreviewBtn");
 
   const speedtestUpdate = $("#speedtestupdate");
   const speedtestUninstall = $("#speedtestuninstall");
   const speedtestDelete = $("#speedtestdelete");
   const speedtestDeleteLabel = speedtestDelete.parent().children("label");
+
+  const speedtestLog = $("#latestLog");
+  const speedtestLogBtn = $("#latestLogBtn");
 
   const speedtestSubmit = $("#st-submit");
   const defaultClass = "btn-primary";
@@ -490,43 +502,181 @@ $(function () {
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
 
-  document.addEventListener("DOMContentLoaded", function () {
-    speedtestChartTypeSave.attr("value", null);
-    speedtestUpdate.attr("value", null);
-    speedtestUninstall.attr("value", null);
-    speedtestDelete.attr("value", null);
-    speedtestTest.attr("value", null);
-  });
+  const preCode = text => {
+    const pre = document.createElement("pre");
+    const code = document.createElement("code");
+    code.textContent = text;
+    code.style.whiteSpace = "pre";
+    code.style.overflowWrap = "normal";
+    pre.append(code);
+    pre.style.width = "100%";
+    pre.style.maxWidth = "100%";
+    pre.style.maxHeight = "500px";
+    pre.style.overflow = "auto";
+    pre.style.whiteSpace = "pre";
+    pre.style.marginTop = "1vw";
+    return pre;
+  };
 
-  speedtestChartType.on("click", function () {
-    // if type null, set to "bar", else toggle
-    type = type ? (type === "bar" ? "line" : "bar") : "bar";
-    speedtestChartType.attr("value", type);
-    localStorage.setItem("speedtest_chart_type", type);
+  const codeBlock = (element, text, button, output) => {
+    if (element.find("pre").length > 0) {
+      element.find("pre code").text(text);
+    } else {
+      button.text("Hide " + output);
+      element.append(preCode(text));
+    }
+  };
 
-    // Call check messages to make new setting effective
-    checkMessages();
-  });
+  const serviceStatus = () => {
+    $.ajax({
+      url: "api.php?getSpeedTestStatus",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const status = data?.data;
+        let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
+        let statusText = "Schedule is inactive\nNext run is" + triggerText;
+        if (status) {
+          const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
+          const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
 
-  speedtestChartTypeSave.on("click", function () {
-    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
-  });
+          const scheduleStatusMatch = status.match(scheduleStatusPattern);
+          const triggerMatch = status.match(triggerPattern);
 
-  speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
-  });
+          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
+          if (!speedtestTest.attr("value")) {
+            if (triggerMatch) {
+              triggerText = ` in ${triggerMatch[1]}`;
+            } else if (scheduleStatusText === "active") {
+              triggerText = " running";
+            }
+          }
 
-  speedtestTest.on("click", function () {
-    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
-  });
+          statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
+        }
 
-  speedtestServer.on("change", function () {
-    speedtestServer.attr("value", speedtestServer.val());
-  });
+        codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
+      })
+      .fail(function () {
+        speedtestStatusBtn.text("Failed to get status");
+      });
+  };
+
+  const previewChart = preview => {
+    if (!preview) {
+      localStorage.setItem("speedtest_preview_hidden", "true");
+      localStorage.setItem("speedtest_preview_shown", "false");
+      speedtestChartPreview.find("div").remove();
+    } else {
+      let speedtestdays = speedtestDays.val();
+      localStorage.setItem("speedtest_days", speedtestdays);
+      localStorage.setItem("speedtest_chart_type", type);
+      localStorage.setItem("speedtest_preview_shown", "true");
+
+      if (speedtestdays === "1") {
+        speedtestdays = "24 hours";
+      } else if (speedtestdays === "-1") {
+        speedtestdays = "however many days";
+      } else {
+        speedtestdays += " days";
+      }
+
+      const colDiv = document.createElement("div");
+      const boxDiv = document.createElement("div");
+      const boxHeaderDiv = document.createElement("div");
+      const h3 = document.createElement("h3");
+      const boxBodyDiv = document.createElement("div");
+      const chartDiv = document.createElement("div");
+      const canvas = document.createElement("canvas");
+      const overlayDiv = document.createElement("div");
+      const i = document.createElement("i");
+
+      colDiv.className = "col-md-12";
+      colDiv.style.marginTop = "1vw";
+      boxDiv.className = "box";
+      boxDiv.id = "queries-over-time";
+      boxHeaderDiv.className = "box-header with-border";
+      h3.className = "box-title";
+      h3.textContent = `Speedtest results over last ${speedtestdays}`;
+      boxBodyDiv.className = "box-body";
+      chartDiv.className = "chart";
+      chartDiv.style.position = "relative";
+      chartDiv.style.width = "100%";
+      chartDiv.style.height = "180px";
+      canvas.id = "speedOverTimeChart";
+      canvas.setAttribute("value", type);
+      overlayDiv.className = "overlay";
+      overlayDiv.id = "speedOverTimeChartOverlay";
+      i.className = "fa fa-sync fa-spin";
+
+      colDiv.append(boxDiv);
+      boxDiv.append(boxHeaderDiv);
+      boxHeaderDiv.append(h3);
+      boxDiv.append(boxBodyDiv);
+      boxBodyDiv.append(chartDiv);
+      chartDiv.append(canvas);
+      chartDiv.append(overlayDiv);
+      overlayDiv.append(i);
+
+      speedtestChartPreview.find("div").remove();
+      speedtestChartPreview.append(colDiv);
+    }
+
+    speedtestChartPreviewBtn.text(preview ? "Hide preview" : "Show chart preview");
+  };
+
+  const latestLog = () => {
+    $.ajax({
+      url: "api.php?getLatestLog",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const log = data?.data;
+        if (log) {
+          codeBlock(speedtestLog, log, speedtestLogBtn, "log");
+        } else {
+          speedtestLogBtn.text("Failed to get log");
+        }
+      })
+      .fail(function () {
+        speedtestLogBtn.text("Failed to get log");
+      });
+  };
+
+  const closestServers = cmds => {
+    const tryNextCmd = () => {
+      if (cmds.length === 1) {
+        speedtestServerBtn.text("Failed to display servers");
+        if (speedtestServerCtr.find("p").length === 0) {
+          speedtestServerCtr.append(
+            `<p style="margin-top: .5vw;">Please download the results: <a href="https://c.speedtest.net/speedtest-servers-static.php" target="_blank" rel="noopener noreferrer">XML</a> | <a href="https://www.speedtest.net/api/js/servers" target="_blank" rel="noopener noreferrer">JSON</a></p>`
+          );
+        }
+      } else {
+        closestServers(cmds.slice(1));
+      }
+    };
+
+    $.ajax({
+      url: `api.php?${cmds[0]}`,
+      dataType: "json",
+    })
+      .done(function (data) {
+        const serversInfo = data?.data;
+        if (serversInfo) {
+          codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+        } else {
+          tryNextCmd();
+        }
+      })
+      .fail(function () {
+        tryNextCmd();
+      });
+  };
 
   const hasBackup = callback => {
     $.ajax({
-      url: "api.php?hasSpeedTestBackup&PHP",
+      url: "api.php?hasSpeedTestBackup",
       dataType: "json",
     })
       .done(function (backupExists) {
@@ -539,7 +689,7 @@ $(function () {
 
   const hasHistory = callback => {
     $.ajax({
-      url: "api.php?getAllSpeedTestData&PHP",
+      url: "api.php?getAllSpeedTestData",
       dataType: "json",
     })
       .done(function (results) {
@@ -578,6 +728,90 @@ $(function () {
     });
   };
 
+  document.addEventListener("DOMContentLoaded", function () {
+    speedtestDays.attr("value", speedtestDays.val());
+    speedtestChartTypeSave.attr("value", null);
+    speedtestUpdate.attr("value", null);
+    speedtestUninstall.attr("value", null);
+    speedtestDelete.attr("value", null);
+    speedtestTest.attr("value", null);
+  });
+
+  localStorage.setItem("speedtest_days", speedtestDays.val());
+  speedtestDays.on("change", function () {
+    speedtestDays.attr("value", speedtestDays.val());
+    if (speedtestDays.val()) {
+      localStorage.setItem("speedtest_days", speedtestDays.val());
+      previewChart(speedtestChartPreview.find("div").length > 0);
+    }
+  });
+
+  speedtestChartType.on("click", function () {
+    // if type null, set to "bar", else toggle
+    type = type ? (type === "bar" ? "line" : "bar") : "bar";
+    speedtestChartType.attr("value", type);
+    localStorage.setItem("speedtest_chart_type", type);
+    // Call check messages to make new setting effective
+    checkMessages();
+    previewChart(speedtestChartPreview.find("div").length > 0);
+  });
+
+  speedtestChartTypeSave.on("click", function () {
+    speedtestChartTypeSave.attr("value", speedtestChartTypeSave.attr("value") ? null : type);
+  });
+
+  speedtestChartPreviewBtn.on("click", function () {
+    previewChart(speedtestChartPreview.find("div").length === 0);
+  });
+
+  speedtestUpdate.on("click", function () {
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
+  });
+
+  speedtestTest.on("click", function () {
+    speedtestTest.attr("value", speedtestTest.attr("value") ? null : "yes");
+    const status = speedtestStatus.find("pre");
+    if (status.length > 0) {
+      serviceStatus();
+    }
+  });
+
+  speedtestStatusBtn.on("click", function () {
+    const status = speedtestStatus.find("pre");
+    if (status.length > 0) {
+      speedtestStatusBtn.text("Show service status");
+      status.remove();
+    } else {
+      speedtestStatusBtn.text("Hide status");
+      serviceStatus();
+    }
+  });
+
+  speedtestServer.on("change", function () {
+    speedtestServer.attr("value", speedtestServer.val());
+  });
+
+  speedtestLogBtn.on("click", function () {
+    const log = speedtestLog.find("pre");
+    if (log.length > 0) {
+      log.remove();
+      speedtestLogBtn.text("Show latest log");
+    } else {
+      latestLog();
+    }
+  });
+
+  speedtestServerBtn.on("click", function () {
+    const closestServersList = speedtestServerCtr.find("pre");
+    if (closestServersList.length > 0) {
+      closestServersList.remove();
+      speedtestServerBtn.text("Show closest servers");
+    } else {
+      speedtestServerBtn.text("Retrieving servers...");
+      closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
+    }
+  });
+
   speedtestUninstall.on("click", function () {
     speedtestUninstall.attr("value", speedtestUninstall.attr("value") ? null : "un");
     canRestore();
@@ -589,6 +823,14 @@ $(function () {
   });
 
   setInterval(() => {
+    if (speedtestStatus.find("pre").length > 0) {
+      serviceStatus();
+    }
+
+    if (speedtestLog.find("pre").length > 0) {
+      latestLog();
+    }
+
     canRestore();
   }, 1000);
 });

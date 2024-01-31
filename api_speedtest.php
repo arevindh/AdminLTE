@@ -17,27 +17,57 @@ $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
-if (isset($_GET['getSpeedData24hrs']) && $auth) {
-    $data = array_merge($data, getSpeedData24hrs($dbSpeedtest));
-}
+$cmdLog = 'cat /var/log/pimod.log';
+$cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
+$cmdStatus = 'systemctl status pihole-speedtest.timer ; systemctl status pihole-speedtest --no-pager -l';
+$cmdRun = 'cat /tmp/speedtest.log';
+$cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
+$cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-GPC: 1'";
 
-if (isset($_GET['getLastSpeedtestResult']) && $auth) {
-    $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
-}
-
-if (isset($_GET['getAllSpeedTestData']) && $auth) {
-    $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+if ($auth) {
+    if (isset($_GET['hasSpeedTestBackup'])) {
+        $data = array_merge($data, hasSpeedTestBackup($dbSpeedtestOld));
+    }
+    if (isset($_GET['getSpeedData'])) {
+        $data = array_merge($data, getSpeedData($dbSpeedtest, $_GET['getSpeedData']));
+    }
+    if (isset($_GET['getAllSpeedTestData'])) {
+        $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
+    }
+    if (isset($_GET['getLastSpeedtestResult'])) {
+        $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
+    }
+    if (isset($_GET['getLatestLog'])) {
+        $data = array_merge($data, speedtestExecute($cmdLog));
+    }
+    if (isset($_GET['getClosestServers'])) {
+        $data = array_merge($data, getServers($cmdServers));
+    }
+    if (isset($_GET['getSpeedTestStatus'])) {
+        $data = array_merge($data, speedtestExecute($cmdStatus));
+    }
+    if (isset($_GET['getLatestRun'])) {
+        $data = array_merge($data, speedtestExecute($cmdRun));
+    }
+    if (isset($_GET['curlClosestServers'])) {
+        $data = array_merge($data, curlServers($cmdServersCurl));
+    }
+    if (isset($_GET['JSONClosestServers'])) {
+        $data = array_merge($data, JSONServers($cmdServersJSON));
+    }
 }
 
 function hasSpeedTestBackup($dbSpeedtestOld)
 {
-    return file_exists($dbSpeedtestOld);
+    $data = file_exists($dbSpeedtestOld);
+
+    return array('data' => $data);
 }
 
 function getAllSpeedTestData($dbSpeedtest)
 {
     $data = getSpeedTestData($dbSpeedtest, -1);
-    if (isset($data['errr'])) {
+    if (isset($data['error'])) {
         return array();
     }
     $newarr = array();
@@ -129,13 +159,14 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
     $db->close();
 }
 
-function getSpeedData24hrs($dbSpeedtest)
+function getSpeedData($dbSpeedtest, $durationdays = '-2')
 {
     global $log, $setupVars;
-    if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+    if (isset($setupVars['SPEEDTEST_CHART_DAYS']) && $durationdays == '-2') {
         $dataFromSpeedDB = getSpeedTestData($dbSpeedtest, $setupVars['SPEEDTEST_CHART_DAYS']);
     } else {
-        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest);
+        $durationdays = (int) $durationdays < -1 ? '1' : $durationdays;
+        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest, $durationdays);
     }
 
     return $dataFromSpeedDB;
@@ -188,4 +219,79 @@ function exportData()
 function print_titles($row)
 {
     echo implode(',', array_keys($row))."\n";
+}
+
+function speedtestExecute($command)
+{
+    $output = array();
+    $return_status = -1;
+    exec('/bin/bash -c \''.$command.'\'', $output, $return_status);
+
+    if ($return_status !== 0) {
+        trigger_error("Executing {$command} failed.", E_USER_WARNING);
+    }
+
+    return array('data' => implode("\n", $output));
+}
+
+function getServers($cmdServers)
+{
+    $array = speedtestExecute($cmdServers);
+    $servers = $array['data'];
+
+    $output = explode("\n", $servers);
+    $output = array_filter($output);
+    if (count($output) > 1) {
+        array_shift($output);
+    }
+    $servers = implode("\n", $output);
+
+    if ($servers === false) {
+        return array('error' => 'Error fetching servers');
+    } else {
+        return array('data' => $servers);
+    }
+}
+
+function curlServers($cmdServersCurl)
+{
+    $array = speedtestExecute($cmdServersCurl);
+    $xmlContent = $array['data'];
+
+    if ($xmlContent === false) {
+        return array('error' => 'Error fetching XML');
+    } else {
+        $xml = simplexml_load_string($xmlContent);
+        if ($xml === false) {
+            return array('error' => 'Error parsing XML');
+        }
+        $serverList = array();
+        foreach ($xml->servers->server as $server) {
+            $serverList[] = str_pad($server['id'], 5, ' ', STR_PAD_LEFT).') '.$server['sponsor'].' ('.$server['name'].', '.$server['cc'].') ('.$server['lat'].', '.$server['lon'].')';
+        }
+
+        return array('data' => implode("\n", $serverList));
+    }
+}
+
+function JSONServers($cmdServersJSON)
+{
+    $array = speedtestExecute($cmdServersJSON);
+    $jsonContent = $array['data'];
+
+    if ($jsonContent === false) {
+        return array('error' => 'Error fetching JSON');
+    } else {
+        $json = json_decode($jsonContent);
+        if ($json === false) {
+            return array('error' => 'Error parsing JSON');
+        }
+
+        $serverList = array();
+        foreach ($json as $server) {
+            $serverList[] = str_pad($server->id, 5, ' ', STR_PAD_LEFT).') '.$server->sponsor.' ('.$server->name.', '.$server->cc.') [Distance '.$server->distance.']';
+        }
+
+        return array('data' => implode("\n", $serverList));
+    }
 }

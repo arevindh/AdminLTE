@@ -1230,3 +1230,5 @@ $(function () {
 window.addEventListener("resize", function () {
   $(".chartjs-tooltip").remove();
 });
+
+localStorage.setItem("speedtest_days", "-2");

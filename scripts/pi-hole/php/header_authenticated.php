@@ -149,15 +149,25 @@ if (!is_numeric($nproc)) {
 // Get memory usage
 $memory_usage = getMemUsage();
 
+$speedtestshedule = false;
+$speedtestdays = '';
+$speedtestcharttype = 'line';
 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
     $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
-} else {
-    $speedtestshedule = false;
 }
-if (isset($setupVars['SPEEDTEST_CHART_DAYS']) && $setupVars['SPEEDTEST_CHART_DAYS'] > 1) {
-    $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' Days';
-} else {
-    $speedtestdays = '24 Hours';
+if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
+    if ($setupVars['SPEEDTEST_CHART_DAYS'] > 1) {
+        $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' days';
+    }
+    if ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
+        $speedtestdays = '24 hours';
+    }
+    if ($setupVars['SPEEDTEST_CHART_DAYS'] == -1) {
+        $speedtestdays = 'however many days';
+    }
+}
+if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
+    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
 }
 
 $piholeFTLConf = piholeFTLConfig();

@@ -106,32 +106,6 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 ?>
 
-<?php
-$speedtestcharttype = 'line';
-if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
-    $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
-}
-if ($auth && $speedtestshedule) { ?>
-    <div class="row">
-        <div class="col-md-12">
-            <div class="box" id="queries-over-time">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
-                </div>
-                <div class="box-body">
-                    <div class="chart" style="position: relative; width: 100%; height: 180px">
-                        <canvas id="speedOverTimeChart" value=<?php echo $speedtestcharttype; ?>></canvas>
-                    </div>
-                    <div class="overlay">
-                        <i class="fa fa-sync fa-spin"></i>
-                    </div>
-                    <!-- /.box-body -->
-                </div>
-            </div>
-        </div>
-    </div>
-<?php }  ?>
-
 <div class="row">
     <div class="col-md-12">
         <div class="box" id="clients">
@@ -150,6 +124,27 @@ if ($auth && $speedtestshedule) { ?>
         </div>
     </div>
 </div>
+
+<?php if ($auth && $speedtestdays != '') { ?>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="box" id="queries-over-time">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Speedtest results over last <?php echo htmlspecialchars($speedtestdays); ?></h3>
+                </div>
+                <div class="box-body">
+                    <div class="chart" style="position: relative; width: 100%; height: 180px">
+                        <canvas id="speedOverTimeChart" value=<?php echo $speedtestcharttype; ?>></canvas>
+                    </div>
+                    <div class="overlay">
+                        <i class="fa fa-sync fa-spin"></i>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            </div>
+        </div>
+    </div>
+<?php } ?>
 
 <div class="row">
     <div class="col-md-6">

@@ -10,4 +10,4 @@ Please go to the [main repository](https://github.com/arevindh/pihole-speedtest)
 
 ## Disclaimer
 
-We are not affiliated or endorsed by [Pi-hole](https://github.com/pi-hole/AdminLTE)
+We are not affiliated with or endorsed by [Pi-hole](https://github.com/pi-hole/AdminLTE)

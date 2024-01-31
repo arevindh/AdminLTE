@@ -32,7 +32,7 @@ $(document).ready(function () {
       GETDict[item.split("=")[0]] = item.split("=")[1];
     });
 
-  var APIstring = "api.php?getAllSpeedTestData&PHP";
+  var APIstring = "api.php?getAllSpeedTestData";
 
   tableApi = $("#all-queries").DataTable({
     dom:
@@ -48,12 +48,36 @@ $(document).ready(function () {
       null,
       {
         render: function (data, type, _full, _meta) {
-          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+          if (type === "display") {
+            if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            } else {
+              data = moment(new Date(data))
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            }
+          }
+
+          return data;
         },
       },
       {
         render: function (data, type, _full, _meta) {
-          return type === "display" ? moment(data).format("Y-MM-DD HH:mm:ss z") : data;
+          if (type === "display") {
+            if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            } else {
+              data = moment(new Date(data))
+                .utcOffset(moment().utcOffset())
+                .format("YYYY-MM-DD HH:mm:ss Z");
+            }
+          }
+
+          return data;
         },
       },
       null,

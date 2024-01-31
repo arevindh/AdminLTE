@@ -583,10 +583,6 @@ if (isset($_POST['field'])) {
             break;
 
         case 'speedtest':
-            if (isset($_POST['speedtestmode'])) {
-                pihole_execute('-a -sm '.trim($_POST['speedtestmode']));
-            }
-
             if (isset($_POST['speedtestschedule'])) {
                 pihole_execute('-a -s '.trim($_POST['speedtestschedule']));
             }
@@ -622,7 +618,7 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtesttest'])) {
                 $success .= ' and a speedtest has been started';
-                pihole_execute('-a -sn');
+                pihole_execute('-a -sn', !isset($_POST['speedtestuninstall']));
             }
 
             if (isset($_POST['speedtestupdate'])) {
