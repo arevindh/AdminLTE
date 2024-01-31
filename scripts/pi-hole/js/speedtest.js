@@ -191,5 +191,5 @@ $(function () {
   updateSpeedTestData();
   setInterval(function () {
     updateSpeedTestData();
-  }, 1000);
+  }, 6000);
 });
