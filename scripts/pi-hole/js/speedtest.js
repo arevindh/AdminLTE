@@ -36,27 +36,27 @@ function createChart() {
           data: downloadspeed,
           backgroundColor: "rgba(0, 123, 255, 0.5)",
           borderColor: "rgba(0, 123, 255, 1)",
-          borderWidth: 1,
-          cubicInterpolationMode: "monotone",
+          borderWidth: 3,
           yAxisID: "y-axis-1",
+          tension: 0.4,
         },
         {
           label: "Mbps Upload",
           data: uploadspeed,
           backgroundColor: "rgba(40, 167, 69, 0.5)",
           borderColor: "rgba(40, 167, 69, 1)",
-          borderWidth: 1,
-          cubicInterpolationMode: "monotone",
+          borderWidth: 3,
           yAxisID: "y-axis-1",
+          tension: 0.4,
         },
         {
           label: "ms Ping",
           data: serverPing,
           backgroundColor: "rgba(108, 117, 125, 0.5)",
           borderColor: "rgba(108, 117, 125, 1)",
-          borderWidth: 1,
-          cubicInterpolationMode: "monotone",
+          borderWidth: 3,
           yAxisID: "y-axis-2",
+          tension: 0.4,
         },
       ],
     },
@@ -111,6 +111,11 @@ function createChart() {
         "y-axis-2": {
           type: "linear",
           position: "right",
+        },
+      },
+      elements: {
+        point: {
+          radius: 0,
         },
       },
     },
@@ -186,5 +191,5 @@ $(function () {
   updateSpeedTestData();
   setInterval(function () {
     updateSpeedTestData();
-  }, 6000);
+  }, 1000);
 });

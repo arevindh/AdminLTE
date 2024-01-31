@@ -1507,7 +1507,6 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
 $speedtestshedule = false;
 $speedtestdays = 'official';
 $speedtestserver = '';
-$speedtestmode = 'python';
 $speedtestcharttype = 'line';
 
 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
@@ -1518,9 +1517,6 @@ if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
 }
 if (isset($setupVars['SPEEDTEST_SERVER'])) {
     $speedtestserver = $setupVars['SPEEDTEST_SERVER'];
-}
-if (isset($setupVars['SPEEDTEST_MODE'])) {
-    $speedtestmode = $setupVars['SPEEDTEST_MODE'];
 }
 if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
