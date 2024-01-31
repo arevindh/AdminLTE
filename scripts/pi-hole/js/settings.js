@@ -569,7 +569,6 @@ $(function () {
       speedtestChartPreview.find("div").remove();
     } else {
       let speedtestdays = speedtestDays.val();
-      const speedtestcharttype = speedtestChartType.attr("value");
       localStorage.setItem("speedtest_days", speedtestdays);
       localStorage.setItem("speedtest_chart_type", type);
       localStorage.setItem("speedtest_preview_shown", "true");
