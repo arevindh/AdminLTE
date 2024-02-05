@@ -136,10 +136,10 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
                     <div class="chart" style="position: relative; width: 100%; height: 180px">
                         <canvas id="speedOverTimeChart" value=<?php echo $speedtestcharttype; ?>></canvas>
                     </div>
-                    <div class="overlay">
-                        <i class="fa fa-sync fa-spin"></i>
-                    </div>
                     <!-- /.box-body -->
+                </div>
+                <div class="overlay">
+                    <i class="fa fa-sync fa-spin"></i>
                 </div>
             </div>
         </div>

@@ -537,20 +537,23 @@ $(function () {
         let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
         let statusText = "Schedule is inactive\nNext run is" + triggerText;
         if (status) {
-          const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
-          const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
+          if (status.match(/^\d+$/)) {
+            triggerText = ` in ${status}s`;
+          } else {
+            const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
+            const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
 
-          const scheduleStatusMatch = status.match(scheduleStatusPattern);
-          const triggerMatch = status.match(triggerPattern);
+            const scheduleStatusMatch = status.match(scheduleStatusPattern);
+            const triggerMatch = status.match(triggerPattern);
 
-          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
-          if (!speedtestTest.attr("value")) {
-            if (triggerMatch) {
-              triggerText = ` in ${triggerMatch[1]}`;
-            } else if (scheduleStatusText === "active") {
-              triggerText = " running";
+            const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
+            if (!speedtestTest.attr("value")) {
+              if (triggerMatch) {
+                triggerText = ` in ${triggerMatch[1]}`;
+              } else if (scheduleStatusText === "active") {
+                triggerText = " running";
+              }
             }
-          }
 
           statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
         }
@@ -613,12 +616,12 @@ $(function () {
 
       colDiv.append(boxDiv);
       boxDiv.append(boxHeaderDiv);
-      boxHeaderDiv.append(h3);
       boxDiv.append(boxBodyDiv);
+      boxDiv.append(overlayDiv);
+      boxHeaderDiv.append(h3);
       boxBodyDiv.append(chartDiv);
-      chartDiv.append(canvas);
-      chartDiv.append(overlayDiv);
       overlayDiv.append(i);
+      chartDiv.append(canvas);
 
       speedtestChartPreview.find("div").remove();
       speedtestChartPreview.append(colDiv);

@@ -19,7 +19,7 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 $cmdLog = 'cat /var/log/pimod.log';
 $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
-$cmdStatus = 'systemctl status pihole-speedtest.timer ; systemctl status pihole-speedtest --no-pager -l';
+$cmdStatus = "[[ -f /opt/pihole/speedtestmod/schedule_check.sh ]] && value=$(grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2) || systemctl status pihole-speedtest.timer";
 $cmdRun = 'cat /tmp/speedtest.log';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-GPC: 1'";
