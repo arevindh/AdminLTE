@@ -559,7 +559,7 @@ $(function () {
       })
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
-        const statusText = "Failed to get schedule\nNext run is " + triggerText;
+        const statusText = "Failed to get schedule\nNext run is" + triggerText;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };

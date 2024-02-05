@@ -59,9 +59,15 @@ if ($auth) {
 
 function hasSpeedTestBackup($dbSpeedtestOld)
 {
-    $data = file_exists($dbSpeedtestOld);
+    $exists = file_exists($dbSpeedtestOld);
 
-    return array('data' => $data);
+    if ($exists) {
+        $data = getAllSpeedTestData($dbSpeedtestOld);
+    } else {
+        $data = array();
+    }
+
+    return array('data' => !empty($data) && !empty($data['data']) ? true : false);
 }
 
 function getAllSpeedTestData($dbSpeedtest)
