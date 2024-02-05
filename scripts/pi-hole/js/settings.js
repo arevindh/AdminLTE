@@ -558,7 +558,9 @@ $(function () {
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       })
       .fail(function () {
-        speedtestStatusBtn.text("Failed to get status");
+        const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
+        const statusText = "Failed to get schedule\nNext run is " + triggerText;
+        codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
 
@@ -635,11 +637,11 @@ $(function () {
         if (log) {
           codeBlock(speedtestLog, log, speedtestLogBtn, "log");
         } else {
-          speedtestLogBtn.text("Failed to get log");
+          codeBlock(speedtestLog, "The log is empty", speedtestLogBtn, "log");
         }
       })
       .fail(function () {
-        speedtestLogBtn.text("Failed to get log");
+        codeBlock(speedtestLog, "Failed to get log", speedtestLogBtn, "log");
       });
   };
 
@@ -664,6 +666,7 @@ $(function () {
       .done(function (data) {
         const serversInfo = data?.data;
         if (serversInfo) {
+          speedtestServerCtr.find("p").remove();
           codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
         } else {
           tryNextCmd();
@@ -808,6 +811,7 @@ $(function () {
       speedtestServerBtn.text("Show closest servers");
     } else {
       speedtestServerBtn.text("Retrieving servers...");
+      speedtestServerCtr.find("p").remove();
       closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
     }
   });
