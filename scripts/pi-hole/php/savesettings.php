@@ -597,6 +597,10 @@ if (isset($_POST['field'])) {
                 pihole_execute('-a -ss '.trim($_POST['speedtestserver']));
             }
 
+            if (isset($_POST['speedtestserver']) && empty($_POST['speedtestserver'])) {
+                pihole_execute('-a -ss auto');
+            }
+
             if (isset($_POST['speedtestdays'])) {
                 pihole_execute('-a -sd '.trim($_POST['speedtestdays']));
             }
