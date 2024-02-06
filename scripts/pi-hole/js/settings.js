@@ -534,11 +534,14 @@ $(function () {
     })
       .done(function (data) {
         const status = data?.data;
+        let scheduleStatusText = "inactive";
         let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
-        let statusText = "Schedule is inactive\nNext run is" + triggerText;
         if (status) {
-          if (status.match(/^\d+$/)) {
-            triggerText = ` in ${status}s`;
+          if (!status.includes("timer")) {
+            scheduleStatusText = "active";
+            if (!speedtestTest.attr("value")) {
+              triggerText = status === "0s" ? " running" : ` in ${status}`;
+            }
           } else {
             const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
             const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
@@ -546,7 +549,7 @@ $(function () {
             const scheduleStatusMatch = status.match(scheduleStatusPattern);
             const triggerMatch = status.match(triggerPattern);
 
-            const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
+            scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
             if (!speedtestTest.attr("value")) {
               if (triggerMatch) {
                 triggerText = ` in ${triggerMatch[1]}`;
@@ -554,10 +557,10 @@ $(function () {
                 triggerText = " running";
               }
             }
-
-          statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
+          }
         }
 
+        const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       })
       .fail(function () {

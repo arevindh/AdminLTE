@@ -10,7 +10,7 @@ if (!isset($api)) {
     exit('Direct call to api_PHP.php is not allowed!');
 }
 
-// $data = array();
+date_default_timezone_set(exec('date +%Z'));
 
 $dbSpeedtest = '/etc/pihole/speedtest.db';
 $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
@@ -19,10 +19,24 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 $cmdLog = 'cat /var/log/pimod.log';
 $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
-$cmdStatus = "[[ -f /opt/pihole/speedtestmod/schedule_check.sh ]] && value=$(grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2) || systemctl status pihole-speedtest.timer";
+if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
+    $remaining_seconds = getRemainingTime();
+    if ($remaining_seconds < 0) {
+        $cmdStatus = 'echo ""';
+    } else {
+        $remaining_date = sprintf('%dd %dh %dmin %ds', $remaining_seconds / 86400, $remaining_seconds / 3600 % 24, $remaining_seconds / 60 % 60, $remaining_seconds % 60);
+        $remaining_date = preg_replace('/0d |0h |0min /', '', $remaining_date); // remove 0d 0h 0min
+        $remaining_date = preg_replace('/\s(\d+s)/', '', $remaining_date); // remove seconds if not needed
+        $cmdStatus = 'echo '.$remaining_date;
+    }
+} elseif (!file_exists('/bin/systemctl')) {
+    $cmdStatus = 'echo ""';
+} else {
+    $cmdStatus = 'systemctl status pihole-speedtest.timer';
+}
 $cmdRun = 'cat /tmp/speedtest.log';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
-$cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'Sec-GPC: 1'";
+$cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 
 if ($auth) {
     if (isset($_GET['hasSpeedTestBackup'])) {
@@ -138,15 +152,25 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         // return array("status"=>"success");
     }
 
+    $dataFromSpeedDB = getLastSpeedtestResult($dbSpeedtest);
+    $tz = new DateTimeZone('UTC');
+    if (isset($dataFromSpeedDB[0]['start_time'])) {
+        $tz = new DateTimeZone(substr($dataFromSpeedDB[0]['start_time'], -1));
+    }
+
     $curdate = date('Y-m-d H:i:s');
+    $curdate = new DateTime();
+    $curdate->setTimezone($tz);
     $date = new DateTime();
+    $date->setTimezone($tz);
     $date->modify('-'.$durationdays.' day');
-    $start_date = $date->format('Y-m-d H:i:s');
+    $curdate = $curdate->format('Y-m-d H:i:s Z');
+    $start_date = $date->format('Y-m-d H:i:s Z');
 
     if ($durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
     } else {
-        $sql = "SELECT * from speedtest where start_time between '{$start_date}' and  '{$curdate}'  order by id asc;";
+        $sql = "SELECT * from speedtest where start_time between '{$start_date}' and '{$curdate}' order by id asc";
     }
 
     $dbResults = $db->query($sql);
@@ -167,15 +191,19 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
 
 function getSpeedData($dbSpeedtest, $durationdays = '-2')
 {
-    global $log, $setupVars;
+    global $setupVars;
     if (isset($setupVars['SPEEDTEST_CHART_DAYS']) && $durationdays == '-2') {
-        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest, $setupVars['SPEEDTEST_CHART_DAYS']);
+        $durationdays = $setupVars['SPEEDTEST_CHART_DAYS'];
     } else {
         $durationdays = (int) $durationdays < -1 ? '1' : $durationdays;
-        $dataFromSpeedDB = getSpeedTestData($dbSpeedtest, $durationdays);
     }
 
-    return $dataFromSpeedDB;
+    $data = getSpeedTestData($dbSpeedtest, $durationdays);
+    if (isset($data['error'])) {
+        return array();
+    }
+
+    return $data;
 }
 
 if (!empty($_GET['csv-export'])) {
@@ -300,4 +328,25 @@ function JSONServers($cmdServersJSON)
 
         return array('data' => implode("\n", $serverList));
     }
+}
+
+function getRemainingTime()
+{
+    $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+    $interval_seconds = (int) $interval_seconds;
+
+    $last_run_time = -1;
+    if (file_exists('/etc/pihole/last_speedtest')) {
+        $last_run_time = file_get_contents('/etc/pihole/last_speedtest');
+        $last_run_time = (int) $last_run_time;
+    }
+
+    if ($last_run_time == -1) {
+        return -1;
+    }
+
+    $time = time();
+    $remaining_time = $interval_seconds - ($time - $last_run_time);
+
+    return $remaining_time;
 }

@@ -50,13 +50,9 @@ $(document).ready(function () {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
             if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
-                .utcOffset(moment().utcOffset())
-                .format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset());
             } else {
-              data = moment(new Date(data))
-                .utcOffset(moment().utcOffset())
-                .format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(new Date(data).toISOString());
             }
           }
 
@@ -67,13 +63,9 @@ $(document).ready(function () {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
             if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-              data = moment(data, "YYYY-MM-DD HH:mm:ss Z")
-                .utcOffset(moment().utcOffset())
-                .format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(data, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset());
             } else {
-              data = moment(new Date(data))
-                .utcOffset(moment().utcOffset())
-                .format("YYYY-MM-DD HH:mm:ss Z");
+              data = moment(new Date(data).toISOString());
             }
           }
 
