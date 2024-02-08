@@ -152,22 +152,16 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         // return array("status"=>"success");
     }
 
-    $dataFromSpeedDB = getLastSpeedtestResult($dbSpeedtest);
-    $tz = new DateTimeZone('UTC');
-    if (isset($dataFromSpeedDB[0]['start_time'])) {
-        $tz = new DateTimeZone(end(explode(' ', $dataFromSpeedDB[0]['start_time'])));
-    }
-
-    $curdate = new DateTime('now', $tz);
-    $date = new DateTime('now', $tz);
-    $date->modify('-'.$durationdays.' day');
-    $curdate = $curdate->format('Y-m-d H:i:s');
-    $start_date = $date->format('Y-m-d H:i:s');
-
     if ($durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
     } else {
-        $sql = "SELECT * from speedtest where start_time between '{$start_date}' and '{$curdate}' order by id asc";
+        $system_tz = new DateTimeZone(end(explode(' ', getLastSpeedtestResult($dbSpeedtest)[0]['start_time'])));
+        $curdate = new DateTime('now', $system_tz);
+        $daysago = new DateTime('now', $system_tz);
+        $daysago->modify('-'.$durationdays.' day');
+        $daysago = $daysago->format('Y-m-d H:i:s');
+        $curdate = $curdate->format('Y-m-d H:i:s');
+        $sql = "SELECT * from speedtest where start_time between '{$daysago}' and '{$curdate}' order by id asc";
     }
 
     $dbResults = $db->query($sql);
