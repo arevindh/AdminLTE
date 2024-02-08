@@ -560,7 +560,7 @@ $(function () {
           }
         }
 
-        var lastRunText = "";
+        var lastRunText = "Latest run is unknown";
         $.ajax({
           url: "api.php?getLatestRun",
           dataType: "json",
@@ -569,6 +569,8 @@ $(function () {
             const lastRun = data?.data;
             if (lastRun) {
               lastRunText = `\n\nLatest run:\n${lastRun}`;
+            } else {
+              lastRunText = "";
             }
           })
           .fail(function () {
