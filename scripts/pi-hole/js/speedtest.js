@@ -130,7 +130,7 @@ function createChart() {
 
 function formatDate(itemdate, results) {
   const first = moment(results[0].start_time);
-  const last = moment(results.at(-1).start_time);
+  const last = moment(results[results.length - 1].start_time);
   let output = "HH:mm";
   if (last.diff(first, "hours") > 24) {
     output = "Do HH:mm";
