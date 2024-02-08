@@ -560,7 +560,22 @@ $(function () {
           }
         }
 
-        const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
+        var lastRunText = "";
+        $.ajax({
+          url: "api.php?getLatestRun",
+          dataType: "json",
+        })
+          .done(function (data) {
+            const lastRun = data?.data;
+            if (lastRun) {
+              lastRunText = `\n\nLatest run:\n${lastRun}`;
+            }
+          })
+          .fail(function () {
+            lastRunText = "\n\nFailed to get latest run";
+          });
+
+        const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       })
       .fail(function () {

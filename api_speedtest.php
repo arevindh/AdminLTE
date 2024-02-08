@@ -48,9 +48,6 @@ if ($auth) {
     if (isset($_GET['getAllSpeedTestData'])) {
         $data = array_merge($data, getAllSpeedTestData($dbSpeedtest));
     }
-    if (isset($_GET['getLastSpeedtestResult'])) {
-        $data = array_merge($data, getLastSpeedtestResult($dbSpeedtest));
-    }
     if (isset($_GET['getLatestLog'])) {
         $data = array_merge($data, speedtestExecute($cmdLog));
     }
@@ -96,30 +93,6 @@ function getAllSpeedTestData($dbSpeedtest)
     }
 
     return array('data' => $newarr);
-}
-
-function getLastSpeedtestResult($dbSpeedtest)
-{
-    if (!file_exists($dbSpeedtest)) {
-        return array();
-    }
-
-    $db = new SQLite3($dbSpeedtest);
-    if (!$db) {
-        return array();
-    }
-
-    $sql = 'SELECT * from speedtest order by id DESC limit 1';
-    $dbResults = $db->query($sql);
-    $dataFromSpeedDB = array();
-    if (!empty($dbResults)) {
-        while ($row = $dbResults->fetchArray(SQLITE3_ASSOC)) {
-            array_push($dataFromSpeedDB, $row);
-        }
-    }
-    $db->close();
-
-    return $dataFromSpeedDB;
 }
 
 function getSpeedTestData($dbSpeedtest, $durationdays = '1')
