@@ -155,7 +155,7 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
     $dataFromSpeedDB = getLastSpeedtestResult($dbSpeedtest);
     $tz = new DateTimeZone('UTC');
     if (isset($dataFromSpeedDB[0]['start_time'])) {
-        $tz = new DateTimeZone(substr($dataFromSpeedDB[0]['start_time'], -1));
+        $tz = new DateTimeZone(end(explode(' ', $dataFromSpeedDB[0]['start_time'])));
     }
 
     $curdate = new DateTime('now', $tz);
