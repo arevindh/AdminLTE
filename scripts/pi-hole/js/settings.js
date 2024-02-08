@@ -560,29 +560,29 @@ $(function () {
           }
         }
 
-        var lastRunText = "Latest run is unknown";
         $.ajax({
           url: "api.php?getLatestRun",
           dataType: "json",
         })
           .done(function (data) {
             const lastRun = data?.data;
+            let lastRunText = "";
             if (lastRun) {
               lastRunText = `\n\nLatest run:\n${lastRun}`;
-            } else {
-              lastRunText = "";
             }
+            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
+            codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
           .fail(function () {
-            lastRunText = "\n\nFailed to get latest run";
+            const lastRunText = "\nFailed to get latest run";
+            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
+            codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           });
-
-        const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
-        codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       })
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
-        const statusText = "Failed to get schedule\nNext run is" + triggerText;
+        const lastRunText = "\nFailed to get latest run";
+        const statusText = "Failed to get schedule\nNext run is" + triggerText + lastRunText;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
