@@ -135,17 +135,11 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
     if ($durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
     } else {
-        $lastrun = getLastSpeedtestResult($dbSpeedtest);
-        if (empty($lastrun)) {
-            return array();
-        }
-
-        $system_tz = new DateTimeZone(end(explode(' ', $lastrun[0]['start_time'])));
-        $curdate = new DateTime('now', $system_tz);
-        $daysago = new DateTime('now', $system_tz);
+        $curdate = new DateTime('now', new DateTimeZone('UTC'));
+        $daysago = new DateTime('now', new DateTimeZone('UTC'));
         $daysago->modify('-'.$durationdays.' day');
-        $daysago = $daysago->format('Y-m-d H:i:s');
-        $curdate = $curdate->format('Y-m-d H:i:s');
+        $curdate = $curdate->format('Y-m-d\TH:i');
+        $daysago = $daysago->format('Y-m-d\TH:i');
         $sql = "SELECT * from speedtest where start_time between '{$daysago}' and '{$curdate}' order by id asc";
     }
 

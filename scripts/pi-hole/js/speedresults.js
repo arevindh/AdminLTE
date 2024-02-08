@@ -49,9 +49,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            data = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-              ? moment(data, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset())
-              : moment(new Date(data).toISOString());
+            moment().utc(data).local();
           }
 
           return data;
@@ -60,9 +58,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            data = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
-              ? moment(data, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset())
-              : moment(new Date(data).toISOString());
+            moment().utc(data).local();
           }
 
           return data;

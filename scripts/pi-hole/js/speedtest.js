@@ -131,16 +131,16 @@ function createChart() {
 function formatDate(itemdate, results) {
   let output = "HH:mm";
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z").utcOffset(moment().utcOffset()).format(output);
+    return moment().utc(itemdate).local().format(output);
   }
 
-  const first = moment(results[0].start_time, "YYYY-MM-DD HH:mm:ss Z");
-  const last = moment(results.at(-1).start_time, "YYYY-MM-DD HH:mm:ss Z");
+  const first = moment(results[0].start_time);
+  const last = moment(results.at(-1).start_time);
   if (last.diff(first, "hours") > 24) {
     output = "Do HH:mm";
   }
 
-  return moment(new Date(itemdate).toISOString()).format(output);
+  return moment().utc(itemdate).local().format(output);
 }
 
 function updateSpeedTestData() {
