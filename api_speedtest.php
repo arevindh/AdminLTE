@@ -308,7 +308,18 @@ function JSONServers($cmdServersJSON)
 function getRemainingTime()
 {
     $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+
+    # if interval_seconds is "nan", then schedule has never been set
+    if (strpos($interval_seconds, 'nan') !== false) {
+        return -1;
+    }
+
     $interval_seconds = (int) $interval_seconds;
+
+    # if interval_seconds is less than 0, then schedule is disabled
+    if ($interval_seconds < 0) {
+        return -1;
+    }
 
     $last_run_time = -1;
     if (file_exists('/etc/pihole/last_speedtest')) {
@@ -316,8 +327,9 @@ function getRemainingTime()
         $last_run_time = (int) $last_run_time;
     }
 
+    # if last_run_time is -1, then speedtest has never been run
     if ($last_run_time == -1) {
-        return -1;
+        return 0;
     }
 
     $time = time();

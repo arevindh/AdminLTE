@@ -1504,13 +1504,13 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <!-- ######################################################### Speedtest ######################################################### -->
                 <?php
 
-$speedtestshedule = false;
+$speedtestschedule = false;
 $speedtestdays = '';
 $speedtestserver = '';
 $speedtestcharttype = 'line';
 
 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
-    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+    $speedtestschedule = $setupVars['SPEEDTESTSCHEDULE'];
 }
 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
     $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
@@ -1550,9 +1550,9 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                             type="number"
                                                             name="speedtestschedule"
                                                             class="form-control"
-                                                            value="<?php echo htmlspecialchars($speedtestshedule); ?>"
+                                                            value="<?php echo htmlspecialchars($speedtestschedule); ?>"
                                                             min="0"
-                                                            step="0.01"
+                                                            step="0.001"
                                                             placeholder="0 = disable schedule"
                                                         >
                                                     </div>
