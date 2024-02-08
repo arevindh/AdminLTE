@@ -158,14 +158,11 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         $tz = new DateTimeZone(substr($dataFromSpeedDB[0]['start_time'], -1));
     }
 
-    $curdate = date('Y-m-d H:i:s');
-    $curdate = new DateTime();
-    $curdate->setTimezone($tz);
-    $date = new DateTime();
-    $date->setTimezone($tz);
+    $curdate = new DateTime('now', $tz);
+    $date = new DateTime('now', $tz);
     $date->modify('-'.$durationdays.' day');
-    $curdate = $curdate->format('Y-m-d H:i:s Z');
-    $start_date = $date->format('Y-m-d H:i:s Z');
+    $curdate = $curdate->format('Y-m-d H:i:s');
+    $start_date = $date->format('Y-m-d H:i:s');
 
     if ($durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
