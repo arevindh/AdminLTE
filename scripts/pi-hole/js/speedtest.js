@@ -39,6 +39,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-1",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
         {
           label: "Mbps Upload",
@@ -48,6 +50,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-1",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
         {
           label: "ms Ping",
@@ -57,6 +61,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-2",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
       ],
     },
@@ -176,6 +182,10 @@ function updateSpeedTestData() {
     }
 
     if (speedChart) {
+      speedChart.data.labels = speedlabels;
+      speedChart.data.datasets[0].data = downloadspeed;
+      speedChart.data.datasets[1].data = uploadspeed;
+      speedChart.data.datasets[2].data = serverPing;
       speedChart.update();
       $("#speedOverTimeChartOverlay").css("display", "none");
     }
