@@ -168,7 +168,7 @@ function updateSpeedTestData() {
         serverPing.push(parseFloat(packet.server_ping));
       }
     });
-    if (speedChart && (!daysIsTheSame || !typeIsTheSame || beenHidden) || days === "-2") {
+    if (speedChart && (!daysIsTheSame || !typeIsTheSame || beenHidden) && days !== "-2") {
       speedChart.destroy();
       speedChart = null;
     }
