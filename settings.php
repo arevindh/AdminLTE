@@ -1505,7 +1505,7 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <?php
 
 $speedtestshedule = false;
-$speedtestdays = 'official';
+$speedtestdays = '';
 $speedtestserver = '';
 $speedtestcharttype = 'line';
 
