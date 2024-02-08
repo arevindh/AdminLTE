@@ -25,7 +25,7 @@ if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
         $cmdStatus = 'echo ""';
     } else {
         $remaining_date = sprintf('%dd %dh %dmin %ds', $remaining_seconds / 86400, $remaining_seconds / 3600 % 24, $remaining_seconds / 60 % 60, $remaining_seconds % 60);
-        $remaining_date = preg_replace('/0d |0h |0min /', '', $remaining_date); // remove 0d 0h 0min
+        $remaining_date = preg_replace('/^0d |(^|(?<= ))0h |(^|(?<= ))0min /', '', $remaining_date); // remove 0d 0h 0min
         $remaining_date = preg_replace('/\s(\d+s)/', '', $remaining_date); // remove seconds if not needed
         $cmdStatus = 'echo '.$remaining_date;
     }
