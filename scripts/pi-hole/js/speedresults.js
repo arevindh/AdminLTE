@@ -49,7 +49,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            moment.utc(data).local();
+            moment.utc(data).local().format();
           }
 
           return data;
@@ -58,7 +58,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            moment.utc(data).local();
+            moment.utc(data).local().format();
           }
 
           return data;
