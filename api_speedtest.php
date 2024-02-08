@@ -101,61 +101,46 @@ function getAllSpeedTestData($dbSpeedtest)
 function getLastSpeedtestResult($dbSpeedtest)
 {
     if (!file_exists($dbSpeedtest)) {
-        // create db of not exists
-        exec('sudo pihole -a -sn');
-
         return array();
     }
 
     $db = new SQLite3($dbSpeedtest);
     if (!$db) {
-        return array('error' => 'Unable to open DB');
-    } else {
-        // return array("status"=>"success");
+        return array();
     }
 
-    $curdate = date('Y-m-d H:i:s');
-    $date = new DateTime();
-    // $date->modify('-'.$durationdays.' day');
-    $start_date = $date->format('Y-m-d H:i:s');
-
     $sql = 'SELECT * from speedtest order by id DESC limit 1';
-
     $dbResults = $db->query($sql);
-
     $dataFromSpeedDB = array();
-
     if (!empty($dbResults)) {
         while ($row = $dbResults->fetchArray(SQLITE3_ASSOC)) {
             array_push($dataFromSpeedDB, $row);
         }
-
-        return $dataFromSpeedDB;
-    } else {
-        return array('error' => 'No Results');
     }
     $db->close();
+
+    return $dataFromSpeedDB;
 }
 
 function getSpeedTestData($dbSpeedtest, $durationdays = '1')
 {
     if (!file_exists($dbSpeedtest)) {
-        // create db of not exists
-        exec('sudo pihole -a -sn');
-
         return array();
     }
     $db = new SQLite3($dbSpeedtest);
     if (!$db) {
-        return array('error' => 'Unable to open DB');
-    } else {
-        // return array("status"=>"success");
+        return array();
     }
 
     if ($durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
     } else {
-        $system_tz = new DateTimeZone(end(explode(' ', getLastSpeedtestResult($dbSpeedtest)[0]['start_time'])));
+        $lastrun = getLastSpeedtestResult($dbSpeedtest);
+        if (empty($lastrun)) {
+            return array();
+        }
+
+        $system_tz = new DateTimeZone(end(explode(' ', $lastrun[0]['start_time'])));
         $curdate = new DateTime('now', $system_tz);
         $daysago = new DateTime('now', $system_tz);
         $daysago->modify('-'.$durationdays.' day');
@@ -165,19 +150,15 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
     }
 
     $dbResults = $db->query($sql);
-
     $dataFromSpeedDB = array();
-
     if (!empty($dbResults)) {
         while ($row = $dbResults->fetchArray(SQLITE3_ASSOC)) {
             array_push($dataFromSpeedDB, $row);
         }
-
-        return $dataFromSpeedDB;
-    } else {
-        return array('error' => 'No Results');
     }
     $db->close();
+
+    return $dataFromSpeedDB;
 }
 
 function getSpeedData($dbSpeedtest, $durationdays = '-2')
@@ -239,6 +220,9 @@ function exportData()
         // Fetch the next line
         $row = $query->fetch(PDO::FETCH_ASSOC);
     }
+
+    // Close the connection
+    $conn = null;
 }
 
 function print_titles($row)
