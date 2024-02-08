@@ -546,9 +546,9 @@ $(function () {
               const now = new Date();
               const secondsUntilNextMinute = 60 - now.getSeconds();
               const statusSeconds = parseInt(triggerMatch[0].replace("s", ""));
-              const status = statusSeconds > secondsUntilNextMinute ? `${statusSeconds - secondsUntilNextMinute}s` : "0s";
+              const statusText = statusSeconds > secondsUntilNextMinute ? `${statusSeconds - secondsUntilNextMinute}s` : "0s";
 
-              triggerText = status === "0s" ? " running" : ` in ${status}`;
+              triggerText = statusText === "0s" ? " running" : ` in ${status}`;
             }
           } else {
             const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
