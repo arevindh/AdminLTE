@@ -540,6 +540,14 @@ $(function () {
           if (!status.includes("timer")) {
             scheduleStatusText = "active";
             if (!speedtestTest.attr("value")) {
+              const triggerPattern = /(\d+s)/;
+              const triggerMatch = status.match(triggerPattern);
+
+              const now = new Date();
+              const secondsUntilNextMinute = 60 - now.getSeconds();
+              const statusSeconds = parseInt(triggerMatch[0].replace("s", ""));
+              const status = statusSeconds > secondsUntilNextMinute ? `${statusSeconds - secondsUntilNextMinute}s` : "0s";
+
               triggerText = status === "0s" ? " running" : ` in ${status}`;
             }
           } else {
