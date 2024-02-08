@@ -332,8 +332,5 @@ function getRemainingTime()
         return 0;
     }
 
-    $time = time();
-    $remaining_time = $interval_seconds - ($time - $last_run_time);
-
-    return $remaining_time;
+    return min(0, $interval_seconds - (time() - $last_run_time));
 }
