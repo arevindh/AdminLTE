@@ -129,18 +129,14 @@ function createChart() {
 }
 
 function formatDate(itemdate, results) {
-  let output = "HH:mm";
-  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment().utc(itemdate).local().format(output);
-  }
-
   const first = moment(results[0].start_time);
   const last = moment(results.at(-1).start_time);
+  let output = "HH:mm";
   if (last.diff(first, "hours") > 24) {
     output = "Do HH:mm";
   }
 
-  return moment().utc(itemdate).local().format(output);
+  return moment.utc(itemdate).local().format(output);
 }
 
 function updateSpeedTestData() {
