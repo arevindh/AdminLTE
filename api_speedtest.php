@@ -138,8 +138,8 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         $curdate = new DateTime('now', new DateTimeZone('UTC'));
         $daysago = new DateTime('now', new DateTimeZone('UTC'));
         $daysago->modify('-'.$durationdays.' day');
-        $curdate = $curdate->format('Y-m-d\TH:i:s');
-        $daysago = $daysago->format('Y-m-d\TH:i:s');
+        $curdate = $curdate->format('Y-m-d H:i:s');
+        $daysago = $daysago->format('Y-m-d H:i:s');
         $sql = "SELECT * from speedtest where start_time between '{$daysago}' and '{$curdate}' order by id asc";
     }
 
