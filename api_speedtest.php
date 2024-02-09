@@ -17,7 +17,7 @@ $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
-$cmdLog = '[[ -f /var/log/pimod.log ]] && cat /var/log/pimod.log || echo ""';
+$cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pimod.log ]] && cat /var/log/pimod.log || echo ""; }';
 $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
 if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
     $remaining_seconds = getRemainingTime();
@@ -34,7 +34,7 @@ if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
 } else {
     $cmdStatus = 'systemctl status pihole-speedtest.timer';
 }
-$cmdRun = 'if [[ -f /tmp/speedtest.log ]]; then cat /tmp/speedtest.log elif [[ -f /var/log/pihole/speedtest.log ]]; then cat /var/log/pihole/speedtest.log else echo "" fi';
+$cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /var/log/pihole/speedtest.log ]] && cat /var/log/pihole/speedtest.log || echo ""; }';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 
