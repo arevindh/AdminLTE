@@ -17,7 +17,7 @@ $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
-$cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pimod.log ]] && cat /var/log/pimod.log || echo ""; }';
+$cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pihole/mod.log ]] && cat /var/log/pihole/mod.log || echo ""; }';
 $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
 if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
     $remaining_seconds = getRemainingTime();
