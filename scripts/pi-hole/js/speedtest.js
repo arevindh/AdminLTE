@@ -140,7 +140,7 @@ function formatDate(itemdate, results) {
     output = "Do HH:mm";
   }
 
-  return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ssZ").local().format(output);
+  return moment(new Date(itemdate).toISOString()).format(output);
 }
 
 function updateSpeedTestData() {
