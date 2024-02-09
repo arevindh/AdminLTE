@@ -543,11 +543,13 @@ $(function () {
               const triggerPattern = /(\d+s)/;
               const triggerMatch = status.match(triggerPattern);
 
-              const now = new Date();
-              const secondsUntilNextMinute = 60 - now.getSeconds();
-              const statusSeconds = parseInt(triggerMatch[0].replace("s", ""));
-              const statusText = statusSeconds > secondsUntilNextMinute ? `${statusSeconds - secondsUntilNextMinute}s` : "0s";
-
+              let statusText = status;
+              if (triggerMatch) {
+                const now = new Date();
+                const secondsUntilNextMinute = 60 - now.getSeconds();
+                const statusSeconds = parseInt(triggerMatch[0].replace("s", ""));
+                statusText = statusSeconds > secondsUntilNextMinute ? `${statusSeconds - secondsUntilNextMinute}s` : "0s";
+              }
               triggerText = statusText === "0s" ? " running" : ` in ${status}`;
             }
           } else {
