@@ -510,15 +510,16 @@ $(function () {
     } else {
       code.append(content);
     }
+
     code.style.whiteSpace = "pre";
     code.style.overflowWrap = "normal";
-    pre.append(code);
     pre.style.width = "100%";
     pre.style.maxWidth = "100%";
     pre.style.maxHeight = "500px";
     pre.style.overflow = "auto";
     pre.style.whiteSpace = "pre";
     pre.style.marginTop = "1vw";
+    pre.append(code);
     return pre;
   };
 
