@@ -105,7 +105,7 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         return array();
     }
 
-    if ($durationdays == -1) {
+    if ((int) $durationdays == -1) {
         $sql = 'SELECT * from speedtest order by id asc';
     } else {
         $curdate = new DateTime('now', new DateTimeZone('UTC'));

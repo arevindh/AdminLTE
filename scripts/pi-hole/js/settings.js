@@ -547,12 +547,13 @@ $(function () {
               if (triggerMatch) {
                 const now = new Date();
                 const secondsUntilNextMinute = 60 - now.getSeconds();
-                const statusSeconds = parseInt(triggerMatch[0].replace("s", ""));
+                const statusSeconds = parseInt(triggerMatch[0].replace("s", ""), 10);
                 statusText =
                   statusSeconds > secondsUntilNextMinute
                     ? `${statusSeconds - secondsUntilNextMinute}s`
                     : "0s";
               }
+
               triggerText = statusText === "0s" ? " queued" : ` in ${status}`;
             }
           } else {
@@ -583,6 +584,7 @@ $(function () {
             if (lastRun) {
               lastRunText = `\n\nLatest run:\n${lastRun}`;
             }
+
             const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
