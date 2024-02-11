@@ -597,7 +597,7 @@ $(function () {
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
         const lastRunText = "\nLatest run is unavailable";
-        const statusText = "Failed to get schedule\nNext run is" + triggerText + lastRunText;
+        const statusText = "Schedule is unavailable\nNext run is" + triggerText + lastRunText;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
@@ -676,7 +676,17 @@ $(function () {
           speedtestLog.find("p").remove();
           codeBlock(speedtestLog, log, speedtestLogBtn, "log");
         } else {
-          codeBlock(speedtestLog, "The log is empty", speedtestLogBtn, "log");
+          codeBlock(
+            speedtestLog,
+            "tmux a -t pimod; cat /var/log/pihole/mod.log",
+            speedtestLogBtn,
+            "log"
+          );
+          if (speedtestLogCtr.find("p").length === 0) {
+            speedtestLogCtr.append(
+              `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+            );
+          }
         }
       })
       .fail(function () {
@@ -688,7 +698,7 @@ $(function () {
         );
         if (speedtestLogCtr.find("p").length === 0) {
           speedtestLogCtr.append(
-            `<p style="margin-top: .5vw;">Failed to get process output. Use the above command to get it.</p>`
+            `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
           );
         }
       });
@@ -884,6 +894,17 @@ $(function () {
 
     if (speedtestLog.find("pre").length > 0) {
       latestLog();
+    }
+
+    // if speedtestLogCtr has a p element, cycle through ellipsis
+    const info = speedtestLogCtr.find("p");
+    if (info.length > 0) {
+      const text = info.text();
+      if (text.includes("...")) {
+        info.text(text.replace(/\.{3}/, "."));
+      } else {
+        info.text(text + ".");
+      }
     }
 
     canRestore();
