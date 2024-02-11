@@ -131,7 +131,7 @@ function createChart() {
 function formatDate(itemdate, results) {
   let output = "HH:mm";
   if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ssZ").local().format(output);
+    return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
   }
 
   const first = moment(results.at(0).start_time, "YYYY-MM-DD HH:mm:ssZ");
@@ -140,7 +140,7 @@ function formatDate(itemdate, results) {
     output = "Do HH:mm";
   }
 
-  return moment(new Date(itemdate).toISOString()).format(output);
+  return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
 }
 
 function updateSpeedTestData() {
@@ -186,7 +186,7 @@ function updateSpeedTestData() {
       speedChart.data.datasets[0].data = downloadspeed;
       speedChart.data.datasets[1].data = uploadspeed;
       speedChart.data.datasets[2].data = serverPing;
-      speedChart.update();
+      speedChart.update("none");
     }
 
     $("#speedOverTimeChartOverlay").css("display", "none");
