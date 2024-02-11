@@ -181,7 +181,7 @@ function updateSpeedTestData() {
       createChart();
     }
 
-    if (speedChart) {
+    if (speedChart && speedChart.data.labels.join() !== speedlabels.join()) {
       speedChart.data.labels = speedlabels;
       speedChart.data.datasets[0].data = downloadspeed;
       speedChart.data.datasets[1].data = uploadspeed;
