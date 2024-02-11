@@ -502,10 +502,14 @@ $(function () {
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
 
-  const preCode = text => {
+  const preCode = content => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
-    code.textContent = text;
+    if (typeof content === "string") {
+      code.textContent = content;
+    } else {
+      code.append(content);
+    }
     code.style.whiteSpace = "pre";
     code.style.overflowWrap = "normal";
     pre.append(code);
@@ -606,7 +610,7 @@ $(function () {
     if (!preview) {
       localStorage.setItem("speedtest_preview_hidden", "true");
       localStorage.setItem("speedtest_preview_shown", "false");
-      speedtestChartPreview.find("div").remove();
+      speedtestChartPreview.find("pre").remove();
     } else {
       let speedtestdays = speedtestDays.val();
       localStorage.setItem("speedtest_days", speedtestdays);
@@ -635,6 +639,7 @@ $(function () {
       colDiv.style.marginTop = "1vw";
       boxDiv.className = "box";
       boxDiv.id = "queries-over-time";
+      boxDiv.style.marginBottom = "0";
       boxHeaderDiv.className = "box-header with-border";
       h3.className = "box-title";
       h3.textContent = `Speedtest results over last ${speedtestdays}`;
@@ -658,8 +663,8 @@ $(function () {
       overlayDiv.append(i);
       chartDiv.append(canvas);
 
-      speedtestChartPreview.find("div").remove();
-      speedtestChartPreview.append(colDiv);
+      speedtestChartPreview.find("pre").remove();
+      speedtestChartPreview.append(preCode(colDiv));
     }
 
     speedtestChartPreviewBtn.text(preview ? "Hide preview" : "Show chart preview");
@@ -804,7 +809,7 @@ $(function () {
     speedtestDays.attr("value", speedtestDays.val());
     if (speedtestDays.val()) {
       localStorage.setItem("speedtest_days", speedtestDays.val());
-      previewChart(speedtestChartPreview.find("div").length > 0);
+      previewChart(speedtestChartPreview.find("pre").length > 0);
     }
   });
 
@@ -815,7 +820,7 @@ $(function () {
     localStorage.setItem("speedtest_chart_type", type);
     // Call check messages to make new setting effective
     checkMessages();
-    previewChart(speedtestChartPreview.find("div").length > 0);
+    previewChart(speedtestChartPreview.find("pre").length > 0);
   });
 
   speedtestChartTypeSave.on("click", function () {
@@ -823,7 +828,7 @@ $(function () {
   });
 
   speedtestChartPreviewBtn.on("click", function () {
-    previewChart(speedtestChartPreview.find("div").length === 0);
+    previewChart(speedtestChartPreview.find("pre").length === 0);
   });
 
   speedtestUpdate.on("click", function () {
