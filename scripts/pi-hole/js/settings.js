@@ -673,13 +673,24 @@ $(function () {
       .done(function (data) {
         const log = data?.data;
         if (log) {
+          speedtestLog.find("p").remove();
           codeBlock(speedtestLog, log, speedtestLogBtn, "log");
         } else {
           codeBlock(speedtestLog, "The log is empty", speedtestLogBtn, "log");
         }
       })
       .fail(function () {
-        codeBlock(speedtestLog, "Failed to get log", speedtestLogBtn, "log");
+        codeBlock(
+          speedtestLog,
+          "tmux a -t pimod; cat /var/log/pihole/mod.log",
+          speedtestLogBtn,
+          "log"
+        );
+        if (speedtestLogCtr.find("p").length === 0) {
+          speedtestLogCtr.append(
+            `<p style="margin-top: .5vw;">Failed to get process output. Use the above command to get it.</p>`
+          );
+        }
       });
   };
 
@@ -834,8 +845,10 @@ $(function () {
 
   speedtestLogBtn.on("click", function () {
     const log = speedtestLog.find("pre");
-    if (log.length > 0) {
+    const info = speedtestLog.find("p");
+    if (log.length > 0 || info.length > 0) {
       log.remove();
+      info.remove();
       speedtestLogBtn.text("Show latest log");
     } else {
       latestLog();
