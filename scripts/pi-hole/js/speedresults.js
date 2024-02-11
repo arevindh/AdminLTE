@@ -48,17 +48,18 @@ $(document).ready(function () {
       null,
       {
         render: function (data, type, _full, _meta) {
+          console.log("utc: " + data);
           if (type === "display") {
-            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mm Z");
+            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mmZ");
           }
-
+          console.log("local: " + data);
           return data;
         },
       },
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mm Z");
+            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").local().format("YYYY-MM-DD HH:mmZ");
           }
 
           return data;
