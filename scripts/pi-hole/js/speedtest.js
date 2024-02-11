@@ -181,12 +181,12 @@ function updateSpeedTestData() {
       createChart();
     }
 
-    if (speedChart && speedChart.data.labels.join(",") !== speedlabels.join(",")) {
+    if (speedChart && speedChart.data.labels !== speedlabels) {
       speedChart.data.labels = speedlabels;
       speedChart.data.datasets[0].data = downloadspeed;
       speedChart.data.datasets[1].data = uploadspeed;
       speedChart.data.datasets[2].data = serverPing;
-      speedChart.update("none");
+      speedChart.update();
     }
 
     $("#speedOverTimeChartOverlay").css("display", "none");
