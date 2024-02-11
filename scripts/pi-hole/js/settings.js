@@ -901,7 +901,7 @@ $(function () {
     if (info.length > 0) {
       const text = info.text();
       if (text.includes("...")) {
-        info.text(text.replace(/\.{3}/, "."));
+        info.text(text.replace(/\.{3}/, ""));
       } else {
         info.text(text + ".");
       }
