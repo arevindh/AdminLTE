@@ -682,8 +682,8 @@ $(function () {
             speedtestLogBtn,
             "log"
           );
-          if (speedtestLogCtr.find("p").length === 0) {
-            speedtestLogCtr.append(
+          if (speedtestLog.find("p").length === 0) {
+            speedtestLog.append(
               `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
             );
           }
@@ -696,8 +696,8 @@ $(function () {
           speedtestLogBtn,
           "log"
         );
-        if (speedtestLogCtr.find("p").length === 0) {
-          speedtestLogCtr.append(
+        if (speedtestLog.find("p").length === 0) {
+          speedtestLog.append(
             `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
           );
         }
@@ -896,8 +896,8 @@ $(function () {
       latestLog();
     }
 
-    // if speedtestLogCtr has a p element, cycle through ellipsis
-    const info = speedtestLogCtr.find("p");
+    // if speedtestLog has a p element, cycle through ellipsis
+    const info = speedtestLog.find("p");
     if (info.length > 0) {
       const text = info.text();
       if (text.includes("...")) {
