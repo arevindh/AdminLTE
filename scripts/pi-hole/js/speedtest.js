@@ -187,8 +187,9 @@ function updateSpeedTestData() {
       speedChart.data.datasets[1].data = uploadspeed;
       speedChart.data.datasets[2].data = serverPing;
       speedChart.update();
-      $("#speedOverTimeChartOverlay").css("display", "none");
     }
+
+    $("#speedOverTimeChartOverlay").css("display", "none");
   });
 }
 
