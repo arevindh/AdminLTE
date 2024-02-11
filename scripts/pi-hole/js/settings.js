@@ -722,6 +722,10 @@ $(function () {
       }
     };
 
+    if (cmds.length === 0) {
+      cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
+    }
+
     $.ajax({
       url: `api.php?${cmds[0]}`,
       dataType: "json",
@@ -876,8 +880,7 @@ $(function () {
       speedtestServerBtn.text("Show closest servers");
     } else {
       speedtestServerBtn.text("Retrieving servers...");
-      speedtestServerCtr.find("p").remove();
-      closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
+      closestServers();
     }
   });
 
@@ -909,6 +912,10 @@ $(function () {
       } else {
         info.text(text + ".");
       }
+    }
+
+    if (speedtestServerCtr.find("p").length > 0) {
+      closestServers();
     }
 
     canRestore();
