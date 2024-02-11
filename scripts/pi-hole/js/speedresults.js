@@ -51,7 +51,7 @@ $(document).ready(function () {
           if (type === "display") {
             data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").local().format();
           }
-          console.log("local: " + data);
+
           return data;
         },
       },
