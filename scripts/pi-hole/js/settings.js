@@ -723,7 +723,7 @@ $(function () {
       }
     };
 
-    if (cmds.length === 0) {
+    if (!cmds || cmds.length === 0) {
       cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
     }
 
