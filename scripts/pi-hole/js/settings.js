@@ -580,23 +580,23 @@ $(function () {
         })
           .done(function (data) {
             const lastRun = data?.data;
-            let lastRunText = "";
+            let lastRunText = "Latest run is unavailable";
             if (lastRun) {
-              lastRunText = `\n\nLatest run:\n${lastRun}`;
+              lastRunText = `Latest run:\n\n${lastRun}`;
             }
 
-            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
+            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
           .fail(function () {
-            const lastRunText = "\nFailed to get latest run";
+            const lastRunText = "\nLatest run is unavailable";
             const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           });
       })
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
-        const lastRunText = "\nFailed to get latest run";
+        const lastRunText = "\nLatest run is unavailable";
         const statusText = "Failed to get schedule\nNext run is" + triggerText + lastRunText;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
