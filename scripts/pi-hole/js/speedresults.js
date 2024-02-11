@@ -49,7 +49,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            data = moment(data, "YYYY-MM-DD HH:mm:ssZ").local().format("YYYY-MM-DD HH:mmZ");
+            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm");
           }
 
           return data;
@@ -58,7 +58,7 @@ $(document).ready(function () {
       {
         render: function (data, type, _full, _meta) {
           if (type === "display") {
-            data = moment(data, "YYYY-MM-DD HH:mm:ssZ").local().format("YYYY-MM-DD HH:mmZ");
+            data = moment.utc(data, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD HH:mm");
           }
 
           return data;
