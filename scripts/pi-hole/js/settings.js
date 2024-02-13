@@ -714,7 +714,7 @@ $(function () {
           );
           if (speedtestLog.find("p").length === 0) {
             speedtestLog.append(
-              `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+              `<p style="margin-top: .5vw;">Use this command to get the log while the connection is reestablished</p>`
             );
           }
         }
@@ -728,7 +728,7 @@ $(function () {
         );
         if (speedtestLog.find("p").length === 0) {
           speedtestLog.append(
-            `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+            `<p style="margin-top: .5vw;">Use this command to get the log while the connection is reestablished</p>`
           );
         }
       });
