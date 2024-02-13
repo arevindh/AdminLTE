@@ -327,7 +327,7 @@ function getNumberOfDaysInDB($dbSpeedtest)
     }
 
     $first_date = new DateTime($dataFromSpeedDB[0]['start_time']);
-    $last_date = new DateTime($dataFromSpeedDB[count($dataFromSpeedDB) - 1]['start_time']);
+    $last_date = new DateTime('now', new DateTimeZone('UTC'));
     $diff = $first_date->diff($last_date);
 
     return array('data' => $diff->days + 1);

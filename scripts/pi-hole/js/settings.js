@@ -665,10 +665,12 @@ $(function () {
         dataType: "json",
       })
         .done(function (data) {
+          if (speedtestdays === "-1") {
+            speedtestdays = data ? data.data : "however many";
+          }
+
           if (speedtestdays === "1") {
             speedtestdays = "24 hours";
-          } else if (speedtestdays === "-1") {
-            speedtestdays = data ? data.data : "however many days";
           } else {
             speedtestdays += " days";
           }
@@ -676,10 +678,12 @@ $(function () {
           drawChart(speedtestdays, type);
         })
         .fail(function () {
+          if (speedtestdays === "-1") {
+            speedtestdays = "however many";
+          }
+
           if (speedtestdays === "1") {
             speedtestdays = "24 hours";
-          } else if (speedtestdays === "-1") {
-            speedtestdays = "however many days";
           } else {
             speedtestdays += " days";
           }
