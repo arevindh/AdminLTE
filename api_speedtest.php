@@ -66,6 +66,9 @@ if ($auth) {
     if (isset($_GET['JSONClosestServers'])) {
         $data = array_merge($data, JSONServers($cmdServersJSON));
     }
+    if (isset($_GET['getNumberOfDaysInDB'])) {
+        $data = array_merge($data, getNumberOfDaysInDB($dbSpeedtest));
+    }
 }
 
 function hasSpeedTestBackup($dbSpeedtestOld)
@@ -300,4 +303,32 @@ function getRemainingTime()
     }
 
     return max(0, $interval_seconds - (time() - $last_run_time));
+}
+
+function getNumberOfDaysInDB($dbSpeedtest)
+{
+    $db = new SQLite3($dbSpeedtest);
+    if (!$db) {
+        return array('data' => 0);
+    }
+
+    $sql = 'SELECT start_time from speedtest order by id asc';
+    $dbResults = $db->query($sql);
+    $dataFromSpeedDB = array();
+    if (!empty($dbResults)) {
+        while ($row = $dbResults->fetchArray(SQLITE3_ASSOC)) {
+            array_push($dataFromSpeedDB, $row);
+        }
+    }
+    $db->close();
+
+    if (empty($dataFromSpeedDB)) {
+        return array('data' => 0);
+    }
+
+    $first_date = new DateTime($dataFromSpeedDB[0]['start_time']);
+    $last_date = new DateTime($dataFromSpeedDB[count($dataFromSpeedDB) - 1]['start_time']);
+    $diff = $first_date->diff($last_date);
+
+    return array('data' => $diff->days + 1);
 }

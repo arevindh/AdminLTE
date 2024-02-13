@@ -607,6 +607,48 @@ $(function () {
       });
   };
 
+  const drawChart = (days, type) => {
+    const colDiv = document.createElement("div");
+    const boxDiv = document.createElement("div");
+    const boxHeaderDiv = document.createElement("div");
+    const h3 = document.createElement("h3");
+    const boxBodyDiv = document.createElement("div");
+    const chartDiv = document.createElement("div");
+    const canvas = document.createElement("canvas");
+    const overlayDiv = document.createElement("div");
+    const i = document.createElement("i");
+
+    colDiv.className = "col-md-12";
+    colDiv.style.marginTop = "1vw";
+    boxDiv.className = "box";
+    boxDiv.id = "queries-over-time";
+    boxHeaderDiv.className = "box-header with-border";
+    h3.className = "box-title";
+    h3.textContent = `Speedtest results over last ${days}`;
+    boxBodyDiv.className = "box-body";
+    chartDiv.className = "chart";
+    chartDiv.style.position = "relative";
+    chartDiv.style.width = "100%";
+    chartDiv.style.height = "180px";
+    canvas.id = "speedOverTimeChart";
+    canvas.setAttribute("value", type);
+    overlayDiv.className = "overlay";
+    overlayDiv.id = "speedOverTimeChartOverlay";
+    i.className = "fa fa-sync fa-spin";
+
+    colDiv.append(boxDiv);
+    boxDiv.append(boxHeaderDiv);
+    boxDiv.append(boxBodyDiv);
+    boxDiv.append(overlayDiv);
+    boxHeaderDiv.append(h3);
+    boxBodyDiv.append(chartDiv);
+    overlayDiv.append(i);
+    chartDiv.append(canvas);
+
+    speedtestChartPreview.find("div").remove();
+    speedtestChartPreview.append(colDiv);
+  };
+
   const previewChart = preview => {
     if (!preview) {
       localStorage.setItem("speedtest_preview_hidden", "true");
@@ -618,53 +660,32 @@ $(function () {
       localStorage.setItem("speedtest_chart_type", type);
       localStorage.setItem("speedtest_preview_shown", "true");
 
-      if (speedtestdays === "1") {
-        speedtestdays = "24 hours";
-      } else if (speedtestdays === "-1") {
-        speedtestdays = "however many days";
-      } else {
-        speedtestdays += " days";
-      }
+      $.ajax({
+        url: "api.php?getNumberOfDaysInDB",
+        dataType: "json",
+      })
+        .done(function (data) {
+          if (speedtestdays === "1") {
+            speedtestdays = "24 hours";
+          } else if (speedtestdays === "-1") {
+            speedtestdays = data ? data.data : "however many days";
+          } else {
+            speedtestdays += " days";
+          }
 
-      const colDiv = document.createElement("div");
-      const boxDiv = document.createElement("div");
-      const boxHeaderDiv = document.createElement("div");
-      const h3 = document.createElement("h3");
-      const boxBodyDiv = document.createElement("div");
-      const chartDiv = document.createElement("div");
-      const canvas = document.createElement("canvas");
-      const overlayDiv = document.createElement("div");
-      const i = document.createElement("i");
+          drawChart(speedtestdays, type);
+        })
+        .fail(function () {
+          if (speedtestdays === "1") {
+            speedtestdays = "24 hours";
+          } else if (speedtestdays === "-1") {
+            speedtestdays = "however many days";
+          } else {
+            speedtestdays += " days";
+          }
 
-      colDiv.className = "col-md-12";
-      colDiv.style.marginTop = "1vw";
-      boxDiv.className = "box";
-      boxDiv.id = "queries-over-time";
-      boxHeaderDiv.className = "box-header with-border";
-      h3.className = "box-title";
-      h3.textContent = `Speedtest results over last ${speedtestdays}`;
-      boxBodyDiv.className = "box-body";
-      chartDiv.className = "chart";
-      chartDiv.style.position = "relative";
-      chartDiv.style.width = "100%";
-      chartDiv.style.height = "180px";
-      canvas.id = "speedOverTimeChart";
-      canvas.setAttribute("value", type);
-      overlayDiv.className = "overlay";
-      overlayDiv.id = "speedOverTimeChartOverlay";
-      i.className = "fa fa-sync fa-spin";
-
-      colDiv.append(boxDiv);
-      boxDiv.append(boxHeaderDiv);
-      boxDiv.append(boxBodyDiv);
-      boxDiv.append(overlayDiv);
-      boxHeaderDiv.append(h3);
-      boxBodyDiv.append(chartDiv);
-      overlayDiv.append(i);
-      chartDiv.append(canvas);
-
-      speedtestChartPreview.find("div").remove();
-      speedtestChartPreview.append(colDiv);
+          drawChart(speedtestdays, type);
+        });
     }
 
     speedtestChartPreviewBtn.text(preview ? "Hide preview" : "Show chart preview");
