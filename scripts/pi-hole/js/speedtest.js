@@ -39,6 +39,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-1",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
         {
           label: "Mbps Upload",
@@ -48,6 +50,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-1",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
         {
           label: "ms Ping",
@@ -57,6 +61,8 @@ function createChart() {
           borderWidth: 3,
           yAxisID: "y-axis-2",
           tension: 0.4,
+          pointHitRadius: 5,
+          pointHoverRadius: 5,
         },
       ],
     },
@@ -115,7 +121,7 @@ function createChart() {
       },
       elements: {
         point: {
-          radius: 0,
+          radius: speedlabels.length > 1 ? 0 : 6,
         },
       },
     },
@@ -123,20 +129,18 @@ function createChart() {
 }
 
 function formatDate(itemdate, results) {
-  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment(itemdate, "YYYY-MM-DD HH:mm:ss Z")
-      .utcOffset(moment().utcOffset())
-      .format("HH:mm");
-  }
-
   let output = "HH:mm";
-  if (results.length > 1) {
-    const first = moment(results[0].start_time, "YYYY-MM-DD HH:mm:ss Z");
-    const last = moment(results.at(-1).start_time, "YYYY-MM-DD HH:mm:ss Z");
-    if (last.diff(first, "hours") >= 24) output = "Do " + output;
+  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
+    return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
   }
 
-  return moment(new Date(itemdate)).utcOffset(moment().utcOffset()).format(output);
+  const first = moment(results.at(0).start_time, "YYYY-MM-DD HH:mm:ssZ");
+  const last = moment(results.at(-1).start_time, "YYYY-MM-DD HH:mm:ssZ");
+  if (last.diff(first, "hours") > 24) {
+    output = "Do HH:mm";
+  }
+
+  return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
 }
 
 function updateSpeedTestData() {
@@ -155,7 +159,7 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    results.forEach(function (packet) {
+    results?.forEach(function (packet) {
       // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
       if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
         speedlabels.push(formatDate(packet.start_time, results));
@@ -164,12 +168,19 @@ function updateSpeedTestData() {
         serverPing.push(parseFloat(packet.server_ping));
       }
     });
-    if (speedChart && (!daysIsTheSame || !typeIsTheSame || beenHidden) && days !== "-2") {
+    if (
+      speedChart &&
+      (!daysIsTheSame ||
+        !typeIsTheSame ||
+        beenHidden ||
+        (type === "line" && speedChart.data?.labels?.length < 2 && speedlabels?.length > 1)) &&
+      days !== "-2"
+    ) {
       speedChart.destroy();
       speedChart = null;
     }
 
-    if (!speedChart || beenHidden) {
+    if (!speedChart) {
       localStorage.setItem(
         "speedtest_preview_hidden",
         !localStorage?.getItem("speedtest_preview_shown")
@@ -177,10 +188,15 @@ function updateSpeedTestData() {
       createChart();
     }
 
-    if (speedChart) {
+    if (speedChart && speedChart.data.labels !== speedlabels) {
+      speedChart.data.labels = speedlabels;
+      speedChart.data.datasets[0].data = downloadspeed;
+      speedChart.data.datasets[1].data = uploadspeed;
+      speedChart.data.datasets[2].data = serverPing;
       speedChart.update();
-      $("#speedOverTimeChartOverlay").css("display", "none");
     }
+
+    $("#speedOverTimeChartOverlay").css("display", "none");
   });
 }
 
@@ -191,5 +207,5 @@ $(function () {
   updateSpeedTestData();
   setInterval(function () {
     updateSpeedTestData();
-  }, 6000);
+  }, 1000);
 });

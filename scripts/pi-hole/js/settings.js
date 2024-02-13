@@ -502,19 +502,24 @@ $(function () {
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
 
-  const preCode = text => {
+  const preCode = content => {
     const pre = document.createElement("pre");
     const code = document.createElement("code");
-    code.textContent = text;
+    if (typeof content === "string") {
+      code.textContent = content;
+    } else {
+      code.append(content);
+    }
+
     code.style.whiteSpace = "pre";
     code.style.overflowWrap = "normal";
-    pre.append(code);
     pre.style.width = "100%";
     pre.style.maxWidth = "100%";
     pre.style.maxHeight = "500px";
     pre.style.overflow = "auto";
     pre.style.whiteSpace = "pre";
     pre.style.marginTop = "1vw";
+    pre.append(code);
     return pre;
   };
 
@@ -534,32 +539,114 @@ $(function () {
     })
       .done(function (data) {
         const status = data?.data;
+        let scheduleStatusText = "inactive";
         let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
-        let statusText = "Schedule is inactive\nNext run is" + triggerText;
         if (status) {
-          const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
-          const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
+          if (!status.includes("timer")) {
+            scheduleStatusText = "active";
+            if (!speedtestTest.attr("value")) {
+              const triggerPattern = /(\d+s)/;
+              const triggerMatch = status.match(triggerPattern);
 
-          const scheduleStatusMatch = status.match(scheduleStatusPattern);
-          const triggerMatch = status.match(triggerPattern);
+              let statusText = status;
+              if (triggerMatch) {
+                const now = new Date();
+                const secondsUntilNextMinute = 60 - now.getSeconds();
+                const statusSeconds = parseInt(triggerMatch[0].replace("s", ""), 10);
+                statusText =
+                  statusSeconds > secondsUntilNextMinute
+                    ? `${statusSeconds - secondsUntilNextMinute}s`
+                    : "0s";
+              }
 
-          const scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
-          if (!speedtestTest.attr("value")) {
-            if (triggerMatch) {
-              triggerText = ` in ${triggerMatch[1]}`;
-            } else if (scheduleStatusText === "active") {
-              triggerText = " running";
+              triggerText = statusText === "0s" ? " queued" : ` in ${status}`;
+            }
+          } else {
+            const scheduleStatusPattern = /pihole-speedtest\.timer.*?Active:\s+(\w+)/s;
+            const triggerPattern = /Trigger:.*?;\s*([\d\s\w]+)\s+left/s;
+
+            const scheduleStatusMatch = status.match(scheduleStatusPattern);
+            const triggerMatch = status.match(triggerPattern);
+
+            scheduleStatusText = scheduleStatusMatch ? scheduleStatusMatch[1] : "missing";
+            if (!speedtestTest.attr("value")) {
+              if (triggerMatch) {
+                triggerText = ` in ${triggerMatch[1]}`;
+              } else if (scheduleStatusText === "active") {
+                triggerText = " running";
+              }
             }
           }
-
-          statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}`;
         }
 
-        codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
+        $.ajax({
+          url: "api.php?getLatestRun",
+          dataType: "json",
+        })
+          .done(function (data) {
+            const lastRun = data?.data;
+            let lastRunText = "Latest run is unavailable";
+            if (lastRun) {
+              lastRunText = `Latest run:\n\n${lastRun}`;
+            }
+
+            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
+          })
+          .fail(function () {
+            const lastRunText = "\nLatest run is unavailable";
+            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
+            codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
+          });
       })
       .fail(function () {
-        speedtestStatusBtn.text("Failed to get status");
+        const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
+        const lastRunText = "\nLatest run is unavailable";
+        const statusText = "Schedule is unavailable\nNext run is" + triggerText + lastRunText;
+        codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
+  };
+
+  const drawChart = (days, type) => {
+    const colDiv = document.createElement("div");
+    const boxDiv = document.createElement("div");
+    const boxHeaderDiv = document.createElement("div");
+    const h3 = document.createElement("h3");
+    const boxBodyDiv = document.createElement("div");
+    const chartDiv = document.createElement("div");
+    const canvas = document.createElement("canvas");
+    const overlayDiv = document.createElement("div");
+    const i = document.createElement("i");
+
+    colDiv.className = "col-md-12";
+    colDiv.style.marginTop = "1vw";
+    boxDiv.className = "box";
+    boxDiv.id = "queries-over-time";
+    boxHeaderDiv.className = "box-header with-border";
+    h3.className = "box-title";
+    h3.textContent = `Speedtest results over last ${days}`;
+    boxBodyDiv.className = "box-body";
+    chartDiv.className = "chart";
+    chartDiv.style.position = "relative";
+    chartDiv.style.width = "100%";
+    chartDiv.style.height = "180px";
+    canvas.id = "speedOverTimeChart";
+    canvas.setAttribute("value", type);
+    overlayDiv.className = "overlay";
+    overlayDiv.id = "speedOverTimeChartOverlay";
+    i.className = "fa fa-sync fa-spin";
+
+    colDiv.append(boxDiv);
+    boxDiv.append(boxHeaderDiv);
+    boxDiv.append(boxBodyDiv);
+    boxDiv.append(overlayDiv);
+    boxHeaderDiv.append(h3);
+    boxBodyDiv.append(chartDiv);
+    overlayDiv.append(i);
+    chartDiv.append(canvas);
+
+    speedtestChartPreview.find("div").remove();
+    speedtestChartPreview.append(colDiv);
   };
 
   const previewChart = preview => {
@@ -573,53 +660,36 @@ $(function () {
       localStorage.setItem("speedtest_chart_type", type);
       localStorage.setItem("speedtest_preview_shown", "true");
 
-      if (speedtestdays === "1") {
-        speedtestdays = "24 hours";
-      } else if (speedtestdays === "-1") {
-        speedtestdays = "however many days";
-      } else {
-        speedtestdays += " days";
-      }
+      $.ajax({
+        url: "api.php?getNumberOfDaysInDB",
+        dataType: "json",
+      })
+        .done(function (data) {
+          if (speedtestdays === "-1") {
+            speedtestdays = data ? data.data : "however many";
+          }
 
-      const colDiv = document.createElement("div");
-      const boxDiv = document.createElement("div");
-      const boxHeaderDiv = document.createElement("div");
-      const h3 = document.createElement("h3");
-      const boxBodyDiv = document.createElement("div");
-      const chartDiv = document.createElement("div");
-      const canvas = document.createElement("canvas");
-      const overlayDiv = document.createElement("div");
-      const i = document.createElement("i");
+          if (speedtestdays === "1") {
+            speedtestdays = "24 hours";
+          } else {
+            speedtestdays += " days";
+          }
 
-      colDiv.className = "col-md-12";
-      colDiv.style.marginTop = "1vw";
-      boxDiv.className = "box";
-      boxDiv.id = "queries-over-time";
-      boxHeaderDiv.className = "box-header with-border";
-      h3.className = "box-title";
-      h3.textContent = `Speedtest results over last ${speedtestdays}`;
-      boxBodyDiv.className = "box-body";
-      chartDiv.className = "chart";
-      chartDiv.style.position = "relative";
-      chartDiv.style.width = "100%";
-      chartDiv.style.height = "180px";
-      canvas.id = "speedOverTimeChart";
-      canvas.setAttribute("value", type);
-      overlayDiv.className = "overlay";
-      overlayDiv.id = "speedOverTimeChartOverlay";
-      i.className = "fa fa-sync fa-spin";
+          drawChart(speedtestdays, type);
+        })
+        .fail(function () {
+          if (speedtestdays === "-1") {
+            speedtestdays = "however many";
+          }
 
-      colDiv.append(boxDiv);
-      boxDiv.append(boxHeaderDiv);
-      boxHeaderDiv.append(h3);
-      boxDiv.append(boxBodyDiv);
-      boxBodyDiv.append(chartDiv);
-      chartDiv.append(canvas);
-      chartDiv.append(overlayDiv);
-      overlayDiv.append(i);
+          if (speedtestdays === "1") {
+            speedtestdays = "24 hours";
+          } else {
+            speedtestdays += " days";
+          }
 
-      speedtestChartPreview.find("div").remove();
-      speedtestChartPreview.append(colDiv);
+          drawChart(speedtestdays, type);
+        });
     }
 
     speedtestChartPreviewBtn.text(preview ? "Hide preview" : "Show chart preview");
@@ -633,13 +703,34 @@ $(function () {
       .done(function (data) {
         const log = data?.data;
         if (log) {
+          speedtestLog.find("p").remove();
           codeBlock(speedtestLog, log, speedtestLogBtn, "log");
         } else {
-          speedtestLogBtn.text("Failed to get log");
+          codeBlock(
+            speedtestLog,
+            "tmux a -t pimod; cat /var/log/pihole/mod.log",
+            speedtestLogBtn,
+            "log"
+          );
+          if (speedtestLog.find("p").length === 0) {
+            speedtestLog.append(
+              `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+            );
+          }
         }
       })
       .fail(function () {
-        speedtestLogBtn.text("Failed to get log");
+        codeBlock(
+          speedtestLog,
+          "tmux a -t pimod; cat /var/log/pihole/mod.log",
+          speedtestLogBtn,
+          "log"
+        );
+        if (speedtestLog.find("p").length === 0) {
+          speedtestLog.append(
+            `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+          );
+        }
       });
   };
 
@@ -657,6 +748,10 @@ $(function () {
       }
     };
 
+    if (!cmds || cmds.length === 0) {
+      cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
+    }
+
     $.ajax({
       url: `api.php?${cmds[0]}`,
       dataType: "json",
@@ -664,6 +759,7 @@ $(function () {
       .done(function (data) {
         const serversInfo = data?.data;
         if (serversInfo) {
+          speedtestServerCtr.find("p").remove();
           codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
         } else {
           tryNextCmd();
@@ -793,8 +889,10 @@ $(function () {
 
   speedtestLogBtn.on("click", function () {
     const log = speedtestLog.find("pre");
-    if (log.length > 0) {
+    const info = speedtestLog.find("p");
+    if (log.length > 0 || info.length > 0) {
       log.remove();
+      info.remove();
       speedtestLogBtn.text("Show latest log");
     } else {
       latestLog();
@@ -808,7 +906,7 @@ $(function () {
       speedtestServerBtn.text("Show closest servers");
     } else {
       speedtestServerBtn.text("Retrieving servers...");
-      closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
+      closestServers();
     }
   });
 
@@ -829,6 +927,21 @@ $(function () {
 
     if (speedtestLog.find("pre").length > 0) {
       latestLog();
+    }
+
+    // if speedtestLog has a p element, cycle through ellipsis
+    const info = speedtestLog.find("p");
+    if (info.length > 0) {
+      const text = info.text();
+      if (text.includes("...")) {
+        info.text(text.replace(/\.{3}/, ""));
+      } else {
+        info.text(text + ".");
+      }
+    }
+
+    if (speedtestServerCtr.find("p").length > 0) {
+      closestServers();
     }
 
     canRestore();

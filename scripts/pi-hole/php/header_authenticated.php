@@ -149,11 +149,11 @@ if (!is_numeric($nproc)) {
 // Get memory usage
 $memory_usage = getMemUsage();
 
-$speedtestshedule = false;
+$speedtestschedule = false;
 $speedtestdays = '';
 $speedtestcharttype = 'line';
 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
-    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+    $speedtestschedule = $setupVars['SPEEDTESTSCHEDULE'];
 }
 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
     if ($setupVars['SPEEDTEST_CHART_DAYS'] > 1) {

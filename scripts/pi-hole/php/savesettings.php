@@ -584,7 +584,7 @@ if (isset($_POST['field'])) {
 
         case 'speedtest':
             if (isset($_POST['speedtestschedule'])) {
-                pihole_execute('-a -s '.trim($_POST['speedtestschedule']));
+                pihole_execute('-a -s '.trim($_POST['speedtestschedule']), true);
             }
 
             if (isset($_POST['clearspeedtests'])) {

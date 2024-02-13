@@ -1504,13 +1504,13 @@ if (isset($piholeFTLConf['RATE_LIMIT'])) {
                 <!-- ######################################################### Speedtest ######################################################### -->
                 <?php
 
-$speedtestshedule = false;
-$speedtestdays = 'official';
+$speedtestschedule = false;
+$speedtestdays = '';
 $speedtestserver = '';
 $speedtestcharttype = 'line';
 
 if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
-    $speedtestshedule = $setupVars['SPEEDTESTSCHEDULE'];
+    $speedtestschedule = $setupVars['SPEEDTESTSCHEDULE'];
 }
 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
     $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'];
@@ -1546,12 +1546,13 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <div class="input-group mb-6">
                                                         <div class="input-group-addon">Hours</div>
                                                         <input
+                                                            id="speedtestschedule"
                                                             type="number"
                                                             name="speedtestschedule"
                                                             class="form-control"
-                                                            value="<?php echo htmlspecialchars($speedtestshedule); ?>"
+                                                            value="<?php echo htmlspecialchars($speedtestschedule); ?>"
                                                             min="0"
-                                                            step="0.01"
+                                                            step="0.001"
                                                             placeholder="0 = disable schedule"
                                                         >
                                                     </div>
@@ -1576,7 +1577,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Health check</label>
+                                                    <strong>Health check</strong>
                                                     <div>
                                                         <input type="checkbox" name="speedtesttest" id="speedtesttest">
                                                         <label for="speedtesttest">Run a test now</label>
@@ -1587,7 +1588,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Bar graph</label>
+                                                    <strong>Bar graph</strong>
                                                     <div>
                                                         <input type="checkbox" name="speedtestcharttype" id="speedtestcharttype" value=<?php echo $speedtestcharttype; ?> />
                                                         <label for="speedtestcharttype">Enable (autosaved, per-browser)</label>
@@ -1616,7 +1617,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                             <div class="col-md-12">
 
                                                 <div class="form-group col-md-6">
-                                                    <label>Mod the Mod</label>
+                                                    <strong>Mod the Mod</strong>
                                                     <p>For the adventurous</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate">
@@ -1661,7 +1662,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                 </div>
                             </div>
                         </div>
-                        <div class="box-footer clearfix">
+                        <div class="clearfix">
                             <button id="st-submit" type="submit" class="btn btn-primary pull-right">Confirm</button>
                         </div>
                     </form>
