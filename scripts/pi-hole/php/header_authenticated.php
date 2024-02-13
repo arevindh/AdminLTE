@@ -187,13 +187,11 @@ if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
     if ($setupVars['SPEEDTEST_CHART_DAYS'] == -1) {
         $speedtestdays = getNumberOfDaysInDB($dbSpeedtest).' days';
-    } else if ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
+    } elseif ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
         $speedtestdays = '24 hours';
     } else {
         $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' days';
     }
-
-
 }
 if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
