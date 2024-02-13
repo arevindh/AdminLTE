@@ -34,7 +34,7 @@ if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
 } else {
     $cmdStatus = 'systemctl status pihole-speedtest.timer';
 }
-$cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /var/log/pihole/speedtest.log ]] && cat /var/log/pihole/speedtest.log || echo ""; }';
+$cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /etc/pihole/speedtest.log ]] && cat /etc/pihole/speedtest.log || echo ""; }';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 
