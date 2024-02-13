@@ -608,6 +608,16 @@ $(function () {
   };
 
   const drawChart = (days, type) => {
+    if (days === "-1") {
+      days = "however many";
+    }
+
+    if (days === "1") {
+      days = "24 hours";
+    } else {
+      days += " days";
+    }
+
     const colDiv = document.createElement("div");
     const boxDiv = document.createElement("div");
     const boxHeaderDiv = document.createElement("div");
@@ -665,29 +675,9 @@ $(function () {
         dataType: "json",
       })
         .done(function (data) {
-          if (speedtestdays === "-1") {
-            speedtestdays = data ? data.data : "however many";
-          }
-
-          if (speedtestdays === "1") {
-            speedtestdays = "24 hours";
-          } else {
-            speedtestdays += " days";
-          }
-
-          drawChart(speedtestdays, type);
+          drawChart(speedtestdays === "-1" && data ? data.data : speedtestdays, type);
         })
         .fail(function () {
-          if (speedtestdays === "-1") {
-            speedtestdays = "however many";
-          }
-
-          if (speedtestdays === "1") {
-            speedtestdays = "24 hours";
-          } else {
-            speedtestdays += " days";
-          }
-
           drawChart(speedtestdays, type);
         });
     }
