@@ -19,21 +19,6 @@ $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 $cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pihole/mod.log ]] && cat /var/log/pihole/mod.log || echo ""; }';
 $cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --list';
-if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
-    $remaining_seconds = getRemainingTime();
-    if ($remaining_seconds < 0) {
-        $cmdStatus = 'echo ""';
-    } else {
-        $remaining_date = sprintf('%dd %dh %dmin %ds', $remaining_seconds / 86400, $remaining_seconds / 3600 % 24, $remaining_seconds / 60 % 60, $remaining_seconds % 60);
-        $remaining_date = preg_replace('/^0d |(^|(?<= ))0h |(^|(?<= ))0min /', '', $remaining_date); // remove 0d 0h 0min
-        $remaining_date = preg_replace('/\s(\d+s)/', '', $remaining_date); // remove seconds if not needed
-        $cmdStatus = 'echo '.$remaining_date;
-    }
-} elseif (!file_exists('/bin/systemctl')) {
-    $cmdStatus = 'echo ""';
-} else {
-    $cmdStatus = 'systemctl status pihole-speedtest.timer';
-}
 $cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /etc/pihole/speedtest.log ]] && cat /etc/pihole/speedtest.log || echo ""; }';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
@@ -55,7 +40,7 @@ if ($auth) {
         $data = array_merge($data, getServers($cmdServers));
     }
     if (isset($_GET['getSpeedTestStatus'])) {
-        $data = array_merge($data, speedtestExecute($cmdStatus));
+        $data = array_merge($data, speedtestExecute(getStatusCmd()));
     }
     if (isset($_GET['getLatestRun'])) {
         $data = array_merge($data, speedtestExecute($cmdRun));
@@ -331,4 +316,22 @@ function getNumberOfDaysInDB($dbSpeedtest)
     $diff = $first_date->diff($last_date);
 
     return array('data' => $diff->days + 1);
+}
+
+function getStatusCmd()
+{
+    $cmdStatus = 'echo ""';
+    if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
+        $remaining_seconds = getRemainingTime();
+        if ($remaining_seconds >= 0) {
+            $remaining_date = sprintf('%dd %dh %dmin %ds', $remaining_seconds / 86400, $remaining_seconds / 3600 % 24, $remaining_seconds / 60 % 60, $remaining_seconds % 60);
+            $remaining_date = preg_replace('/^0d |(^|(?<= ))0h |(^|(?<= ))0min /', '', $remaining_date); // remove 0d 0h 0min
+            $remaining_date = preg_replace('/\s(\d+s)/', '', $remaining_date); // remove seconds if not needed
+            $cmdStatus = 'echo '.$remaining_date;
+        }
+    } elseif (file_exists('/bin/systemctl')) {
+        $cmdStatus = 'systemctl status pihole-speedtest.timer';
+    }
+
+    return $cmdStatus;
 }
