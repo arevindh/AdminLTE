@@ -149,6 +149,35 @@ if (!is_numeric($nproc)) {
 // Get memory usage
 $memory_usage = getMemUsage();
 
+$dbSpeedtest = '/etc/pihole/speedtest.db';
+function getNumberOfDaysInDB($dbSpeedtest)
+{
+    $db = new SQLite3($dbSpeedtest);
+    if (!$db) {
+        return 0;
+    }
+
+    $sql = 'SELECT start_time from speedtest order by id asc';
+    $dbResults = $db->query($sql);
+    $dataFromSpeedDB = array();
+    if (!empty($dbResults)) {
+        while ($row = $dbResults->fetchArray(SQLITE3_ASSOC)) {
+            array_push($dataFromSpeedDB, $row);
+        }
+    }
+    $db->close();
+
+    if (empty($dataFromSpeedDB)) {
+        return 0;
+    }
+
+    $first_date = new DateTime($dataFromSpeedDB[0]['start_time']);
+    $last_date = new DateTime('now', new DateTimeZone('UTC'));
+    $diff = $first_date->diff($last_date);
+
+    return $diff->days + 1;
+}
+
 $speedtestschedule = false;
 $speedtestdays = '';
 $speedtestcharttype = 'line';
@@ -156,14 +185,12 @@ if (isset($setupVars['SPEEDTESTSCHEDULE'])) {
     $speedtestschedule = $setupVars['SPEEDTESTSCHEDULE'];
 }
 if (isset($setupVars['SPEEDTEST_CHART_DAYS'])) {
-    if ($setupVars['SPEEDTEST_CHART_DAYS'] > 1) {
-        $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' days';
-    }
-    if ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
-        $speedtestdays = '24 hours';
-    }
     if ($setupVars['SPEEDTEST_CHART_DAYS'] == -1) {
-        $speedtestdays = 'however many days';
+        $speedtestdays = getNumberOfDaysInDB($dbSpeedtest).' days';
+    } elseif ($setupVars['SPEEDTEST_CHART_DAYS'] == 1) {
+        $speedtestdays = '24 hours';
+    } else {
+        $speedtestdays = $setupVars['SPEEDTEST_CHART_DAYS'].' days';
     }
 }
 if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {

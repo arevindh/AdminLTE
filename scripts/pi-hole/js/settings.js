@@ -608,6 +608,16 @@ $(function () {
   };
 
   const drawChart = (days, type) => {
+    if (days === "-1") {
+      days = "however many";
+    }
+
+    if (days === "1") {
+      days = "24 hours";
+    } else {
+      days += " days";
+    }
+
     const colDiv = document.createElement("div");
     const boxDiv = document.createElement("div");
     const boxHeaderDiv = document.createElement("div");
@@ -655,7 +665,7 @@ $(function () {
       localStorage.setItem("speedtest_preview_shown", "false");
       speedtestChartPreview.find("div").remove();
     } else {
-      let speedtestdays = speedtestDays.val();
+      const speedtestdays = speedtestDays.val();
       localStorage.setItem("speedtest_days", speedtestdays);
       localStorage.setItem("speedtest_chart_type", type);
       localStorage.setItem("speedtest_preview_shown", "true");
@@ -665,29 +675,9 @@ $(function () {
         dataType: "json",
       })
         .done(function (data) {
-          if (speedtestdays === "-1") {
-            speedtestdays = data ? data.data : "however many";
-          }
-
-          if (speedtestdays === "1") {
-            speedtestdays = "24 hours";
-          } else {
-            speedtestdays += " days";
-          }
-
-          drawChart(speedtestdays, type);
+          drawChart(speedtestdays === "-1" && data ? data.data : speedtestdays, type);
         })
         .fail(function () {
-          if (speedtestdays === "-1") {
-            speedtestdays = "however many";
-          }
-
-          if (speedtestdays === "1") {
-            speedtestdays = "24 hours";
-          } else {
-            speedtestdays += " days";
-          }
-
           drawChart(speedtestdays, type);
         });
     }
@@ -714,7 +704,7 @@ $(function () {
           );
           if (speedtestLog.find("p").length === 0) {
             speedtestLog.append(
-              `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+              `<p style="margin-top: .5vw;">Use this command to get the log while the connection is reestablished</p>`
             );
           }
         }
@@ -728,7 +718,7 @@ $(function () {
         );
         if (speedtestLog.find("p").length === 0) {
           speedtestLog.append(
-            `<p style="margin-top: .5vw;">Use this command to get the log while I look for it</p>`
+            `<p style="margin-top: .5vw;">Use this command to get the log while the connection is reestablished</p>`
           );
         }
       });
