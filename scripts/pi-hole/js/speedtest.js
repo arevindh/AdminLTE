@@ -135,8 +135,7 @@ function formatDate(itemdate, results) {
   }
 
   const first = moment(results.at(0).start_time, "YYYY-MM-DD HH:mm:ssZ");
-  const last = moment(results.at(-1).start_time, "YYYY-MM-DD HH:mm:ssZ");
-  if (last.diff(first, "hours") > 24) {
+  if (moment.utc().diff(first, "hours") > 24) {
     output = "Do HH:mm";
   }
 
