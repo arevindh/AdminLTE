@@ -24,7 +24,9 @@ var serverPing = [];
 function createChart() {
   var gridColor = getCSSval("graphs-grid", "background-color");
   var ticksColor = getCSSval("graphs-ticks", "color");
-  var speedChartctx = document.getElementById("speedOverTimeChart")?.getContext("2d");
+  let chartElement = document.getElementById("speedOverTimeChart");
+  if (chartElement === null || chartElement === undefined) return;
+  var speedChartctx = chartElement.getContext("2d");
   if (speedChartctx === null || speedChartctx === undefined) return;
   speedChart = new Chart(speedChartctx, {
     type: getGraphType(1),
@@ -187,7 +189,7 @@ function updateSpeedTestData() {
       createChart();
     }
 
-    if (speedChart && speedChart.data.labels !== speedlabels) {
+    if (speedchart && speedChart !== null && speedChart !== undefined && speedChart.data.labels !== speedlabels) {
       speedChart.data.labels = speedlabels;
       speedChart.data.datasets[0].data = downloadspeed;
       speedChart.data.datasets[1].data = uploadspeed;
