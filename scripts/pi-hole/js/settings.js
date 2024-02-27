@@ -745,41 +745,9 @@ $(function () {
       }).done(function (data) {
         const librespeed = data?.data;
         if (librespeed) {
-          cmds = ["getClosestServers"];
-          $.ajax({
-            url: `api.php?${cmds[0]}`,
-            dataType: "json",
-          })
-            .done(function (data) {
-              const serversInfo = data?.data;
-              if (serversInfo) {
-                speedtestServerCtr.find("p").remove();
-                codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
-              } else {
-                tryNextCmd();
-              }
-            })
-            .fail(function () {
-              tryNextCmd();
-            });
+          closestServers(["getClosestServers"]);
         } else {
-          cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
-          $.ajax({
-            url: `api.php?${cmds[0]}`,
-            dataType: "json",
-          })
-            .done(function (data) {
-              const serversInfo = data?.data;
-              if (serversInfo) {
-                speedtestServerCtr.find("p").remove();
-                codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
-              } else {
-                tryNextCmd();
-              }
-            })
-            .fail(function () {
-              tryNextCmd();
-            });
+          closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
         }
       });
     } else {

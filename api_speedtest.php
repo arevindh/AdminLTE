@@ -18,7 +18,7 @@ $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 $cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pihole/mod.log ]] && cat /var/log/pihole/mod.log || echo ""; }';
-$cmdServers = 'speedtest -h | grep -q official && sudo speedtest -L || speedtest --secure --list';
+$cmdServers = '/usr/bin/speedtest -h | grep -q official && sudo /usr/bin/speedtest -L || /usr/bin/speedtest --secure --list';
 $cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /etc/pihole/speedtest.log ]] && cat /etc/pihole/speedtest.log || echo ""; }';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
@@ -341,5 +341,5 @@ function getStatusCmd()
 
 function isLibrespeed()
 {
-    return strpos(speedtestExecute('speedtest --version')['data'], 'LibreSpeed') !== false;
+    return strpos(speedtestExecute('/usr/bin/speedtest --version')['data'], 'LibreSpeed') !== false;
 }
