@@ -905,7 +905,7 @@ $(function () {
     const closestServersList = speedtestServerCtr.find("pre");
     if (closestServersList.length > 0) {
       closestServersList.remove();
-      speedtestServerBtn.text("Show closest servers");
+      speedtestServerBtn.text("Show available servers");
     } else {
       speedtestServerBtn.text("Retrieving servers...");
       closestServers();

@@ -1653,7 +1653,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         >
                                                     </div>
                                                     <p id="closestServers" style="margin-top: 1vw;">
-                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show closest servers</button>
+                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show available servers</button>
                                                     </p>
                                                 </div>
                                             </div>
