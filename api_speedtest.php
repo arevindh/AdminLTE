@@ -18,7 +18,7 @@ $dbSpeedtestOld = '/etc/pihole/speedtest.db.old';
 $setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
 
 $cmdLog = '[[ -f /tmp/pimod.log ]] && cat /tmp/pimod.log || { [[ -f /var/log/pihole/mod.log ]] && cat /var/log/pihole/mod.log || echo ""; }';
-$cmdServers = '/usr/bin/speedtest -h | grep -q official && sudo /usr/bin/speedtest -L || /usr/bin/speedtest --secure --list';
+$cmdServers = '/usr/bin/speedtest -h | grep -q official && sudo /usr/bin/speedtest -L || /usr/bin/speedtest --secure --list 2>&1';
 $cmdRun = '[[ -f /tmp/speedtest.log ]] && cat /tmp/speedtest.log || { [[ -f /etc/pihole/speedtest.log ]] && cat /etc/pihole/speedtest.log || echo ""; }';
 $cmdServersCurl = "curl 'https://c.speedtest.net/speedtest-servers-static.php' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
 $cmdServersJSON = "curl 'https://www.speedtest.net/api/js/servers' --compressed -H 'Upgrade-Insecure-Requests: 1' -H 'DNT: 1' -H 'Sec-GPC: 1'";
@@ -206,12 +206,12 @@ function getServers($cmdServers)
     $array = speedtestExecute($cmdServers);
     $servers = $array['data'];
 
-    /* $output = explode("\n", $servers);
+    $output = explode("\n", $servers);
     $output = array_filter($output);
     if (count($output) > 1) {
         array_shift($output);
     }
-    $servers = implode("\n", $output); */
+    $servers = implode("\n", $output);
 
     if ($servers === false) {
         return array('error' => 'Error fetching servers');
