@@ -745,8 +745,10 @@ $(function () {
       }).done(function (data) {
         const librespeed = data?.data;
         if (librespeed) {
+          console.log("librespeed");
           closestServers(["getClosestServers"]);
         } else {
+          console.log("speedtest");
           closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
         }
       });
@@ -758,6 +760,7 @@ $(function () {
         .done(function (data) {
           const serversInfo = data?.data;
           if (serversInfo) {
+            console.log(serversInfo);
             speedtestServerCtr.find("p").remove();
             codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
           } else {
