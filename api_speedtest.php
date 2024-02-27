@@ -54,6 +54,9 @@ if ($auth) {
     if (isset($_GET['getNumberOfDaysInDB'])) {
         $data = array_merge($data, getNumberOfDaysInDB($dbSpeedtest));
     }
+    if (isset($_GET['isLibrespeed'])) {
+        $data = array_merge($data, array('data' => isLibrespeed()));
+    }
 }
 
 function hasSpeedTestBackup($dbSpeedtestOld)
@@ -334,4 +337,9 @@ function getStatusCmd()
     }
 
     return $cmdStatus;
+}
+
+function isLibrespeed()
+{
+    return strpos(speedtestExecute('speedtest --version')['data'], 'LibreSpeed') !== false;
 }

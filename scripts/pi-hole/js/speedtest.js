@@ -189,7 +189,12 @@ function updateSpeedTestData() {
       createChart();
     }
 
-    if (speedChart && speedChart !== null && speedChart !== undefined && speedChart.data.labels !== speedlabels) {
+    if (
+      speedChart &&
+      speedChart !== null &&
+      speedChart !== undefined &&
+      speedChart.data.labels !== speedlabels
+    ) {
       speedChart.data.labels = speedlabels;
       speedChart.data.datasets[0].data = downloadspeed;
       speedChart.data.datasets[1].data = uploadspeed;

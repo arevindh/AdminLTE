@@ -739,25 +739,67 @@ $(function () {
     };
 
     if (!cmds || cmds.length === 0) {
-      cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
-    }
-
-    $.ajax({
-      url: `api.php?${cmds[0]}`,
-      dataType: "json",
-    })
-      .done(function (data) {
-        const serversInfo = data?.data;
-        if (serversInfo) {
-          speedtestServerCtr.find("p").remove();
-          codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+      $.ajax({
+        url: `api.php?isLibrespeed`,
+        dataType: "json",
+      }).done(function (data) {
+        const librespeed = data?.data;
+        if (librespeed) {
+          cmds = ["getClosestServers"];
+          $.ajax({
+            url: `api.php?${cmds[0]}`,
+            dataType: "json",
+          })
+            .done(function (data) {
+              const serversInfo = data?.data;
+              if (serversInfo) {
+                speedtestServerCtr.find("p").remove();
+                codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+              } else {
+                tryNextCmd();
+              }
+            })
+            .fail(function () {
+              tryNextCmd();
+            });
         } else {
-          tryNextCmd();
+          cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
+          $.ajax({
+            url: `api.php?${cmds[0]}`,
+            dataType: "json",
+          })
+            .done(function (data) {
+              const serversInfo = data?.data;
+              if (serversInfo) {
+                speedtestServerCtr.find("p").remove();
+                codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+              } else {
+                tryNextCmd();
+              }
+            })
+            .fail(function () {
+              tryNextCmd();
+            });
         }
-      })
-      .fail(function () {
-        tryNextCmd();
       });
+    } else {
+      $.ajax({
+        url: `api.php?${cmds[0]}`,
+        dataType: "json",
+      })
+        .done(function (data) {
+          const serversInfo = data?.data;
+          if (serversInfo) {
+            speedtestServerCtr.find("p").remove();
+            codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+          } else {
+            tryNextCmd();
+          }
+        })
+        .fail(function () {
+          tryNextCmd();
+        });
+    }
   };
 
   const hasBackup = callback => {
