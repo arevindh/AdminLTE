@@ -206,12 +206,12 @@ function getServers($cmdServers)
     $array = speedtestExecute($cmdServers);
     $servers = $array['data'];
 
-    $output = explode("\n", $servers);
+    /* $output = explode("\n", $servers);
     $output = array_filter($output);
     if (count($output) > 1) {
         array_shift($output);
     }
-    $servers = implode("\n", $output);
+    $servers = implode("\n", $output); */
 
     if ($servers === false) {
         return array('error' => 'Error fetching servers');

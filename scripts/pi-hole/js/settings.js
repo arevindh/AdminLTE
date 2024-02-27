@@ -759,8 +759,8 @@ $(function () {
       })
         .done(function (data) {
           const serversInfo = data?.data;
+          console.log(serversInfo);
           if (serversInfo) {
-            console.log(serversInfo);
             speedtestServerCtr.find("p").remove();
             codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
           } else {
