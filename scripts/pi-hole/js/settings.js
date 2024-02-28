@@ -739,25 +739,35 @@ $(function () {
     };
 
     if (!cmds || cmds.length === 0) {
-      cmds = ["JSONClosestServers", "getClosestServers", "curlClosestServers"];
-    }
-
-    $.ajax({
-      url: `api.php?${cmds[0]}`,
-      dataType: "json",
-    })
-      .done(function (data) {
-        const serversInfo = data?.data;
-        if (serversInfo) {
-          speedtestServerCtr.find("p").remove();
-          codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+      $.ajax({
+        url: `api.php?isLibrespeed`,
+        dataType: "json",
+      }).done(function (data) {
+        const librespeed = data?.data;
+        if (librespeed) {
+          closestServers(["getClosestServers"]);
         } else {
-          tryNextCmd();
+          closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
         }
-      })
-      .fail(function () {
-        tryNextCmd();
       });
+    } else {
+      $.ajax({
+        url: `api.php?${cmds[0]}`,
+        dataType: "json",
+      })
+        .done(function (data) {
+          const serversInfo = data?.data;
+          if (serversInfo) {
+            speedtestServerCtr.find("p").remove();
+            codeBlock(speedtestServerCtr, serversInfo, speedtestServerBtn, "servers");
+          } else {
+            tryNextCmd();
+          }
+        })
+        .fail(function () {
+          tryNextCmd();
+        });
+    }
   };
 
   const hasBackup = callback => {
@@ -893,7 +903,7 @@ $(function () {
     const closestServersList = speedtestServerCtr.find("pre");
     if (closestServersList.length > 0) {
       closestServersList.remove();
-      speedtestServerBtn.text("Show closest servers");
+      speedtestServerBtn.text("Show available servers");
     } else {
       speedtestServerBtn.text("Retrieving servers...");
       closestServers();

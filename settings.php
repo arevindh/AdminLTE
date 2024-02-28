@@ -1638,7 +1638,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                                                 <div class="form-group col-md-6">
                                                     <label for="speedtestserver">Set specific server</label>
-                                                    <p>If you know better</p>
+                                                    <p>To be tried first</p>
                                                     <div class="input-group">
                                                         <div class="input-group-addon">id</div>
                                                         <input
@@ -1653,7 +1653,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         >
                                                     </div>
                                                     <p id="closestServers" style="margin-top: 1vw;">
-                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show closest servers</button>
+                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show available servers</button>
                                                     </p>
                                                 </div>
                                             </div>
