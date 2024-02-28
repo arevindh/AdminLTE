@@ -745,10 +745,8 @@ $(function () {
       }).done(function (data) {
         const librespeed = data?.data;
         if (librespeed) {
-          console.log("librespeed");
           closestServers(["getClosestServers"]);
         } else {
-          console.log("speedtest");
           closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
         }
       });

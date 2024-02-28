@@ -24,7 +24,7 @@ var serverPing = [];
 function createChart() {
   var gridColor = getCSSval("graphs-grid", "background-color");
   var ticksColor = getCSSval("graphs-ticks", "color");
-  let chartElement = document.getElementById("speedOverTimeChart");
+  const chartElement = document.getElementById("speedOverTimeChart");
   if (chartElement === null || chartElement === undefined) return;
   var speedChartctx = chartElement.getContext("2d");
   if (speedChartctx === null || speedChartctx === undefined) return;
