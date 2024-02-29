@@ -1618,7 +1618,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                                                 <div class="form-group col-md-6">
                                                     <strong>Mod the Mod</strong>
-                                                    <p>For the adventurous</p>
+                                                    <p>With the Script</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate">
                                                         <label for="speedtestupdate">(Re)install Latest</label>

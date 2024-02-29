@@ -348,7 +348,7 @@ function whichSpeedtest()
     if (strpos($version, 'LibreSpeed') !== false) {
         return 'LibreSpeed';
     } elseif (strpos($version, 'Python') !== false) {
-        return 'Sivel\'s';
+        return 'sivel\'s';
     } else {
         return 'official';
     }
