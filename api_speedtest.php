@@ -341,6 +341,9 @@ function getStatusCmd()
 
 function whichSpeedtest()
 {
+    if (!file_exists('/usr/bin/speedtest')) {
+        return 'official';
+    }
     $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
     if (strpos($version, 'LibreSpeed') !== false) {
         return 'LibreSpeed';
