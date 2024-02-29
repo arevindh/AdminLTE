@@ -344,9 +344,9 @@ function whichSpeedtest()
     $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
     if (strpos($version, 'LibreSpeed') !== false) {
         return 'LibreSpeed';
-    } elseif (strpos($version, 'Official') !== false) {
-        return 'official';
-    } else {
+    } elseif (strpos($version, 'Python') !== false) {
         return 'Sivel\'s';
+    } else {
+        return 'official';
     }
 }

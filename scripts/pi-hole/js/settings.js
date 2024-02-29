@@ -553,7 +553,7 @@ $(function () {
 
   const serviceStatus = () => {
     whichSpeedtest();
-    const speedtestVersion = localStorage.getItem("speedtest");
+    const speedtestVersion = localStorage.getItem("speedtest") || "unknown";
     $.ajax({
       url: "api.php?getSpeedTestStatus",
       dataType: "json",
