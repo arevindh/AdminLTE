@@ -532,7 +532,28 @@ $(function () {
     }
   };
 
+  const whichSpeedtest = () => {
+    $.ajax({
+      url: "api.php?whichSpeedtest",
+      dataType: "json",
+    })
+      .done(function (data) {
+        const speedtest = data?.data;
+        if (speedtest) {
+          // set in localStorage for use in other functions
+          localStorage.setItem("speedtest", speedtest);
+        } else {
+          localStorage.setItem("speedtest", "official");
+        }
+      })
+      .fail(function () {
+        localStorage.setItem("speedtest", "unknown");
+      });
+  };
+
   const serviceStatus = () => {
+    whichSpeedtest();
+    const speedtestVersion = localStorage.getItem("speedtest");
     $.ajax({
       url: "api.php?getSpeedTestStatus",
       dataType: "json",
@@ -590,19 +611,19 @@ $(function () {
               lastRunText = `Latest run:\n\n${lastRun}`;
             }
 
-            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
           .fail(function () {
-            const lastRunText = "\nLatest run is unavailable";
-            const statusText = `Schedule is ${scheduleStatusText}\nNext run is${triggerText}${lastRunText}`;
+            const lastRunText = "Latest run is unavailable";
+            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           });
       })
       .fail(function () {
-        const triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " unknown";
-        const lastRunText = "\nLatest run is unavailable";
-        const statusText = "Schedule is unavailable\nNext run is" + triggerText + lastRunText;
+        const triggerText = speedtestTest.attr("value") ? "awaiting confirmation" : "unknown";
+        const lastRunText = "Latest run is unavailable";
+        const statusText = `Using ${speedtestVersion} CLI\nSchedule is unavailable\nNext run is ${triggerText}\n${lastRunText}`;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
@@ -739,17 +760,13 @@ $(function () {
     };
 
     if (!cmds || cmds.length === 0) {
-      $.ajax({
-        url: `api.php?isLibrespeed`,
-        dataType: "json",
-      }).done(function (data) {
-        const librespeed = data?.data;
-        if (librespeed) {
-          closestServers(["getClosestServers"]);
-        } else {
-          closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
-        }
-      });
+      whichSpeedtest();
+      const speedtestVersion = localStorage.getItem("speedtest");
+      if (speedtestVersion === "LibreSpeed") {
+        closestServers(["getClosestServers"]);
+      } else {
+        closestServers(["JSONClosestServers", "getClosestServers", "curlClosestServers"]);
+      }
     } else {
       $.ajax({
         url: `api.php?${cmds[0]}`,

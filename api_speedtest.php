@@ -54,8 +54,8 @@ if ($auth) {
     if (isset($_GET['getNumberOfDaysInDB'])) {
         $data = array_merge($data, getNumberOfDaysInDB($dbSpeedtest));
     }
-    if (isset($_GET['isLibrespeed'])) {
-        $data = array_merge($data, array('data' => isLibrespeed()));
+    if (isset($_GET['whichSpeedtest'])) {
+        $data = array_merge($data, array('data' => whichSpeedtest()));
     }
 }
 
@@ -339,7 +339,14 @@ function getStatusCmd()
     return $cmdStatus;
 }
 
-function isLibrespeed()
+function whichSpeedtest()
 {
-    return strpos(speedtestExecute('/usr/bin/speedtest --version')['data'], 'LibreSpeed') !== false;
+    $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
+    if (strpos($version, 'LibreSpeed') !== false) {
+        return 'LibreSpeed';
+    } elseif (strpos($version, 'Official') !== false) {
+        return 'official';
+    } else {
+        return 'Sivel\'s';
+    }
 }

@@ -22,6 +22,10 @@ if (!is_readable($versionsfile)) {
     $web_current = 'N/A';
     $web_update = false;
 
+    $speedtest_branch = 'master';
+    $speedtest_current = 'N/A';
+    $speedtest_update = false;
+
     $FTL_current = 'N/A';
     $FTL_update = false;
 
@@ -49,6 +53,15 @@ if (!is_readable($versionsfile)) {
         $web_current = explode('-', $versions['WEB_VERSION'])[0];
     }
 
+    // Get Speedtest Mod branch / version / commit
+    $speedtest_branch = $versions['SPEEDTEST_BRANCH'];
+    if ($speedtest_branch !== 'master') {
+        $speedtest_current = 'vDev';
+        $speedtest_commit = $versions['SPEEDTEST_VERSION'];
+    } else {
+        $speedtest_current = explode('-', $versions['SPEEDTEST_VERSION'])[0];
+    }
+
     // Get Pi-hole FTL (not a git repository)
     $FTL_branch = $versions['FTL_BRANCH'];
     if (substr($versions['FTL_VERSION'], 0, 4) === 'vDev') {
@@ -68,6 +81,7 @@ if (!is_readable($versionsfile)) {
     // Get data from GitHub
     $core_latest = $versions['GITHUB_CORE_VERSION'];
     $web_latest = $versions['GITHUB_WEB_VERSION'];
+    $speedtest_latest = $versions['GITHUB_SPEEDTEST_VERSION'];
     $FTL_latest = $versions['GITHUB_FTL_VERSION'];
     if (isset($versions['GITHUB_DOCKER_VERSION'])) {
         $docker_latest = $versions['GITHUB_DOCKER_VERSION'];
@@ -77,6 +91,7 @@ if (!is_readable($versionsfile)) {
 
     $core_update = false;
     $web_update = false;
+    $speedtest_update = false;
     $FTL_update = false;
 
     // Version comparison
@@ -92,6 +107,7 @@ if (!is_readable($versionsfile)) {
         // Components comparison
         $core_update = checkUpdate($core_current, $core_latest);
         $web_update = checkUpdate($web_current, $web_latest);
+        $speedtest_update = checkUpdate($speedtest_current, $speedtest_latest);
         $FTL_update = checkUpdate($FTL_current, $FTL_latest);
 
         // Not a docker container
@@ -100,10 +116,11 @@ if (!is_readable($versionsfile)) {
 }
 
 // URLs for the links
-$coreUrl = 'https://github.com/pi-hole/pi-hole/releases';
+$coreUrl = 'https://github.com/arevindh/pi-hole/releases';
 $webUrl = 'https://github.com/arevindh/AdminLTE/releases';
 $ftlUrl = 'https://github.com/pi-hole/FTL/releases';
-$dockerUrl = 'https://github.com/arevindh/docker-pi-hole/releases';
+$dockerUrl = 'https://github.com/pi-hole/docker-pi-hole/releases';
+$speedtestUrl = 'https://github.com/arevindh/pihole-speedtest/releases';
 
 // Version strings (encoded to avoid code execution)
 // If "vDev" show branch/commit, else show link
@@ -117,6 +134,12 @@ if (isset($web_commit)) {
     $webVersionStr = htmlentities($web_current.' ('.$web_branch.', '.$web_commit.')');
 } else {
     $webVersionStr = '<a href="'.$webUrl.'/'.rawurlencode($web_current).'" rel="noopener" target="_blank">'.htmlentities($web_current).'</a>';
+}
+
+if (isset($speedtest_commit)) {
+    $speedtestVersionStr = htmlentities($speedtest_current.' ('.$speedtest_branch.', '.$speedtest_commit.')');
+} else {
+    $speedtestVersionStr = '<a href="'.$speedtestUrl.'/'.rawurlencode($speedtest_current).'" rel="noopener" target="_blank">'.htmlentities($speedtest_current).'</a>';
 }
 
 if (isset($FTL_commit)) {

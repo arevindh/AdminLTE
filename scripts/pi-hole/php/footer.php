@@ -87,6 +87,11 @@ if (isset($core_commit) || isset($web_commit) || isset($FTL_commit)) {
                         <?php echo $webVersionStr; ?>
                         <?php if ($web_update) { ?> &middot; <a class="lookatme" lookatme-text="Update available!" href="<?php echo $webUrl.'/latest'; ?>" rel="noopener" target="_blank">Update available!</a><?php } ?>
                     </li>
+                    <li>
+                        <strong>Speedtest Mod</strong>
+                        <?php echo $speedtestVersionStr; ?>
+                        <?php if ($speedtest_update) { ?> &middot; <a class="lookatme" lookatme-text="Update available!" href="<?php echo $speedtestUrl.'/latest'; ?>" rel="noopener" target="_blank">Update available!</a><?php } ?>
+                    </li>
                 </ul>
 
                 <p style="margin: 15px 0 0;">
