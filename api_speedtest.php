@@ -341,15 +341,14 @@ function getStatusCmd()
 
 function whichSpeedtest()
 {
-    if (!file_exists('/usr/bin/speedtest')) {
-        return 'official';
+    if (file_exists('/usr/bin/speedtest')) {
+        $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
+        if (strpos($version, 'LibreSpeed') !== false) {
+            return 'LibreSpeed';
+        }
+        if (strpos($version, 'Python') !== false) {
+            return 'sivel\'s';
+        }
     }
-    $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
-    if (strpos($version, 'LibreSpeed') !== false) {
-        return 'LibreSpeed';
-    } elseif (strpos($version, 'Python') !== false) {
-        return 'sivel\'s';
-    } else {
-        return 'official';
-    }
+    return 'official';
 }

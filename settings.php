@@ -228,7 +228,7 @@ if (isset($_GET['tab']) && in_array($_GET['tab'], array('sysadmin', 'dns', 'piho
                     <a href="#teleporter" aria-controls="teleporter" aria-expanded="<?php echo $tab === 'teleporter' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Teleporter</a>
                 </li>
                 <li role="presentation"<?php if ($tab === 'speedtest') { ?> class="active"<?php } ?>>
-                    <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === 'speedtest' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Speedtest</a>
+                    <a href="#speedtest" aria-controls="speedtest" aria-expanded="<?php echo $tab === 'speedtest' ? 'true' : 'false'; ?>" role="tab" data-toggle="tab">Speedtest Mod</a>
                 </li>
             </ul>
             <div class="tab-content">
