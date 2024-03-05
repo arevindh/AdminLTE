@@ -98,7 +98,7 @@ if (isset($core_commit) || isset($web_commit) || isset($FTL_commit)) {
                     <?php if ($docker_update) { ?>
                         To install updates, <a href="https://github.com/pi-hole/docker-pi-hole#upgrading-persistence-and-customizations" rel="noopener" target="_blank">replace this old container with a fresh upgraded image</a>.
                     <?php } elseif ($core_update || $web_update || $FTL_update) { ?>
-                        To install updates, uninstall Speedtest Mod, run <code><a href="https://docs.pi-hole.net/main/update/" rel="noopener" target="_blank">pihole -up</a></code> if there's a new official Pi-hole update, and reinstall Speedtest Mod. The Reinstall button in [Settings/Speedtest] can do this for you!
+                        To install updates, uninstall Speedtest Mod, run <code><a href="https://docs.pi-hole.net/main/update/" rel="noopener" target="_blank">pihole -up</a></code> if there's a new official Pi-hole release, and reinstall Speedtest Mod. The Reinstall button in [Settings/Speedtest] can do this for you!
                     <?php } elseif ($speedtest_update) { ?>
                         To install updates, reinstall Speedtest Mod. The Reinstall button in [Settings/Speedtest] can do this for you!
                     <?php } ?>
