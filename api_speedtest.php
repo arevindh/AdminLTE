@@ -342,10 +342,18 @@ function getStatusCmd()
 function whichSpeedtest()
 {
     if (file_exists('/usr/bin/speedtest')) {
-        $version = speedtestExecute('/usr/bin/speedtest --version 2>&1 > /dev/null && /usr/bin/speedtest --version')['data'];
+        $officialInstalled = speedtestExecute('. /opt/pihole/speedtestmod/mod.sh ; notInstalled speedtest && echo "false" || echo "true"')['data'];
+
+        if ($officialInstalled === 'true') {
+            return 'official';
+        }
+
+        $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
+
         if (strpos($version, 'LibreSpeed') !== false) {
             return 'LibreSpeed';
         }
+
         if (strpos($version, 'Python') !== false) {
             return 'sivel\'s';
         }
