@@ -265,7 +265,11 @@ function JSONServers($cmdServersJSON)
 
 function getRemainingTime()
 {
-    $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+    $interval_seconds = -1;
+
+    if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
+        $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+    }
 
     // if interval_seconds is "nan", then schedule has never been set
     if (strpos($interval_seconds, 'nan') !== false) {
