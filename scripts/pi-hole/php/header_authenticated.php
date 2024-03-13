@@ -153,7 +153,7 @@ $dbSpeedtest = '/etc/pihole/speedtest.db';
 function getNumberOfDaysInDB($dbSpeedtest)
 {
     $db = new SQLite3($dbSpeedtest);
-    if (!$db) {
+    if (!$db || !$db->querySingle('SELECT count(*) FROM sqlite_master WHERE type="table" AND name="speedtest"')) {
         return 0;
     }
 
