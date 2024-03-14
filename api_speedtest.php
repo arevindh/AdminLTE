@@ -92,7 +92,7 @@ function getSpeedTestData($dbSpeedtest, $durationdays = '1')
         return array();
     }
     $db = new SQLite3($dbSpeedtest);
-    if (!$db) {
+    if (!$db || !$db->querySingle('SELECT count(*) FROM sqlite_master WHERE type="table" AND name="speedtest"')) {
         return array();
     }
 
@@ -265,7 +265,11 @@ function JSONServers($cmdServersJSON)
 
 function getRemainingTime()
 {
-    $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+    $interval_seconds = -1;
+
+    if (file_exists('/opt/pihole/speedtestmod/schedule_check.sh')) {
+        $interval_seconds = speedtestExecute("grep 'interval_seconds=' /opt/pihole/speedtestmod/schedule_check.sh | cut -d'=' -f2")['data'];
+    }
 
     // if interval_seconds is "nan", then schedule has never been set
     if (strpos($interval_seconds, 'nan') !== false) {
@@ -296,7 +300,7 @@ function getRemainingTime()
 function getNumberOfDaysInDB($dbSpeedtest)
 {
     $db = new SQLite3($dbSpeedtest);
-    if (!$db) {
+    if (!$db || !$db->querySingle('SELECT count(*) FROM sqlite_master WHERE type="table" AND name="speedtest"')) {
         return array('data' => 0);
     }
 
