@@ -608,7 +608,7 @@ $(function () {
             const lastRun = data?.data;
             let lastRunText = "Latest run is unavailable";
             if (lastRun) {
-              lastRunText = `\nLatest run:${lastRun.replace(/["{},]/g, "")}`;
+              lastRunText = `\nLatest run:${lastRun.replace(/["{},]/g, "").replace(/\n\s*\n/g, "\n")}`;
             }
 
             const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
