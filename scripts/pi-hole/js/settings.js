@@ -608,7 +608,7 @@ $(function () {
             const lastRun = data?.data;
             let lastRunText = "Latest run is unavailable";
             if (lastRun) {
-              lastRunText = `Latest run:\n\n${lastRun}`;
+              lastRunText = `\nLatest run:${lastRun.replace(/["{},]/g, "")}`;
             }
 
             const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
@@ -829,7 +829,7 @@ $(function () {
         if (speedtestUninstall.attr("value")) {
           newClass =
             (didFlush && speedtestDelete.attr("value")) ||
-            (historyExists && !speedtestDelete.attr("value"))
+              (historyExists && !speedtestDelete.attr("value"))
               ? colorClasses[1]
               : colorClasses[2];
         } else if (speedtestDelete.attr("value")) {
