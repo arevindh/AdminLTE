@@ -525,7 +525,10 @@ $(function () {
 
   const codeBlock = (element, text, button, output) => {
     if (element.find("pre").length > 0) {
-      element.find("pre code").text(text);
+      const existingText = element.find("pre code").text();
+      if (existingText !== text) {
+        element.find("pre code").text(text);
+      }
     } else {
       button.text("Hide " + output);
       element.append(preCode(text));
