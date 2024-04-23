@@ -31,12 +31,7 @@ function createChart() {
   speedChart = new Chart(speedChartctx, {
     type: getGraphType(1),
     data: {
-      labels: speedlabels.map(label =>
-        label
-          .replace(/Speedtest result /, "")
-          .replace(/on /, "")
-          .replace(/at /, "")
-      ),
+      labels: speedlabels,
       datasets: [
         {
           label: "Mbps Download",
@@ -99,6 +94,18 @@ function createChart() {
                 Math.round(context?.parsed?.y ?? 0) + " " + (context?.dataset?.label ?? "") || null
               );
             },
+            title: function (context) {
+              const tick = context?.label ?? "";
+              const spaces = (tick.match(/ /g) || []).length;
+              const words = tick.split(" ");
+              let title = "Speedtest results";
+              if (spaces === 1) {
+                title += " at " + words[0];
+              } else if (spaces === 2) {
+                title += " on " + words[0] + " at " + words[1];
+              } else if (spaces === 3) {
+                title += " on " + words[0] + " " + words[1] + " at " + words[2];
+              }
           },
         },
       },
@@ -162,11 +169,11 @@ function updateSpeedTestData() {
     const firstStartTime = results.concat().shift().start_time;
     const currDateTime = moment.utc();
     const formats = {
-      YYYY: "[on] YYYY MMM D [at] HH:mm",
-      MM: "[on] MMM D [at] HH:mm",
-      DD: "[on the] Do [at] HH:mm",
+      YYYY: "YYYY MMM D HH:mm",
+      MM: "MMM D HH:mm",
+      DD: "Do HH:mm",
     };
-    let dateFormat = "[at] HH:mm";
+    let dateFormat = "HH:mm";
 
     for (const [key, value] of Object.entries(formats)) {
       if (moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)) {
@@ -177,10 +184,7 @@ function updateSpeedTestData() {
 
     results.forEach(function (packet) {
       speedlabels.push(
-        moment
-          .utc(packet.start_time, "YYYY-MM-DD HH:mm:ss")
-          .local()
-          .format("[Speedtest result] " + dateFormat)
+        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
       );
       uploadspeed.push(parseFloat(packet.upload));
       downloadspeed.push(parseFloat(packet.download));
