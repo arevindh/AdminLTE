@@ -155,16 +155,16 @@ function updateSpeedTestData() {
     // this is all to avoid using at(), which not supported in Safari
     // and to avoid using [], which is looked down upon by the linter
     const firstStartTime = results.concat().shift().start_time;
+    const currDateTime = moment.utc();
     const formats = {
-      years: "YYYY MMM D HH:mm",
-      months: "MMM D HH:mm",
-      days: "Do HH:mm",
+      YYYY: "YYYY MMM D HH:mm",
+      MM: "MMM D HH:mm",
+      DD: "Do HH:mm",
     };
     let dateFormat = "HH:mm";
 
     for (const [key, value] of Object.entries(formats)) {
-      // if first and current days/months/years are different, use the appropriate format
-      if (moment.utc(firstStartTime, "YYYY-MM-DD HH:mm:ss").diff(moment.utc(), key, true)) {
+      if (moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)) {
         dateFormat = value;
         break;
       }
