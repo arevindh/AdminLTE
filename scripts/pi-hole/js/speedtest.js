@@ -161,13 +161,10 @@ function updateSpeedTestData() {
     dataType: "json",
   }).done(function (results) {
     results?.forEach(function (packet) {
-      // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
-      if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
-        speedlabels.push(formatDate(packet.start_time, results));
-        uploadspeed.push(parseFloat(packet.upload));
-        downloadspeed.push(parseFloat(packet.download));
-        serverPing.push(parseFloat(packet.server_ping));
-      }
+      speedlabels.push(formatDate(packet.start_time, results));
+      uploadspeed.push(parseFloat(packet.upload));
+      downloadspeed.push(parseFloat(packet.download));
+      serverPing.push(parseFloat(packet.server_ping));
     });
     if (
       speedChart &&
