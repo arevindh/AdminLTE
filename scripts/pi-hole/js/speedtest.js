@@ -31,7 +31,12 @@ function createChart() {
   speedChart = new Chart(speedChartctx, {
     type: getGraphType(1),
     data: {
-      labels: speedlabels,
+      labels: speedlabels.map(label =>
+        label
+          .replace(/Speedtest result /, "")
+          .replace(/on /, "")
+          .replace(/at /, "")
+      ),
       datasets: [
         {
           label: "Mbps Download",
@@ -172,7 +177,10 @@ function updateSpeedTestData() {
 
     results.forEach(function (packet) {
       speedlabels.push(
-        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format("[Speedtest result] " + dateFormat)
+        moment
+          .utc(packet.start_time, "YYYY-MM-DD HH:mm:ss")
+          .local()
+          .format("[Speedtest result] " + dateFormat)
       );
       uploadspeed.push(parseFloat(packet.upload));
       downloadspeed.push(parseFloat(packet.download));
