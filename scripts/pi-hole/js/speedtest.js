@@ -95,7 +95,7 @@ function createChart() {
               );
             },
             title: function (context) {
-              const tick = context?.label ?? "";
+              const tick = context.slice(0, 1).shift().label ?? "";
               const spaces = (tick.match(/ /g) || []).length;
               const words = tick.split(" ");
               let title = "Speedtest results";
@@ -164,13 +164,14 @@ function updateSpeedTestData() {
   }).done(function (results) {
     if (results === null || results === undefined) return;
 
-    // concat() is used to make a shallow copy of the array
+    // concat() can be used to make a shallow copy of the array
     // aka duplicate its top level elements, or the references to its objects
+    // instead of using slice(0, 1) or slice(-1)
     // shift() is used to remove and return the first element of the array
     // pop() can be used to remove and return the last element of the array
     // this is all to avoid using at(), which not supported in Safari
     // and to avoid using [], which is looked down upon by the linter
-    const firstStartTime = results.concat().shift().start_time;
+    const firstStartTime = results.slice(0, 1).shift().start_time;
     const currDateTime = moment.utc();
     const formats = {
       YYYY: "YYYY MMM D HH:mm",
