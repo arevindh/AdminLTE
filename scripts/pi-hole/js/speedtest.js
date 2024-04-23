@@ -151,30 +151,22 @@ function updateSpeedTestData() {
     // concat() is used to make a shallow copy of the array
     // aka duplicate its top level elements, or the references to its objects
     // shift() is used to remove and return the first element of the array
-    // pop() is used to remove and return the last element of the array
+    // pop() can be used to remove and return the last element of the array
     // this is all to avoid using at(), which not supported in Safari
     // and to avoid using [], which is looked down upon by the linter
     const firstStartTime = results.concat().shift().start_time;
-    const lastStartTime = results.concat().pop().start_time;
-    const currDateTime = moment.utc();
     const formats = {
-      days: "Do HH:mm",
-      months: "MMM D HH:mm",
       years: "YYYY MMM D HH:mm",
+      months: "MMM D HH:mm",
+      days: "Do HH:mm",
     };
     let dateFormat = "HH:mm";
 
     for (const [key, value] of Object.entries(formats)) {
-      // if first and last/current days/months/years are different, use the appropriate format
-      if (
-        [
-          moment
-            .utc(firstStartTime, "YYYY-MM-DD HH:mm:ss")
-            .diff(moment.utc(lastStartTime, "YYYY-MM-DD HH:mm:ss"), key, true),
-          moment.utc(firstStartTime, "YYYY-MM-DD HH:mm:ss").diff(currDateTime, key, true),
-        ].some(diff => diff > 0)
-      ) {
+      // if first and current days/months/years are different, use the appropriate format
+      if (moment.utc(firstStartTime, "YYYY-MM-DD HH:mm:ss").diff(moment.utc(), key, true)) {
         dateFormat = value;
+        break;
       }
     }
 
