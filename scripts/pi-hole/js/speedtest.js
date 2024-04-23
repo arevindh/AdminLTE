@@ -130,20 +130,6 @@ function createChart() {
   });
 }
 
-function formatDate(itemdate, results) {
-  let output = "HH:mm";
-  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
-  }
-
-  const first = moment(results.at(0).start_time, "YYYY-MM-DD HH:mm:ssZ");
-  if (moment.utc().diff(first, "hours") > 24) {
-    output = "Do HH:mm";
-  }
-
-  return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
-}
-
 function updateSpeedTestData() {
   const daysIsTheSame = days === localStorage?.getItem("speedtest_days");
   const typeIsTheSame = type === localStorage?.getItem("speedtest_chart_type");
@@ -160,8 +146,42 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    results?.forEach(function (packet) {
-      speedlabels.push(formatDate(packet.start_time, results));
+    if (results === null || results === undefined) return;
+
+    // concat() is used to make a shallow copy of the array
+    // aka duplicate its top level elements, or the references to its objects
+    // shift() is used to remove and return the first element of the array
+    // pop() is used to remove and return the last element of the array
+    // this is all to avoid using at(), which not supported in Safari
+    // and to avoid using [], which is looked down upon by the linter
+    const firstStartTime = results.concat().shift().start_time;
+    const lastStartTime = results.concat().pop().start_time;
+    const currDateTime = moment.utc();
+    const formats = {
+      days: "Do HH:mm",
+      months: "MMM D HH:mm",
+      years: "YYYY MMM D HH:mm",
+    };
+    let dateFormat = "HH:mm";
+
+    for (const [key, value] of Object.entries(formats)) {
+      // if first and last/current days/months/years are different, use the appropriate format
+      if (
+        [
+          moment
+            .utc(firstStartTime, "YYYY-MM-DD HH:mm:ss")
+            .diff(moment.utc(lastStartTime, "YYYY-MM-DD HH:mm:ss"), key, true),
+          moment.utc(firstStartTime, "YYYY-MM-DD HH:mm:ss").diff(currDateTime, key, true),
+        ].some(diff => diff > 0)
+      ) {
+        dateFormat = value;
+      }
+    }
+
+    results.forEach(function (packet) {
+      speedlabels.push(
+        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
+      );
       uploadspeed.push(parseFloat(packet.upload));
       downloadspeed.push(parseFloat(packet.download));
       serverPing.push(parseFloat(packet.server_ping));
