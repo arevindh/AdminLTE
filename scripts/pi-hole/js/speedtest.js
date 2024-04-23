@@ -159,9 +159,9 @@ function updateSpeedTestData() {
     const formats = {
       YYYY: "[on] YYYY MMM D [at] HH:mm",
       MM: "[on] MMM D [at] HH:mm",
-      DD: "[at] Do HH:mm",
+      DD: "[on the] Do [at] HH:mm",
     };
-    let dateFormat = "HH:mm";
+    let dateFormat = "[at] HH:mm";
 
     for (const [key, value] of Object.entries(formats)) {
       if (moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)) {
