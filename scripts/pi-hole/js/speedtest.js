@@ -157,9 +157,9 @@ function updateSpeedTestData() {
     const firstStartTime = results.concat().shift().start_time;
     const currDateTime = moment.utc();
     const formats = {
-      YYYY: "YYYY MMM D HH:mm",
-      MM: "MMM D HH:mm",
-      DD: "Do HH:mm",
+      YYYY: "[on] YYYY MMM D [at] HH:mm",
+      MM: "[on] MMM D [at] HH:mm",
+      DD: "[at] Do HH:mm",
     };
     let dateFormat = "HH:mm";
 
@@ -172,7 +172,7 @@ function updateSpeedTestData() {
 
     results.forEach(function (packet) {
       speedlabels.push(
-        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
+        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format("[Speedtest result] " + dateFormat)
       );
       uploadspeed.push(parseFloat(packet.upload));
       downloadspeed.push(parseFloat(packet.download));
