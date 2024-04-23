@@ -108,40 +108,42 @@ function createChart() {
               } else if (spaces === 3) {
                 title += " on " + words[0] + " " + words[1] + " " + words[2] + " at " + words[3];
               }
+              return title;
             },
-          },
-        },
-        scales: {
-          x: {
-            grid: {
-              color: gridColor,
-            },
-            ticks: {
-              color: ticksColor,
-            },
-          },
-          "y-axis-1": {
-            type: "linear",
-            position: "left",
-            grid: {
-              color: gridColor,
-            },
-            ticks: {
-              color: ticksColor,
-            },
-          },
-          "y-axis-2": {
-            type: "linear",
-            position: "right",
-          },
-        },
-        elements: {
-          point: {
-            radius: speedlabels.length > 1 ? 0 : 6,
           },
         },
       },
-    });
+      scales: {
+        x: {
+          grid: {
+            color: gridColor,
+          },
+          ticks: {
+            color: ticksColor,
+          },
+        },
+        "y-axis-1": {
+          type: "linear",
+          position: "left",
+          grid: {
+            color: gridColor,
+          },
+          ticks: {
+            color: ticksColor,
+          },
+        },
+        "y-axis-2": {
+          type: "linear",
+          position: "right",
+        },
+      },
+      elements: {
+        point: {
+          radius: speedlabels.length > 1 ? 0 : 6,
+        },
+      },
+    },
+  });
 }
 
 function updateSpeedTestData() {
