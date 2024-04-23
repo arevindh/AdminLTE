@@ -99,47 +99,49 @@ function createChart() {
               const spaces = (tick.match(/ /g) || []).length;
               const words = tick.split(" ");
               let title = "Speedtest results";
-              if (spaces === 1) {
+              if (spaces === 0) {
                 title += " at " + words[0];
+              } else if (spaces === 1) {
+                title += " on the " + words[0] + " at " + words[1];
               } else if (spaces === 2) {
-                title += " on " + words[0] + " at " + words[1];
-              } else if (spaces === 3) {
                 title += " on " + words[0] + " " + words[1] + " at " + words[2];
+              } else if (spaces === 3) {
+                title += " on " + words[0] + " " + words[1] + " " + words[2] + " at " + words[3];
               }
+            },
+          },
+        },
+        scales: {
+          x: {
+            grid: {
+              color: gridColor,
+            },
+            ticks: {
+              color: ticksColor,
+            },
+          },
+          "y-axis-1": {
+            type: "linear",
+            position: "left",
+            grid: {
+              color: gridColor,
+            },
+            ticks: {
+              color: ticksColor,
+            },
+          },
+          "y-axis-2": {
+            type: "linear",
+            position: "right",
+          },
+        },
+        elements: {
+          point: {
+            radius: speedlabels.length > 1 ? 0 : 6,
           },
         },
       },
-      scales: {
-        x: {
-          grid: {
-            color: gridColor,
-          },
-          ticks: {
-            color: ticksColor,
-          },
-        },
-        "y-axis-1": {
-          type: "linear",
-          position: "left",
-          grid: {
-            color: gridColor,
-          },
-          ticks: {
-            color: ticksColor,
-          },
-        },
-        "y-axis-2": {
-          type: "linear",
-          position: "right",
-        },
-      },
-      elements: {
-        point: {
-          radius: speedlabels.length > 1 ? 0 : 6,
-        },
-      },
-    },
-  });
+    });
 }
 
 function updateSpeedTestData() {
