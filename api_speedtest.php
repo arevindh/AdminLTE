@@ -352,16 +352,14 @@ function whichSpeedtest()
             return 'official';
         }
 
-        $version = speedtestExecute('/usr/bin/speedtest --version')['data'];
+        $version = speedtestExecute('/usr/bin/speedtest -h')['data'];
 
-        if (strpos($version, 'LibreSpeed') !== false) {
-            return 'LibreSpeed';
-        }
-
-        if (strpos($version, 'Python') !== false) {
+        if (strpos($version, 'sivel') !== false) {
             return 'sivel\'s';
         }
+
+        return 'LibreSpeed';
     }
 
-    return 'official';
+    return 'no';
 }

@@ -546,7 +546,7 @@ $(function () {
           // set in localStorage for use in other functions
           localStorage.setItem("speedtest", speedtest);
         } else {
-          localStorage.setItem("speedtest", "official");
+          localStorage.setItem("speedtest", "unknown");
         }
       })
       .fail(function () {
@@ -557,6 +557,11 @@ $(function () {
   const serviceStatus = () => {
     whichSpeedtest();
     const speedtestVersion = localStorage.getItem("speedtest") || "unknown";
+    let cliText = "Will use official CLI";
+    if (speedtestVersion !== "no") {
+      cliText = `Using ${speedtestVersion} CLI`;
+    }
+
     $.ajax({
       url: "api.php?getSpeedTestStatus",
       dataType: "json",
@@ -617,19 +622,19 @@ $(function () {
                 .replace(/^\n+|\s+$/g, "")}`;
             }
 
-            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            const statusText = `${cliText}\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
           .fail(function () {
             const lastRunText = "Latest run is unavailable";
-            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            const statusText = `${cliText}\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           });
       })
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? "awaiting confirmation" : "unknown";
         const lastRunText = "Latest run is unavailable";
-        const statusText = `Using ${speedtestVersion} CLI\nSchedule is unavailable\nNext run is ${triggerText}\n${lastRunText}`;
+        const statusText = `${cliText}\nSchedule is unavailable\nNext run is ${triggerText}\n${lastRunText}`;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
