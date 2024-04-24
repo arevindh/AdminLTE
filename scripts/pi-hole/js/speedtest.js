@@ -162,7 +162,7 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    if (results === null || results === undefined) return;
+    if (results === null || results === undefined || results.length === 0) return;
 
     // concat() can be used to make a shallow copy of the array
     // aka duplicate its top level elements, or the references to its objects
