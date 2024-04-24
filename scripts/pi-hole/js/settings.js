@@ -567,20 +567,16 @@ $(function () {
         let triggerText = speedtestTest.attr("value") ? " awaiting confirmation" : " disabled";
         if (status) {
           if (!status.includes("timer")) {
-            console.log("status", status);
             scheduleStatusText = "active";
             if (!speedtestTest.attr("value")) {
               const triggerPattern = /(\d+s)/;
               const triggerMatch = status.match(triggerPattern);
-              console.log("triggerMatch", triggerMatch);
 
               let statusText = status;
               if (triggerMatch) {
                 const now = new Date();
                 const secondsUntilNextMinute = 60 - now.getSeconds();
                 const statusSeconds = parseInt(triggerMatch[0].replace("s", ""), 10);
-                console.log("statusSeconds", statusSeconds);
-                console.log("secondsUntilNextMinute", secondsUntilNextMinute);
                 statusText =
                   statusSeconds > secondsUntilNextMinute
                     ? `${statusSeconds - secondsUntilNextMinute}s`
