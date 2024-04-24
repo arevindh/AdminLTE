@@ -162,39 +162,42 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    if (results === null || results === undefined || results.length === 0) return;
+    if (results !== null && results !== undefined && results.length !== 0) {
+      // concat() can be used to make a shallow copy of the array
+      // aka duplicate its top level elements, or the references to its objects
+      // instead of using slice(0, 1) or slice(-1)
+      // shift() is used to remove and return the first element of the array
+      // pop() can be used to remove and return the last element of the array
+      // this is all to avoid using at(), which not supported in Safari
+      // and to avoid using [], which is looked down upon by the linter
+      const firstStartTime = results.slice(0, 1).shift().start_time;
+      const currDateTime = moment.utc();
+      const formats = {
+        YYYY: "YYYY MMM D HH:mm",
+        MM: "MMM D HH:mm",
+        DD: "Do HH:mm",
+      };
+      let dateFormat = "HH:mm";
 
-    // concat() can be used to make a shallow copy of the array
-    // aka duplicate its top level elements, or the references to its objects
-    // instead of using slice(0, 1) or slice(-1)
-    // shift() is used to remove and return the first element of the array
-    // pop() can be used to remove and return the last element of the array
-    // this is all to avoid using at(), which not supported in Safari
-    // and to avoid using [], which is looked down upon by the linter
-    const firstStartTime = results.slice(0, 1).shift().start_time;
-    const currDateTime = moment.utc();
-    const formats = {
-      YYYY: "YYYY MMM D HH:mm",
-      MM: "MMM D HH:mm",
-      DD: "Do HH:mm",
-    };
-    let dateFormat = "HH:mm";
-
-    for (const [key, value] of Object.entries(formats)) {
-      if (moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)) {
-        dateFormat = value;
-        break;
+      for (const [key, value] of Object.entries(formats)) {
+        if (
+          moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)
+        ) {
+          dateFormat = value;
+          break;
+        }
       }
+
+      results.forEach(function (packet) {
+        speedlabels.push(
+          moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
+        );
+        uploadspeed.push(parseFloat(packet.upload));
+        downloadspeed.push(parseFloat(packet.download));
+        serverPing.push(parseFloat(packet.server_ping));
+      });
     }
 
-    results.forEach(function (packet) {
-      speedlabels.push(
-        moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
-      );
-      uploadspeed.push(parseFloat(packet.upload));
-      downloadspeed.push(parseFloat(packet.download));
-      serverPing.push(parseFloat(packet.server_ping));
-    });
     if (
       speedChart &&
       (!daysIsTheSame ||
