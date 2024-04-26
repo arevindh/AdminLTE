@@ -94,6 +94,30 @@ function createChart() {
                 Math.round(context?.parsed?.y ?? 0) + " " + (context?.dataset?.label ?? "") || null
               );
             },
+            title: function (context) {
+              const tick = context.slice(0, 1).shift().label ?? "";
+              const spaces = (tick.match(/ /g) || []).length;
+              const words = tick.split(" ");
+              let title = "Speedtest results";
+              switch (spaces) {
+                case 0:
+                  title += " at " + words[0];
+                  break;
+                case 1:
+                  title += " on the " + words[0] + " at " + words[1];
+                  break;
+                case 2:
+                  title += " on " + words[0] + " " + words[1] + " at " + words[2];
+                  break;
+                case 3:
+                  title += " on " + words[0] + " " + words[1] + " " + words[2] + " at " + words[3];
+                  break;
+                default:
+                  break;
+              }
+
+              return title;
+            },
           },
         },
       },
@@ -130,20 +154,6 @@ function createChart() {
   });
 }
 
-function formatDate(itemdate, results) {
-  let output = "HH:mm";
-  if (/^((?!chrome|android).)*safari/i.test(navigator.userAgent)) {
-    return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
-  }
-
-  const first = moment(results.at(0).start_time, "YYYY-MM-DD HH:mm:ssZ");
-  if (moment.utc().diff(first, "hours") > 24) {
-    output = "Do HH:mm";
-  }
-
-  return moment.utc(itemdate, "YYYY-MM-DD HH:mm:ss").local().format(output);
-}
-
 function updateSpeedTestData() {
   const daysIsTheSame = days === localStorage?.getItem("speedtest_days");
   const typeIsTheSame = type === localStorage?.getItem("speedtest_chart_type");
@@ -160,15 +170,42 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    results?.forEach(function (packet) {
-      // console.log(speedlabels.indexOf(formatDate(packet.start_time)));
-      if (speedlabels.indexOf(formatDate(packet.start_time, results)) === -1) {
-        speedlabels.push(formatDate(packet.start_time, results));
+    if (results !== null && results !== undefined && results.length > 0) {
+      // concat() can be used to make a shallow copy of the array
+      // aka duplicate its top level elements, or the references to its objects
+      // instead of using slice(0, 1) or slice(-1)
+      // shift() is used to remove and return the first element of the array
+      // pop() can be used to remove and return the last element of the array
+      // this is all to avoid using at(), which not supported in Safari
+      // and to avoid using [], which is looked down upon by the linter
+      const firstStartTime = results.slice(0, 1).shift().start_time;
+      const currDateTime = moment.utc();
+      const formats = {
+        YYYY: "YYYY MMM D HH:mm",
+        MM: "MMM D HH:mm",
+        DD: "Do HH:mm",
+      };
+      let dateFormat = "HH:mm";
+
+      for (const [key, value] of Object.entries(formats)) {
+        if (
+          moment(firstStartTime, "YYYY-MM-DD HH:mm:ss").format(key) !== currDateTime.format(key)
+        ) {
+          dateFormat = value;
+          break;
+        }
+      }
+
+      results.forEach(function (packet) {
+        speedlabels.push(
+          moment.utc(packet.start_time, "YYYY-MM-DD HH:mm:ss").local().format(dateFormat)
+        );
         uploadspeed.push(parseFloat(packet.upload));
         downloadspeed.push(parseFloat(packet.download));
         serverPing.push(parseFloat(packet.server_ping));
-      }
-    });
+      });
+    }
+
     if (
       speedChart &&
       (!daysIsTheSame ||

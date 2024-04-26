@@ -525,7 +525,10 @@ $(function () {
 
   const codeBlock = (element, text, button, output) => {
     if (element.find("pre").length > 0) {
-      element.find("pre code").text(text);
+      const existingText = element.find("pre code").text();
+      if (existingText !== text) {
+        element.find("pre code").text(text);
+      }
     } else {
       button.text("Hide " + output);
       element.append(preCode(text));
@@ -543,7 +546,7 @@ $(function () {
           // set in localStorage for use in other functions
           localStorage.setItem("speedtest", speedtest);
         } else {
-          localStorage.setItem("speedtest", "official");
+          localStorage.setItem("speedtest", "unknown");
         }
       })
       .fail(function () {
@@ -554,6 +557,11 @@ $(function () {
   const serviceStatus = () => {
     whichSpeedtest();
     const speedtestVersion = localStorage.getItem("speedtest") || "unknown";
+    let cliText = "Will use official CLI";
+    if (speedtestVersion !== "no") {
+      cliText = `Using ${speedtestVersion} CLI`;
+    }
+
     $.ajax({
       url: "api.php?getSpeedTestStatus",
       dataType: "json",
@@ -609,24 +617,24 @@ $(function () {
             let lastRunText = "Latest run is unavailable";
             if (lastRun) {
               lastRunText = `\nLatest run:\n${lastRun
-                .replace(/["{},]/g, "")
-                .replace(/\n\s*\n/g, "\n")
-                .replace(/^\n+|\s+$/g, "")}`;
+                .replaceAll(/["{},]/g, "")
+                .replaceAll(/\n\s*\n/g, "\n")
+                .replaceAll(/^\n+|\s+$/g, "")}`;
             }
 
-            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            const statusText = `${cliText}\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           })
           .fail(function () {
             const lastRunText = "Latest run is unavailable";
-            const statusText = `Using ${speedtestVersion} CLI\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
+            const statusText = `${cliText}\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;
             codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
           });
       })
       .fail(function () {
         const triggerText = speedtestTest.attr("value") ? "awaiting confirmation" : "unknown";
         const lastRunText = "Latest run is unavailable";
-        const statusText = `Using ${speedtestVersion} CLI\nSchedule is unavailable\nNext run is ${triggerText}\n${lastRunText}`;
+        const statusText = `${cliText}\nSchedule is unavailable\nNext run is ${triggerText}\n${lastRunText}`;
         codeBlock(speedtestStatus, statusText, speedtestStatusBtn, "status");
       });
   };
