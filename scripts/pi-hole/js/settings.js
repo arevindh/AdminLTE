@@ -617,9 +617,9 @@ $(function () {
             let lastRunText = "Latest run is unavailable";
             if (lastRun) {
               lastRunText = `\nLatest run:\n${lastRun
-                .replace(/["{},]/g, "")
-                .replace(/\n\s*\n/g, "\n")
-                .replace(/^\n+|\s+$/g, "")}`;
+                .replaceAll(/["{},]/g, "")
+                .replaceAll(/\n\s*\n/g, "\n")
+                .replaceAll(/^\n+|\s+$/g, "")}`;
             }
 
             const statusText = `${cliText}\nSchedule is ${scheduleStatusText}\nNext run is${triggerText}\n${lastRunText}`;

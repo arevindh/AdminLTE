@@ -99,15 +99,23 @@ function createChart() {
               const spaces = (tick.match(/ /g) || []).length;
               const words = tick.split(" ");
               let title = "Speedtest results";
-              if (spaces === 0) {
-                title += " at " + words[0];
-              } else if (spaces === 1) {
-                title += " on the " + words[0] + " at " + words[1];
-              } else if (spaces === 2) {
-                title += " on " + words[0] + " " + words[1] + " at " + words[2];
-              } else if (spaces === 3) {
-                title += " on " + words[0] + " " + words[1] + " " + words[2] + " at " + words[3];
+              switch (spaces) {
+                case 0:
+                  title += " at " + words[0];
+                  break;
+                case 1:
+                  title += " on the " + words[0] + " at " + words[1];
+                  break;
+                case 2:
+                  title += " on " + words[0] + " " + words[1] + " at " + words[2];
+                  break;
+                case 3:
+                  title += " on " + words[0] + " " + words[1] + " " + words[2] + " at " + words[3];
+                  break;
+                default:
+                  break;
               }
+
               return title;
             },
           },
@@ -162,7 +170,7 @@ function updateSpeedTestData() {
     url: "api.php?getSpeedData=" + days,
     dataType: "json",
   }).done(function (results) {
-    if (results !== null && results !== undefined && results.length !== 0) {
+    if (results !== null && results !== undefined && results.length > 0) {
       // concat() can be used to make a shallow copy of the array
       // aka duplicate its top level elements, or the references to its objects
       // instead of using slice(0, 1) or slice(-1)
