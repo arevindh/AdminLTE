@@ -617,7 +617,7 @@ $(function () {
             let lastRunText = "Latest run is unavailable";
             if (lastRun) {
               lastRunText = `\nLatest run:\n${lastRun
-                .replaceAll(/["{},]/g, "")
+                .replaceAll(/[[\]"{},]/g, "")
                 .replaceAll(/\n\s*\n/g, "\n")
                 .replaceAll(/^\n+|\s+$/g, "")}`;
             }
