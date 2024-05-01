@@ -197,6 +197,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
 }
 
+$speedtestcli = whichSpeedtest();
 $piholeFTLConf = piholeFTLConfig();
 
 require 'header.php';

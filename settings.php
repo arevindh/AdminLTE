@@ -1620,8 +1620,20 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <strong>Mod the Mod</strong>
                                                     <p>With the Script</p>
                                                     <div>
+                                                        <input type="checkbox" name="speedtestbackup" id="speedtestbackup">
+                                                        <label for="speedtestbackup">Back Up Pi-hole</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestupgrade" id="speedtestupgrade">
+                                                        <label for="speedtestupgrade">Update Pi-hole</label>
+                                                    </div>
+                                                    <div>
                                                         <input type="checkbox" name="speedtestupdate" id="speedtestupdate">
-                                                        <label for="speedtestupdate">(Re)install Latest</label>
+                                                        <label for="speedtestupdate">Update Mod</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestonline" id="speedtestonline">
+                                                        <label for="speedtestonline">Restore Mod Online</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall">
@@ -1630,6 +1642,22 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <div>
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete">
                                                         <label for="speedtestdelete">Clear History</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestverbose" id="speedtestverbose">
+                                                        <label for="speedtestverbose">Show Commands</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_official">Use official CLI</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_sivel">Use sivel's CLI</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_libre">Use librespeed CLI</label>
                                                     </div>
                                                     <p id="latestLog" style="margin-top: 1vw;">
                                                         <button class="btn btn-default" id="latestLogBtn" type="button">Show latest log</button>

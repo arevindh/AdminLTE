@@ -618,43 +618,60 @@ if (isset($_POST['field'])) {
             }
             pihole_execute('-a -st '.trim($charttype));
 
-            $success .= 'The Speedtest settings have been updated';
+            $success .= 'Speedtest Settings have been updated';
 
             if (isset($_POST['speedtesttest'])) {
                 $success .= ' and a speedtest has been started';
                 pihole_execute('-a -sn', !isset($_POST['speedtestuninstall']));
             }
 
-            if (isset($_POST['speedtestupdate'])) {
-                $success .= ' and Pi-hole will be updated';
-                if (isset($_POST['speedtestuninstall'])) {
-                    $success .= ', but the Mod will be uninstalled';
-                    if (isset($_POST['speedtestdelete'])) {
-                        $success .= ' and its history will be deleted';
-                        pihole_execute('-a -up un db', true);
-                    } else {
-                        pihole_execute('-a -up un', true);
-                    }
-                } else {
-                    if (isset($_POST['speedtestdelete'])) {
-                        $success .= ' and its history will be modified';
-                        pihole_execute('-a -up db', true);
-                    } else {
-                        pihole_execute('-a -up', true);
-                    }
-                }
-            } elseif (isset($_POST['speedtestuninstall'])) {
-                $success .= ' and the Mod will be uninstalled';
-                if (isset($_POST['speedtestdelete'])) {
-                    $success .= ' and its history will be deleted';
-                    pihole_execute('-a -un db', true);
-                } else {
-                    pihole_execute('-a -un', true);
-                }
-            } elseif (isset($_POST['speedtestdelete'])) {
-                $success .= ' and its history will be modified';
-                pihole_execute('-a -db', true);
+            $run_mod_script = false;
+            $opt_mod_script = '';
+
+            if (isset($_POST['speedtestbackup'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -b';
             }
+
+            if (isset($_POST['speedtestupgrade'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -u';
+            }
+
+            if (isset($_POST['speedtestupdate'])) {
+                $run_mod_script = true;
+            }
+
+            if (isset($_POST['speedtestonline'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -o';
+            }
+
+            if (isset($_POST['speedtestuninstall'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -n';
+            }
+
+            if (isset($_POST['speedtestdelete'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -d';
+            }
+
+            if (isset($_POST['speedtestverbose'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -x';
+            }
+
+            if ($run_mod_script) {
+                $success .= ' and the Mod Script has been executed';
+                pihole_execute('-a -sm'.$opt_mod_script, true);
+            }
+
+            if (isset($_POST['speedtestcli']) && whichSpeedtest() != $_POST['speedtestcli']) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -c '.$_POST['speedtestcli'];
+            }
+
             break;
         default:
             // Option not found

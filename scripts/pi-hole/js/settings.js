@@ -487,6 +487,7 @@ $(function () {
   const speedtestChartPreviewBtn = $("#speedtestchartpreviewBtn");
 
   const speedtestUpdate = $("#speedtestupdate");
+  const speedtestUpgrade = $("#speedtestupgrade");
   const speedtestUninstall = $("#speedtestuninstall");
   const speedtestDelete = $("#speedtestdelete");
   const speedtestDeleteLabel = speedtestDelete.parent().children("label");
@@ -856,6 +857,7 @@ $(function () {
     speedtestDays.attr("value", speedtestDays.val());
     speedtestChartTypeSave.attr("value", null);
     speedtestUpdate.attr("value", null);
+    speedtestUpgrade.attr("value", null);
     speedtestUninstall.attr("value", null);
     speedtestDelete.attr("value", null);
     speedtestTest.attr("value", null);
@@ -886,10 +888,6 @@ $(function () {
 
   speedtestChartPreviewBtn.on("click", function () {
     previewChart(speedtestChartPreview.find("div").length === 0);
-  });
-
-  speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
   });
 
   speedtestTest.on("click", function () {
@@ -936,6 +934,14 @@ $(function () {
       speedtestServerBtn.text("Retrieving servers...");
       closestServers();
     }
+  });
+
+  speedtestUpdate.on("click", function () {
+    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "");
+  });
+
+  speedtestUpgrade.on("click", function () {
+    speedtestUpgrade.attr("value", speedtestUpgrade.attr("value") ? null : "up");
   });
 
   speedtestUninstall.on("click", function () {
