@@ -662,14 +662,14 @@ if (isset($_POST['field'])) {
                 $opt_mod_script .= ' -x';
             }
 
-            if ($run_mod_script) {
-                $success .= ' and the Mod Script has been executed';
-                pihole_execute('-a -sm'.$opt_mod_script, true);
-            }
-
             if (isset($_POST['speedtestcli']) && whichSpeedtest() != $_POST['speedtestcli']) {
                 $run_mod_script = true;
                 $opt_mod_script .= ' -c '.$_POST['speedtestcli'];
+            }
+
+            if ($run_mod_script) {
+                $success .= ' and the Mod Script has been executed';
+                pihole_execute('-a -sm'.$opt_mod_script, true);
             }
 
             break;
