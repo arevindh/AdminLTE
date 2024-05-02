@@ -1615,25 +1615,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-                                                <div class="form-group col-md-6">
-                                                    <strong>Speedtest CLI</strong>
-                                                    <p>To be tried first</p>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official' || $speedtestcli === 'no') { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_official"><a href="https://www.speedtest.net/apps/cli" target="_blank">official</a></label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_sivel"><a href="https://github.com/sivel/speedtest-cli" target="_blank">sivel's</a></label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_libre"><a href="https://github.com/librespeed/speedtest-cli" target="_blank">librespeed</a></label>
-                                                    </div>
-                                                    <p>If you just confirmed a new CLI, please wait a moment for the selection to update.</p>
-                                                </div>
-
-                                                <div class="form-group col-md-6">
+                                            <div class="form-group col-md-6">
                                                     <strong>Restoration options</strong>
                                                     <p>For the Mod Script</p>
                                                     <div>
@@ -1655,24 +1637,21 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                 </div>
 
                                                 <div class="form-group col-md-6">
-                                                    <label for="speedtestserver">Speedtest server</label>
+                                                    <strong>Speedtest CLI</strong>
                                                     <p>To be tried first</p>
-                                                    <div class="input-group">
-                                                        <div class="input-group-addon">id</div>
-                                                        <input
-                                                            type="number"
-                                                            class="form-control"
-                                                            id="speedtestserver"
-                                                            name="speedtestserver"
-                                                            value="<?php if ($speedtestserver) {
-                                                                echo $speedtestserver;
-                                                            } ?>"
-                                                            placeholder="Leave blank to autoselect"
-                                                        >
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official' || $speedtestcli === 'no') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_official"><a href="https://www.speedtest.net/apps/cli" target="_blank">official</a></label>
                                                     </div>
-                                                    <p id="closestServers" style="margin-top: 1vw;">
-                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show available servers</button>
-                                                    </p>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_sivel"><a href="https://github.com/sivel/speedtest-cli" target="_blank">sivel's</a></label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_libre"><a href="https://github.com/librespeed/speedtest-cli" target="_blank">librespeed</a></label>
+                                                    </div>
+                                                    <p>If you just confirmed a new CLI, please wait a moment for the selection to update.</p>
                                                 </div>
 
                                                 <div class="form-group col-md-6">
@@ -1696,6 +1675,27 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     </div>
                                                     <p id="latestLog" style="margin-top: 1vw;">
                                                         <button class="btn btn-default" id="latestLogBtn" type="button">Show latest log</button>
+                                                    </p>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <label for="speedtestserver">Speedtest server</label>
+                                                    <p>To be tried first</p>
+                                                    <div class="input-group">
+                                                        <div class="input-group-addon">id</div>
+                                                        <input
+                                                            type="number"
+                                                            class="form-control"
+                                                            id="speedtestserver"
+                                                            name="speedtestserver"
+                                                            value="<?php if ($speedtestserver) {
+                                                                echo $speedtestserver;
+                                                            } ?>"
+                                                            placeholder="Leave blank to autoselect"
+                                                        >
+                                                    </div>
+                                                    <p id="closestServers" style="margin-top: 1vw;">
+                                                        <button class="btn btn-default" id="closestServersBtn" type="button">Show available servers</button>
                                                     </p>
                                                 </div>
                                             </div>
