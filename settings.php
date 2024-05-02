@@ -1615,14 +1615,43 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
-
                                                 <div class="form-group col-md-6">
-                                                    <strong>Mod the Mod</strong>
-                                                    <p>With the Script</p>
+                                                    <strong>Restoration Options</strong>
+                                                    <p>For the Mod Script</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestbackup" id="speedtestbackup">
                                                         <label for="speedtestbackup">Back Up Pi-hole</label>
                                                     </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestonline" id="speedtestonline">
+                                                        <label for="speedtestonline">Restore Online</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall">
+                                                        <label for="speedtestuninstall">Uninstall Mod</label>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <strong>Select CLI</strong>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_official">official</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_sivel">sivel's</label>
+                                                    </div>
+                                                    <div>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
+                                                        <label for="speedtestcli_libre">librespeed</label>
+                                                    </div>
+                                                    <p>If you just confirmed a new CLI, please wait a moment for the selection to update.</p>
+                                                </div>
+
+                                                <div class="form-group col-md-6">
+                                                    <strong>Main Options</strong>
+                                                    <p>For the Mod Script</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupgrade" id="speedtestupgrade">
                                                         <label for="speedtestupgrade">Update Pi-hole</label>
@@ -1632,32 +1661,12 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                         <label for="speedtestupdate">Update Mod</label>
                                                     </div>
                                                     <div>
-                                                        <input type="checkbox" name="speedtestonline" id="speedtestonline">
-                                                        <label for="speedtestonline">Restore Mod Online</label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="checkbox" name="speedtestuninstall" id="speedtestuninstall">
-                                                        <label for="speedtestuninstall">Uninstall Mod</label>
-                                                    </div>
-                                                    <div>
                                                         <input type="checkbox" name="speedtestdelete" id="speedtestdelete">
                                                         <label for="speedtestdelete">Clear History</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestverbose" id="speedtestverbose">
-                                                        <label for="speedtestverbose">Show Commands</label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official') { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_official">Use official CLI</label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_sivel">Use sivel's CLI</label>
-                                                    </div>
-                                                    <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
-                                                        <label for="speedtestcli_libre">Use librespeed CLI</label>
+                                                        <label for="speedtestverbose">Verbose Logging</label>
                                                     </div>
                                                     <p id="latestLog" style="margin-top: 1vw;">
                                                         <button class="btn btn-default" id="latestLogBtn" type="button">Show latest log</button>
