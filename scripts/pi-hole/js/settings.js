@@ -493,6 +493,10 @@ $(function () {
   const speedtestLog = $("#latestLog");
   const speedtestLogBtn = $("#latestLogBtn");
 
+  const speedtestCLIOfficial = $("#speedtestcliOfficial");
+  const speedtestCLISivel = $("#speedtestcliSivel");
+  const speedtestCLILibre = $("#speedtestcliLibre");
+
   const speedtestSubmit = $("#st-submit");
   const defaultClass = "btn-primary";
   const colorClasses = ["btn-success", "btn-warning", "btn-danger"];
@@ -500,6 +504,8 @@ $(function () {
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
+
+  var speedtestCLISelected = false;
 
   const preCode = content => {
     const pre = document.createElement("pre");
@@ -942,6 +948,18 @@ $(function () {
     canRestore();
   });
 
+  speedtestCLIOfficial.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
+  speedtestCLISivel.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
+  speedtestCLILibre.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
   setInterval(() => {
     if (speedtestStatus.find("pre").length > 0) {
       serviceStatus();
@@ -964,6 +982,22 @@ $(function () {
 
     if (speedtestServerCtr.find("p").length > 0) {
       closestServers();
+    }
+
+    if (!speedtestCLISelected) {
+      whichSpeedtest();
+      const currentCLI = localStorage.getItem("speedtest");
+      if (currentCLI === "official") {
+        speedtestCLIOfficial.prop("checked", true);
+      }
+
+      if (currentCLI === "sivel's") {
+        speedtestCLISivel.prop("checked", true);
+      }
+
+      if (currentCLI === "librespeed") {
+        speedtestCLILibre.prop("checked", true);
+      }
     }
 
     canRestore();

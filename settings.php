@@ -1640,15 +1640,15 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <strong>Speedtest CLI</strong>
                                                     <p>To be tried first</p>
                                                     <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_official" value="official" <?php if ($speedtestcli === 'official' || $speedtestcli === 'no') { ?>checked<?php } ?>>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcliOfficial" value="official" <?php if ($speedtestcli === 'official' || $speedtestcli === 'no') { ?>checked<?php } ?>>
                                                         <label for="speedtestcli_official"><a href="https://www.speedtest.net/apps/cli" target="_blank">official</a></label>
                                                     </div>
                                                     <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_sivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcliSivel" value="sivel's" <?php if ($speedtestcli === "sivel's") { ?>checked<?php } ?>>
                                                         <label for="speedtestcli_sivel"><a href="https://github.com/sivel/speedtest-cli" target="_blank">sivel's</a></label>
                                                     </div>
                                                     <div>
-                                                        <input type="radio" name="speedtestcli" id="speedtestcli_libre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
+                                                        <input type="radio" name="speedtestcli" id="speedtestcliLibre" value="librespeed" <?php if ($speedtestcli === 'librespeed') { ?>checked<?php } ?>>
                                                         <label for="speedtestcli_libre"><a href="https://github.com/librespeed/speedtest-cli" target="_blank">librespeed</a></label>
                                                     </div>
                                                     <p>If you just confirmed a new CLI, please wait a moment for the selection to update.</p>
