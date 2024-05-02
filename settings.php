@@ -1620,7 +1620,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                                     <p>For the Mod Script</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestbackup" id="speedtestbackup">
-                                                        <label for="speedtestbackup">Back Up Pi-hole</label>
+                                                        <label for="speedtestbackup">Create Backup</label>
                                                     </div>
                                                     <div>
                                                         <input type="checkbox" name="speedtestonline" id="speedtestonline">
