@@ -1617,7 +1617,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
                                             <div class="col-md-12">
                                             <div class="form-group col-md-6">
                                                     <strong>Restoration options</strong>
-                                                    <p>For the Mod Script</p>
+                                                    <p>For when something's the matter</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestbackup" id="speedtestbackup">
                                                         <label for="speedtestbackup">Create Backup</label>
@@ -1656,7 +1656,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                                                 <div class="form-group col-md-6">
                                                     <strong>Main options</strong>
-                                                    <p>For the Mod Script</p>
+                                                    <p>For when nothing's the matter</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupgrade" id="speedtestupgrade">
                                                         <label for="speedtestupgrade">Update Pi-hole</label>
