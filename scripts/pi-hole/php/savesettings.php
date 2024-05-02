@@ -647,6 +647,11 @@ if (isset($_POST['field'])) {
                 $opt_mod_script .= ' -o';
             }
 
+            if (isset($_POST['speedtestreinstall'])) {
+                $run_mod_script = true;
+                $opt_mod_script .= ' -r';
+            }
+
             if (isset($_POST['speedtestuninstall'])) {
                 $run_mod_script = true;
                 $opt_mod_script .= ' -n';
