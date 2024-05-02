@@ -1656,7 +1656,7 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
 
                                                 <div class="form-group col-md-6">
                                                     <strong>Main options</strong>
-                                                    <p>For when nothing's the matter</p>
+                                                    <p>For when nothing's (hopefully) the matter</p>
                                                     <div>
                                                         <input type="checkbox" name="speedtestupgrade" id="speedtestupgrade">
                                                         <label for="speedtestupgrade">Update Pi-hole</label>
