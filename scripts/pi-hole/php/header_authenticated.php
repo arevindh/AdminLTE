@@ -197,6 +197,41 @@ if (isset($setupVars['SPEEDTEST_CHART_TYPE'])) {
     $speedtestcharttype = $setupVars['SPEEDTEST_CHART_TYPE'];
 }
 
+function speedtestExecute($command)
+{
+    $output = array();
+    $return_status = -1;
+    exec('/bin/bash -c \''.$command.'\'', $output, $return_status);
+
+    if ($return_status !== 0) {
+        trigger_error("Executing {$command} failed.", E_USER_WARNING);
+    }
+
+    return array('data' => implode("\n", $output));
+}
+
+function whichSpeedtest()
+{
+    if (file_exists('/usr/bin/speedtest')) {
+        $officialInstalled = speedtestExecute('. /opt/pihole/speedtestmod/lib.sh ; notInstalled speedtest && echo "false" || echo "true"')['data'];
+
+        if ($officialInstalled === 'true') {
+            return 'official';
+        }
+
+        $version = speedtestExecute('/usr/bin/speedtest -h')['data'];
+
+        if (strpos($version, 'sivel') !== false) {
+            return 'sivel\'s';
+        }
+
+        return 'librespeed';
+    }
+
+    return 'no';
+}
+
+$speedtestcli = whichSpeedtest();
 $piholeFTLConf = piholeFTLConfig();
 
 require 'header.php';

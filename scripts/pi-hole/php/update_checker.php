@@ -35,9 +35,10 @@ if (!is_readable($versionsfile)) {
     $versions = parse_ini_file($versionsfile);
 
     // Get Pi-hole core branch / version / commit
-    // Check if on a dev branch
+    // Check if on a dev branch or untagged commit
     $core_branch = $versions['CORE_BRANCH'];
-    if ($core_branch !== 'master') {
+    $core_version = $versions['CORE_VERSION'];
+    if ($core_branch !== 'master' || !strpos($core_version, '.')) {
         $core_current = 'vDev';
         $core_commit = $versions['CORE_VERSION'];
     } else {
@@ -46,7 +47,8 @@ if (!is_readable($versionsfile)) {
 
     // Get Pi-hole web branch / version / commit
     $web_branch = $versions['WEB_BRANCH'];
-    if ($web_branch !== 'master') {
+    $web_version = $versions['WEB_VERSION'];
+    if ($web_branch !== 'master' || !strpos($web_version, '.')) {
         $web_current = 'vDev';
         $web_commit = $versions['WEB_VERSION'];
     } else {
@@ -55,7 +57,8 @@ if (!is_readable($versionsfile)) {
 
     // Get Speedtest Mod branch / version / commit
     $speedtest_branch = $versions['SPEEDTEST_BRANCH'];
-    if ($speedtest_branch !== 'master') {
+    $speedtest_version = $versions['SPEEDTEST_VERSION'];
+    if ($speedtest_branch !== 'master' || !strpos($speedtest_version, '.')) {
         $speedtest_current = 'vDev';
         $speedtest_commit = $versions['SPEEDTEST_VERSION'];
     } else {

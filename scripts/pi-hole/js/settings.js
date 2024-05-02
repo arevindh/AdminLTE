@@ -486,13 +486,16 @@ $(function () {
   const speedtestChartPreview = $("#speedtestchartpreview");
   const speedtestChartPreviewBtn = $("#speedtestchartpreviewBtn");
 
-  const speedtestUpdate = $("#speedtestupdate");
   const speedtestUninstall = $("#speedtestuninstall");
   const speedtestDelete = $("#speedtestdelete");
   const speedtestDeleteLabel = speedtestDelete.parent().children("label");
 
   const speedtestLog = $("#latestLog");
   const speedtestLogBtn = $("#latestLogBtn");
+
+  const speedtestCLIOfficial = $("#speedtestcliOfficial");
+  const speedtestCLISivel = $("#speedtestcliSivel");
+  const speedtestCLILibre = $("#speedtestcliLibre");
 
   const speedtestSubmit = $("#st-submit");
   const defaultClass = "btn-primary";
@@ -501,6 +504,8 @@ $(function () {
   let type = localStorage?.getItem("speedtest_chart_type") || speedtestChartType.attr("value");
   speedtestChartType.prop("checked", type === "bar");
   localStorage.setItem("speedtest_chart_type", type);
+
+  var speedtestCLISelected = false;
 
   const preCode = content => {
     const pre = document.createElement("pre");
@@ -557,7 +562,7 @@ $(function () {
   const serviceStatus = () => {
     whichSpeedtest();
     const speedtestVersion = localStorage.getItem("speedtest") || "unknown";
-    let cliText = "Will use official CLI";
+    let cliText = "Will install CLI before next run";
     if (speedtestVersion !== "no") {
       cliText = `Using ${speedtestVersion} CLI`;
     }
@@ -855,7 +860,6 @@ $(function () {
   document.addEventListener("DOMContentLoaded", function () {
     speedtestDays.attr("value", speedtestDays.val());
     speedtestChartTypeSave.attr("value", null);
-    speedtestUpdate.attr("value", null);
     speedtestUninstall.attr("value", null);
     speedtestDelete.attr("value", null);
     speedtestTest.attr("value", null);
@@ -886,10 +890,6 @@ $(function () {
 
   speedtestChartPreviewBtn.on("click", function () {
     previewChart(speedtestChartPreview.find("div").length === 0);
-  });
-
-  speedtestUpdate.on("click", function () {
-    speedtestUpdate.attr("value", speedtestUpdate.attr("value") ? null : "up");
   });
 
   speedtestTest.on("click", function () {
@@ -948,6 +948,18 @@ $(function () {
     canRestore();
   });
 
+  speedtestCLIOfficial.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
+  speedtestCLISivel.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
+  speedtestCLILibre.on("click", function () {
+    speedtestCLISelected = true;
+  });
+
   setInterval(() => {
     if (speedtestStatus.find("pre").length > 0) {
       serviceStatus();
@@ -970,6 +982,22 @@ $(function () {
 
     if (speedtestServerCtr.find("p").length > 0) {
       closestServers();
+    }
+
+    if (!speedtestCLISelected) {
+      whichSpeedtest();
+      const currentCLI = localStorage.getItem("speedtest");
+      if (currentCLI === "official") {
+        speedtestCLIOfficial.prop("checked", true);
+      }
+
+      if (currentCLI === "sivel's") {
+        speedtestCLISivel.prop("checked", true);
+      }
+
+      if (currentCLI === "librespeed") {
+        speedtestCLILibre.prop("checked", true);
+      }
     }
 
     canRestore();

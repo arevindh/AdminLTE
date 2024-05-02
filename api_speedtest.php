@@ -358,7 +358,7 @@ function whichSpeedtest()
             return 'sivel\'s';
         }
 
-        return 'LibreSpeed';
+        return 'librespeed';
     }
 
     return 'no';
