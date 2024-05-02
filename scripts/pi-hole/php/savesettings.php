@@ -664,7 +664,12 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtestcli']) && whichSpeedtest() != $_POST['speedtestcli']) {
                 $run_mod_script = true;
-                $opt_mod_script .= ' -s'.$_POST['speedtestcli'];
+
+                if ($_POST['speedtestcli'] == 'official') {
+                    $opt_mod_script .= ' -s';
+                } else {
+                    $opt_mod_script .= ' -s'.$_POST['speedtestcli'];
+                }
             }
 
             if ($run_mod_script) {
