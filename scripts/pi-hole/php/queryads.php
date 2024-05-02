@@ -4,57 +4,64 @@
 *  Network-wide ad blocking via your own hardware.
 *
 *  This file is copyright under the latest version of the EUPL.
-*  Please see LICENSE file for your rights under this license. */
+*  Please see LICENSE file for your rights under this license.
+*/
 
-ob_end_flush();
-ini_set("output_buffering", "0");
+require 'password.php';
+if (!$auth) {
+    exit('Not authorized');
+}
+
+while (ob_get_level() > 0) {
+    ob_end_flush();
+}
+
+require_once 'func.php';
+ini_set('output_buffering', '0');
 ob_implicit_flush(true);
 header('Content-Type: text/event-stream');
 header('Cache-Control: no-cache');
 
-function echoEvent($datatext) {
-    if(!isset($_GET["IE"]))
-      echo "data: ".implode("\ndata: ", explode("\n", $datatext))."\n\n";
-    else
-      echo $datatext;
-}
-
-// Credit: http://stackoverflow.com/a/4694816/2087442
-function is_valid_domain_name($domain_name)
+function echoEvent($datatext, $url = '')
 {
-    return (preg_match("/^((-|_)*[a-z\d]((-|_)*[a-z\d])*(-|_)*)(\.(-|_)*([a-z\d]((-|_)*[a-z\d])*))*$/i", $domain_name) // Valid chars check
-            && preg_match("/^.{1,253}$/", $domain_name) // Overall length check
-            && preg_match("/^[^\.]{1,63}(\.[^\.]{1,63})*$/", $domain_name)   ); // Length of each label
+    if (!isset($_GET['IE'])) {
+        $txt = 'data:'.implode("\ndata:", explode("\n", $datatext))."\n\n";
+    } else {
+        $txt = $datatext;
+    }
+
+    $txt = str_replace('This can be overridden using the -all option', 'Select the checkbox to remove the limitation', $txt);
+    $txt = str_replace($url, '<strong class="text-blue">'.$url.'</strong>', $txt);
+
+    echo $txt;
 }
 
 // Test if domain is set
-if(isset($_GET["domain"]))
-{
+if (isset($_GET['domain'])) {
     // Is this a valid domain?
-    $url = $_GET["domain"];
-    if(!is_valid_domain_name($url))
-    {
-        echoEvent("Invalid domain!");
-        die();
+    // Convert domain name to IDNA ASCII form for international domains
+    $url = convertUnicodeToIDNA($_GET['domain']);
+    if (!validDomain($url)) {
+        echoEvent(htmlentities($url).' is an invalid domain!', $url);
+
+        exit;
     }
-}
-else
-{
-    echoEvent("No domain provided");
-    die();
+} else {
+    echoEvent('No domain provided');
+
+    exit;
 }
 
-if(isset($_GET["exact"]))
-{
-    $exact = "-exact";
-}
-else
-{
-    $exact = "";
+$options = '';
+if (isset($_GET['exact'])) {
+    $options .= ' -exact';
 }
 
-$proc = popen("sudo pihole -q ".$url." ".$exact, 'r');
+if (isset($_GET['showall'])) {
+    $options .= ' -all';
+}
+
+$proc = popen('sudo pihole -q '.$url.$options, 'r');
 while (!feof($proc)) {
-    echoEvent(fread($proc, 4096));
+    echoEvent(fread($proc, 4096), $url);
 }
-?>

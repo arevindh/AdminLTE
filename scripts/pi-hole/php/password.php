@@ -4,70 +4,105 @@
 *  Network-wide ad blocking via your own hardware.
 *
 *  This file is copyright under the latest version of the EUPL.
-*  Please see LICENSE file for your rights under this license. */
+*  Please see LICENSE file for your rights under this license.
+*/
 
-    // Start a new PHP session (or continue an existing one)
-    session_start();
+require_once 'func.php';
+require_once 'persistentlogin_token.php';
 
-    // Read setupVars.conf file
-    $setupVars = parse_ini_file("/etc/pihole/setupVars.conf");
-    // Try to read password hash from setupVars.conf
-    if(isset($setupVars['WEBPASSWORD']))
-    {
-        $pwhash = $setupVars['WEBPASSWORD'];
-    }
-    else
-    {
-        $pwhash = "";
-    }
+// Start a new PHP session (or continue an existing one)
+start_php_session();
 
-    // If the user wants to log out, we free all session variables currently registered
-    if(isset($_GET["logout"]))
-    {
-        session_unset();
-    }
+// Read setupVars.conf file
+$setupVars = parse_ini_file('/etc/pihole/setupVars.conf');
+// Try to read password hash from setupVars.conf
+if (isset($setupVars['WEBPASSWORD'])) {
+    $pwhash = $setupVars['WEBPASSWORD'];
+} else {
+    $pwhash = '';
+}
 
-    $wrongpassword = false;
-    $auth = false;
+function verifyPassword($pwhash, $use_api = false)
+{
+    $validpassword = true;
 
     // Test if password is set
-    if(strlen($pwhash) > 0)
-    {
-        // Compare doubly hashes password input with saved hash
-        if(isset($_POST["pw"]))
-        {
-            $postinput = hash('sha256',hash('sha256',$_POST["pw"]));
-            if($postinput == $pwhash)
-            {
-                $_SESSION["hash"] = $pwhash;
-                $auth = true;
+    if (strlen($pwhash) > 0) {
+        // Check for and authorize from persistent cookie
+        if (isset($_COOKIE['persistentlogin'])) {
+            if (checkValidityPersistentLoginToken($_COOKIE['persistentlogin'])) {
+                $_SESSION['auth'] = true;
+            } else {
+                // Invalid cookie
+                $_SESSION['auth'] = false;
+                setcookie('persistentlogin', '', 1);
             }
-            else
-            {
-                $wrongpassword = true;
+        } elseif (isset($_POST['pw'])) {
+            // Compare doubly hashes password input with saved hash
+            $postinput = hash('sha256', hash('sha256', $_POST['pw']));
+
+            if (hash_equals($pwhash, $postinput)) {
+                // Save previously accessed page, before clear the session
+                $redirect_url = 'index.php';
+                if (isset($_SESSION['prev_url'])) {
+                    $redirect_url = $_SESSION['prev_url'];
+                }
+
+                // Regenerate session ID to prevent session fixation
+                session_regenerate_id();
+
+                // Clear the old session
+                $_SESSION = array();
+
+                // Set hash in new session
+                $_SESSION['hash'] = $pwhash;
+
+                // Set persistent cookie if selected
+                if (isset($_POST['persistentlogin'])) {
+                    // Generate cookie with new expiry
+                    $token = genPersistentLoginToken();
+                    $time = time() + 60 * 60 * 24 * 7; // 7 days
+                    writePersistentLoginToken($token, $time);
+                    // setcookie($name, $value, $expire, $path, $domain, $secure, $httponly)
+                    setcookie('persistentlogin', $token, $time, null, null, null, true);
+                }
+
+                $_SESSION['auth'] = true;
+
+                // Login successful, redirect the user to the original requested page
+                if (
+                    $_SERVER['REQUEST_METHOD'] === 'POST'
+                    && strlen($_SERVER['SCRIPT_NAME']) >= 10
+                    && substr_compare($_SERVER['SCRIPT_NAME'], '/login.php', -10) === 0
+                ) {
+                    header('Location: '.$redirect_url);
+                    exit;
+                }
+            } else {
+                $_SESSION['auth'] = false;
+                $validpassword = false;
             }
-        }
-        // Compare auth hash with saved hash
-        else if (isset($_SESSION["hash"]))
-        {
-            if($_SESSION["hash"] == $pwhash)
-                $auth = true;
-        }
-        // API can use the hash to get data without logging in via plain-text password
-        else if (isset($api) && isset($_GET["auth"]))
-        {
-            if($_GET["auth"] == $pwhash)
-                $auth = true;
-        }
-        else
-        {
+        } elseif (isset($_SESSION['hash'])) {
+            // Compare auth hash with saved hash
+            if (hash_equals($pwhash, $_SESSION['hash'])) {
+                $_SESSION['auth'] = true;
+            }
+        } elseif ($use_api && isset($_GET['auth'])) {
+            // API can use the hash to get data without logging in via plain-text password
+            if (hash_equals($pwhash, $_GET['auth'])) {
+                $_SESSION['auth'] = true;
+            }
+        } else {
             // Password or hash wrong
-            $auth = false;
+            $_SESSION['auth'] = false;
         }
-    }
-    else
-    {
+    } else {
         // No password set
-        $auth = true;
+        $_SESSION['auth'] = true;
     }
-?>
+
+    return $validpassword;
+}
+
+$wrongpassword = !verifyPassword($pwhash, isset($api));
+$auth = $_SESSION['auth'];

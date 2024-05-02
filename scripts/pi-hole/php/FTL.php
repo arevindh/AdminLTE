@@ -4,129 +4,102 @@
 *  Network-wide ad blocking via your own hardware.
 *
 *  This file is copyright under the latest version of the EUPL.
-*  Please see LICENSE file for your rights under this license. */
+*  Please see LICENSE file for your rights under this license.
+*/
 
-function testFTL()
+const DEFAULT_FTLCONFFILE = '/etc/pihole/pihole-FTL.conf';
+const DEFAULT_FTL_IP = '127.0.0.1';
+const DEFAULT_FTL_PORT = 4711;
+
+function piholeFTLConfig($piholeFTLConfFile = DEFAULT_FTLCONFFILE, $force = false)
 {
-	$ret = shell_exec("pidof pihole-FTL");
-	return intval($ret);
+    static $piholeFTLConfig;
+
+    if (isset($piholeFTLConfig) && !$force) {
+        return $piholeFTLConfig;
+    }
+
+    if (is_readable($piholeFTLConfFile)) {
+        $piholeFTLConfig = parse_ini_file($piholeFTLConfFile);
+    } else {
+        $piholeFTLConfig = array();
+    }
+
+    return $piholeFTLConfig;
 }
 
-function connectFTL($address, $port=4711, $quiet=true)
+function connectFTL()
 {
-	$timeout = 3;
+    // We only use the default IP
+    $address = DEFAULT_FTL_IP;
 
-	if(!$quiet)
-	{
-		echo "Attempting to connect to '$address' on port '$port'...\n";
-	}
+    // Try to read port from FTL config. Use default if not found.
+    $config = piholeFTLConfig();
 
-	if($address == "127.0.0.1")
-	{
-		// Read port
-		$portfile = file_get_contents("/var/run/pihole-FTL.port");
-		if(is_numeric($portfile))
-			$port = intval($portfile);
-	}
+    // Use the port only if the value is numeric
+    if (isset($config['FTLPORT']) && is_numeric($config['FTLPORT'])) {
+        $port = intval($config['FTLPORT']);
+    } else {
+        $port = DEFAULT_FTL_PORT;
+    }
 
-	// Create a TCP/IP socket
-	$socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)
-	or die("socket_create() failed: reason: " . socket_strerror(socket_last_error()) . "\n");
-
-	socket_set_nonblock($socket) or die("Unable to set nonblock on socket\n");
-
-	$time = time();
-	while (!@socket_connect($socket, $address, $port))
-	{
-		$err = socket_last_error($socket);
-		if ($err == 115 || $err == 114)
-		{
-			if ((time() - $time) >= $timeout)
-			{
-				socket_close($socket);
-				die("Connection timed out.\n");
-			}
-			// Wait for 1 millisecond
-			usleep(1000);
-			continue;
-		}
-		die(socket_strerror($err) . "\n");
-	}
-
-	socket_set_block($socket) or die("Unable to set block on socket\n");
-
-	// Set timeout to 3 seconds
-	socket_set_option($socket, SOL_SOCKET, SO_RCVTIMEO, ['sec'=>$timeout, 'usec'=>0]);
-	socket_set_option($socket, SOL_SOCKET, SO_SNDTIMEO, ['sec'=>$timeout, 'usec'=>0]);
-
-	if(!$quiet)
-	{
-		echo "Success!\n\n";
-	}
-
-	return $socket;
-}
-function sendRequestFTL($requestin, $quiet=true)
-{
-	global $socket;
-
-	$request = ">".$requestin;
-	if(!$quiet)
-	{
-		echo "Sending request (".$request.")...\n";
-	}
-
-	socket_write($socket, $request, strlen($request)) or die("Could not send data to server\n");
-	if(!$quiet)
-	{
-		echo "OK.\n";
-	}
+    // Open Internet socket connection
+    return @fsockopen($address, $port, $errno, $errstr, 1.0);
 }
 
-function getResponseFTL($quiet=true)
+function sendRequestFTL($requestin, $socket)
 {
-	global $socket;
-	if(!$quiet)
-	{
-		echo "Reading response:\n";
-	}
-
-	$response = [];
-
-	while(true)
-	{
-		$out = socket_read($socket, 2048, PHP_NORMAL_READ);
-		if(!$quiet)
-		{
-			echo $out;
-		}
-		if(strrpos($out,"---EOM---") !== false)
-		{
-			break;
-		}
-		$out = rtrim($out);
-		if(strlen($out) > 0)
-		{
-			$response[] = $out;
-		}
-	}
-
-	return $response;
+    $request = '>'.$requestin;
+    fwrite($socket, $request) or exit('{"error":"Could not send data to server"}');
 }
 
-function disconnectFTL($quiet=true)
+function getResponseFTL($socket)
 {
-	global $socket;
-	if(!$quiet)
-	{
-		echo "Closing socket...";
-	}
+    $response = array();
 
-	socket_close($socket);
+    $errCount = 0;
+    while (true) {
+        $out = fgets($socket);
+        if ($out == '') {
+            ++$errCount;
+        }
 
-	if(!$quiet)
-	{
-		echo "OK.\n\n";
-	}
+        if ($errCount > 100) {
+            // Tried 100 times, but never got proper reply, fail to prevent busy loop
+            exit('{"error":"Tried 100 times to connect to FTL server, but never got proper reply. Please check Port and logs!"}');
+        }
+
+        if (strrpos($out, '---EOM---') !== false) {
+            break;
+        }
+
+        $out = rtrim($out);
+        if (strlen($out) > 0) {
+            $response[] = $out;
+        }
+    }
+
+    return $response;
 }
-?>
+
+function disconnectFTL($socket)
+{
+    if (is_resource($socket)) {
+        fclose($socket);
+    }
+}
+
+function callFTLAPI($request)
+{
+    $socket = connectFTL();
+
+    if (!is_resource($socket)) {
+        $data = array('FTLnotrunning' => true);
+    } else {
+        sendRequestFTL($request, $socket);
+        $data = getResponseFTL($socket);
+    }
+    disconnectFTL($socket);
+
+    return $data;
+}

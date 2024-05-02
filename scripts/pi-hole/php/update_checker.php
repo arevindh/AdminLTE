@@ -1,118 +1,162 @@
 <?php
-// Allow file_get_contents to read remote sources via URL
-ini_set("allow_url_fopen", 1);
 
-// Function that grabs latest tag from GitHub
-function get_github_version($url)
+function checkUpdate($currentVersion, $latestVersion)
 {
-	// Have to fake the user agent to be able to query from Github's API
-	$context = stream_context_create(array("http" => array("user_agent" => "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36")));
-
-	$json = file_get_contents($url, false, $context);
-	$result = json_decode($json);
-
-	return $result->tag_name;
+    // This logic allows the local core version to be newer than the upstream version
+    // The update indicator is only shown if the upstream version is NEWER
+    if ($currentVersion !== 'vDev') {
+        return version_compare($currentVersion, $latestVersion) < 0;
+    } else {
+        return false;
+    }
 }
 
-/********** Get Pi-hole core branch / version / commit **********/
-// Check if on a dev branch
-$core_branch = exec("cd /etc/.pihole/ && git rev-parse --abbrev-ref HEAD");
-if($core_branch !== "master") {
-    $core_current = "vDev";
-    $core_commit = exec("cd /etc/.pihole/ && git describe --long --dirty --tags");
-}
-else {
-    $core_current = exec("cd /etc/.pihole/ && git describe --tags --abbrev=0");
+$versionsfile = '/etc/pihole/versions';
+
+if (!is_readable($versionsfile)) {
+    $core_branch = 'master';
+    $core_current = 'N/A';
+    $core_update = false;
+
+    $web_branch = 'master';
+    $web_current = 'N/A';
+    $web_update = false;
+
+    $speedtest_branch = 'master';
+    $speedtest_current = 'N/A';
+    $speedtest_update = false;
+
+    $FTL_current = 'N/A';
+    $FTL_update = false;
+
+    $docker_current = 'N/A';
+    $docker_update = false;
+} else {
+    $versions = parse_ini_file($versionsfile);
+
+    // Get Pi-hole core branch / version / commit
+    // Check if on a dev branch or untagged commit
+    $core_branch = $versions['CORE_BRANCH'];
+    $core_version = $versions['CORE_VERSION'];
+    if ($core_branch !== 'master' || !strpos($core_version, '.')) {
+        $core_current = 'vDev';
+        $core_commit = $versions['CORE_VERSION'];
+    } else {
+        $core_current = explode('-', $versions['CORE_VERSION'])[0];
+    }
+
+    // Get Pi-hole web branch / version / commit
+    $web_branch = $versions['WEB_BRANCH'];
+    $web_version = $versions['WEB_VERSION'];
+    if ($web_branch !== 'master' || !strpos($web_version, '.')) {
+        $web_current = 'vDev';
+        $web_commit = $versions['WEB_VERSION'];
+    } else {
+        $web_current = explode('-', $versions['WEB_VERSION'])[0];
+    }
+
+    // Get Speedtest Mod branch / version / commit
+    $speedtest_branch = $versions['SPEEDTEST_BRANCH'];
+    $speedtest_version = $versions['SPEEDTEST_VERSION'];
+    if ($speedtest_branch !== 'master' || !strpos($speedtest_version, '.')) {
+        $speedtest_current = 'vDev';
+        $speedtest_commit = $versions['SPEEDTEST_VERSION'];
+    } else {
+        $speedtest_current = explode('-', $versions['SPEEDTEST_VERSION'])[0];
+    }
+
+    // Get Pi-hole FTL (not a git repository)
+    $FTL_branch = $versions['FTL_BRANCH'];
+    if (substr($versions['FTL_VERSION'], 0, 4) === 'vDev') {
+        $FTL_current = 'vDev';
+        $FTL_commit = $versions['FTL_VERSION'];
+    } else {
+        $FTL_current = $versions['FTL_VERSION'];
+    }
+
+    // Get Pi-hole Docker Tag, if available
+    if (isset($versions['DOCKER_VERSION'])) {
+        $docker_current = $versions['DOCKER_VERSION'];
+    } else {
+        $docker_current = '';
+    }
+
+    // Get data from GitHub
+    $core_latest = $versions['GITHUB_CORE_VERSION'];
+    $web_latest = $versions['GITHUB_WEB_VERSION'];
+    $speedtest_latest = $versions['GITHUB_SPEEDTEST_VERSION'];
+    $FTL_latest = $versions['GITHUB_FTL_VERSION'];
+    if (isset($versions['GITHUB_DOCKER_VERSION'])) {
+        $docker_latest = $versions['GITHUB_DOCKER_VERSION'];
+    } else {
+        $docker_latest = '';
+    }
+
+    $core_update = false;
+    $web_update = false;
+    $speedtest_update = false;
+    $FTL_update = false;
+
+    // Version comparison
+    if ($docker_current) {
+        // It's a container: do not check for individual component updates
+        if ($docker_current == 'nightly' || $docker_current == 'dev') {
+            // Special container - no update messages
+            $docker_update = false;
+        } else {
+            $docker_update = checkUpdate($docker_current, $docker_latest);
+        }
+    } else {
+        // Components comparison
+        $core_update = checkUpdate($core_current, $core_latest);
+        $web_update = checkUpdate($web_current, $web_latest);
+        $speedtest_update = checkUpdate($speedtest_current, $speedtest_latest);
+        $FTL_update = checkUpdate($FTL_current, $FTL_latest);
+
+        // Not a docker container
+        $docker_update = false;
+    }
 }
 
-/********** Get Pi-hole web branch / version / commit **********/
-$web_branch = exec("git rev-parse --abbrev-ref HEAD");
-if($web_branch !== "master") {
-    $web_current = "vDev";
-    $web_commit = exec("git describe --long --dirty --tags");
-}
-else {
-    $web_current = exec("git describe --tags --abbrev=0");
-}
+// URLs for the links
+$coreUrl = 'https://github.com/arevindh/pi-hole/releases';
+$webUrl = 'https://github.com/arevindh/AdminLTE/releases';
+$ftlUrl = 'https://github.com/pi-hole/FTL/releases';
+$dockerUrl = 'https://github.com/pi-hole/docker-pi-hole/releases';
+$speedtestUrl = 'https://github.com/arevindh/pihole-speedtest/releases';
 
-/********** Get Pi-hole FTL version (not a git repository) **********/
-$FTL_current = exec("pihole-FTL version");
-
-// can write only in the root web dir, i.e. /var/www/html
-$versionfile = "../versions";
-
-$check_version = false;
-
-// Check version if version buffer file does not exist
-if(is_readable($versionfile))
-{
-	// Obtain latest time stamp from buffer file
-	$versions = explode(",",file_get_contents($versionfile));
-	$date = date_create();
-	$timestamp = date_timestamp_get($date);
-
-	// Is last check for updates older than 30 minutes?
-	if($timestamp >= intval($versions[0]) + 1800)
-	{
-		// Yes: Retrieve new/updated version data
-		$check_version = true;
-	}
-	else
-	{
-		// No: We can use the buffered data
-		$check_version = false;
-	}
-}
-else
-{
-	// No buffer file or not readable: Request version data
-	$check_version = true;
+// Version strings (encoded to avoid code execution)
+// If "vDev" show branch/commit, else show link
+if (isset($core_commit)) {
+    $coreVersionStr = htmlentities($core_current.' ('.$core_branch.', '.$core_commit.')');
+} else {
+    $coreVersionStr = '<a href="'.$coreUrl.'/'.rawurlencode($core_current).'" rel="noopener" target="_blank">'.htmlentities($core_current).'</a>';
 }
 
-// Get data from GitHub if requested
-if($check_version){
-	$core_latest = get_github_version("https://api.github.com/repos/pi-hole/pi-hole/releases/latest");
-	$web_latest = get_github_version("https://api.github.com/repos/pi-hole/AdminLTE/releases/latest");
-	$FTL_latest = get_github_version("https://api.github.com/repos/pi-hole/FTL/releases/latest");
-
-	// Save to buffer file
-	file_put_contents($versionfile, array($timestamp,",",$core_latest,",",$web_latest,",",$FTL_latest));
-}
-else
-{
-	// Use data from buffer file
-	$core_latest = $versions[1];
-	$web_latest = $versions[2];
-	$FTL_latest = $versions[3];
+if (isset($web_commit)) {
+    $webVersionStr = htmlentities($web_current.' ('.$web_branch.', '.$web_commit.')');
+} else {
+    $webVersionStr = '<a href="'.$webUrl.'/'.rawurlencode($web_current).'" rel="noopener" target="_blank">'.htmlentities($web_current).'</a>';
 }
 
-// Core version comparison
-if($core_current !== "vDev")
-{
-	// This logic allows the local core version to be newer than the upstream version
-	// The update indicator is only shown if the upstream version is NEWER
-	$core_update = (version_compare($core_current, $core_latest) < 0);
-}
-else
-{
-	$core_update = false;
+if (isset($speedtest_commit)) {
+    $speedtestVersionStr = htmlentities($speedtest_current.' ('.$speedtest_branch.', '.$speedtest_commit.')');
+} else {
+    $speedtestVersionStr = '<a href="'.$speedtestUrl.'/'.rawurlencode($speedtest_current).'" rel="noopener" target="_blank">'.htmlentities($speedtest_current).'</a>';
 }
 
-// Web version comparison
-if($web_current !== "vDev")
-{
-	// This logic allows the local core version to be newer than the upstream version
-	// The update indicator is only shown if the upstream version is NEWER
-	$web_update = (version_compare($web_current, $web_latest) < 0);
-}
-else
-{
-	$web_update = false;
+if (isset($FTL_commit)) {
+    $ftlVersionStr = htmlentities($FTL_current.' ('.$FTL_branch.', '.$FTL_commit.')');
+} else {
+    $ftlVersionStr = '<a href="'.$ftlUrl.'/'.rawurlencode($FTL_current).'" rel="noopener" target="_blank">'.htmlentities($FTL_current).'</a>';
 }
 
-// FTL version comparison
-// This logic allows the local core version to be newer than the upstream version
-// The update indicator is only shown if the upstream version is NEWER
-$FTL_update = (version_compare($FTL_current, $FTL_latest) < 0);
-
-?>
+if ($docker_current) {
+    if ($docker_current == 'dev' || $docker_current == 'nightly') {
+        $dockerVersionStr = htmlentities($docker_current);
+    } else {
+        $dockerVersionStr = '<a href="'.$dockerUrl.'/'.rawurlencode($docker_current).'" rel="noopener" target="_blank">'.htmlentities($docker_current).'</a>';
+    }
+} else {
+    $dockerVersionStr = '';
+}

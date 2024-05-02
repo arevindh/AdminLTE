@@ -1,66 +1,73 @@
-// Credit: http://stackoverflow.com/a/10642418/2087442
-function httpGet(ta,theUrl)
-{
-    var xmlhttp;
-    if (window.XMLHttpRequest)
-    {
-    // code for IE7+
-        xmlhttp = new XMLHttpRequest();
-    }
-    else
-    {
-    // code for IE6, IE5
-        xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    xmlhttp.onreadystatechange=function()
-    {
-        if (xmlhttp.readyState === 4 && xmlhttp.status === 200)
-        {
-            ta.show();
-            ta.empty();
-            ta.append(xmlhttp.responseText);
-        }
-    };
-    xmlhttp.open("GET", theUrl, false);
-    xmlhttp.send();
-}
+/* Pi-hole: A black hole for Internet advertisements
+ *  (c) 2017 Pi-hole, LLC (https://pi-hole.net)
+ *  Network-wide ad blocking via your own hardware.
+ *
+ *  This file is copyright under the latest version of the EUPL.
+ *  Please see LICENSE file for your rights under this license. */
 
 function eventsource() {
-    var ta = $("#output");
-    var upload = $( "#upload" );
-    var checked = "";
-    var token = encodeURIComponent($("#token").html());
+  var ta = $("#output");
+  var upload = $("#upload");
+  var dbcheck = $("#dbcheck");
+  var checked = "";
+  var token = encodeURIComponent($("#token").text());
 
-    if(upload.prop("checked"))
-    {
-        checked = "upload";
-    }
+  if (upload.prop("checked")) {
+    // add upload option
+    checked += "&upload";
+  }
 
-    // IE does not support EventSource - load whole content at once
-    if (typeof EventSource !== "function") {
-        httpGet(ta,"/admin/scripts/pi-hole/php/debug.php?IE&token="+token+"&"+checked);
-        return;
-    }
+  if (dbcheck.prop("checked")) {
+    // add db integrity check option
+    checked += "&dbcheck";
+  }
 
-    var host = window.location.host;
-    var source = new EventSource("/admin/scripts/pi-hole/php/debug.php?&token="+token+"&"+checked);
+  // IE does not support EventSource - load whole content at once
+  if (typeof EventSource !== "function") {
+    $.ajax({
+      method: "GET",
+      url: "scripts/pi-hole/php/debug.php?IE&token=" + token + checked,
+      async: false,
+    }).done(function (data) {
+      ta.show();
+      ta.empty();
+      ta.append(data);
+    });
+    return;
+  }
 
-    // Reset and show field
-    ta.empty();
-    ta.show();
+  var source = new EventSource("scripts/pi-hole/php/debug.php?&token=" + token + checked);
 
-    source.addEventListener("message", function(e) {
-        ta.append(e.data);
-    }, false);
+  // Reset and show field
+  ta.empty();
+  ta.show();
 
-    // Will be called when script has finished
-    source.addEventListener("error", function(e) {
-        source.close();
-    }, false);
+  source.addEventListener(
+    "message",
+    function (e) {
+      ta.append(e.data);
+      // scroll to the bottom of #output (most recent data)
+      var taBottom = ta.offset().top + ta.outerHeight(true);
+      $("html, body").scrollTop(taBottom - $(window).height());
+    },
+    false
+  );
+
+  // Will be called when script has finished
+  source.addEventListener(
+    "error",
+    function () {
+      source.close();
+      $("#output").removeClass("loading");
+    },
+    false
+  );
 }
 
-$("#debugBtn").on("click", function(){
-    $("#debugBtn").attr("disabled", true);
-    $("#upload").attr("disabled", true);
-    eventsource();
+$("#debugBtn").on("click", function () {
+  $("#debugBtn").prop("disabled", true);
+  $("#upload").prop("disabled", true);
+  $("#dbcheck").prop("disabled", true);
+  $("#output").addClass("loading");
+  eventsource();
 });

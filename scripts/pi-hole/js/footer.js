@@ -1,208 +1,285 @@
 /* Pi-hole: A black hole for Internet advertisements
-*  (c) 2017 Pi-hole, LLC (https://pi-hole.net)
-*  Network-wide ad blocking via your own hardware.
-*
-*  This file is copyright under the latest version of the EUPL.
-*  Please see LICENSE file for your rights under this license. */
+ *  (c) 2017 Pi-hole, LLC (https://pi-hole.net)
+ *  Network-wide ad blocking via your own hardware.
+ *
+ *  This file is copyright under the latest version of the EUPL.
+ *  Please see LICENSE file for your rights under this license. */
+
+/* global utils:false */
+
 //The following functions allow us to display time until pi-hole is enabled after disabling.
 //Works between all pages
 
 function secondsTimeSpanToHMS(s) {
-    var h = Math.floor(s/3600); //Get whole hours
-    s -= h*3600;
-    var m = Math.floor(s/60); //Get remaining minutes
-    s -= m*60;
-    return h+":"+(m < 10 ? "0"+m : m)+":"+(s < 10 ? "0"+s : s); //zero padding on minutes and seconds
+  var h = Math.floor(s / 3600); //Get whole hours
+  s -= h * 3600;
+  var m = Math.floor(s / 60); //Get remaining minutes
+  s -= m * 60;
+  return h + ":" + (m < 10 ? "0" + m : m) + ":" + (s < 10 ? "0" + s : s); //zero padding on minutes and seconds
 }
 
-function countDown(){
-    var ena = $("#enableLabel");
-    var enaT = $("#enableTimer");
-    var target = new Date(parseInt(enaT.html()));
-    var seconds = Math.round((target.getTime() - new Date().getTime()) / 1000);
+function piholeChanged(action) {
+  var status = $("#status");
+  var ena = $("#pihole-enable");
+  var dis = $("#pihole-disable");
 
-    if(seconds > 0){
-        setTimeout(countDown,1000);
-        ena.text("Enable (" + secondsTimeSpanToHMS(seconds) + ")");
-    }
-    else
-    {
-        ena.text("Enable");
-        piholeChanged("enabled");
-        localStorage.removeItem("countDownTarget");
-    }
+  switch (action) {
+    case "enabled":
+      status.html("<i class='fa fa-circle text-green-light'></i> Active");
+      ena.hide();
+      dis.show();
+      dis.removeClass("active");
+      break;
+
+    case "disabled":
+      status.html("<i class='fa fa-circle text-red'></i> Blocking disabled");
+      ena.show();
+      dis.hide();
+      break;
+
+    default:
+    // nothing
+  }
 }
 
-function piholeChanged(action)
-{
-    var status = $("#status");
-    var ena = $("#pihole-enable");
-    var dis = $("#pihole-disable");
+function countDown() {
+  var ena = $("#enableLabel");
+  var enaT = $("#enableTimer");
+  var target = new Date(parseInt(enaT.html(), 10));
+  var seconds = Math.round((target.getTime() - Date.now()) / 1000);
 
-    switch(action) {
-        case "enabled":
-            status.html("<i class='fa fa-circle' style='color:#7FFF00'></i> Active");
-            ena.hide();
-            dis.show();
-            dis.removeClass("active");
-            break;
+  //Stop and remove timer when user enabled early
+  if ($("#pihole-enable").is(":hidden")) {
+    ena.text("Enable Blocking");
+    return;
+  }
 
-        case "disabled":
-            status.html("<i class='fa fa-circle' style='color:#FF0000'></i> Offline");
-            ena.show();
-            dis.hide();
-            break;
+  if (seconds > 0) {
+    setTimeout(countDown, 1000);
+    ena.text("Enable Blocking (" + secondsTimeSpanToHMS(seconds) + ")");
+  } else {
+    ena.text("Enable Blocking");
+    piholeChanged("enabled");
+    if (localStorage) {
+      localStorage.removeItem("countDownTarget");
     }
-
+  }
 }
 
-function piholeChange(action, duration)
-{
-    var token = encodeURIComponent($("#token").html());
-    var enaT = $("#enableTimer");
-    var btnStatus;
+function piholeChange(action, duration) {
+  var token = encodeURIComponent($("#token").text());
+  var enaT = $("#enableTimer");
+  var btnStatus;
 
-    switch(action) {
-        case "enable":
-            btnStatus = $("#flip-status-enable");
-            btnStatus.html("<i class='fa fa-spinner'> </i>");
-            $.getJSON("api.php?enable&token=" + token, function(data) {
-                if(data.status === "enabled") {
-                    btnStatus.html("");
-                    piholeChanged("enabled");
-                }
-            });
-            break;
+  switch (action) {
+    case "enable":
+      btnStatus = $("#flip-status-enable");
+      btnStatus.html("<i class='fa fa-spinner'> </i>");
+      $.getJSON("api.php?enable&token=" + token, function (data) {
+        if (data.status === "enabled") {
+          btnStatus.html("");
+          piholeChanged("enabled");
+        }
+      });
+      break;
 
-        case "disable":
-            btnStatus = $("#flip-status-disable");
-            btnStatus.html("<i class='fa fa-spinner'> </i>");
-            $.getJSON("api.php?disable=" + duration + "&token=" + token, function(data) {
-                if(data.status === "disabled") {
-                    btnStatus.html("");
-                    piholeChanged("disabled");
-                    if(duration > 0)
-                    {
-                        enaT.html(new Date().getTime() + duration * 1000);
-                        setTimeout(countDown,100);
-                    }
-                }
-            });
-            break;
-    }
+    case "disable":
+      btnStatus = $("#flip-status-disable");
+      btnStatus.html("<i class='fa fa-spinner'> </i>");
+      $.getJSON("api.php?disable=" + duration + "&token=" + token, function (data) {
+        if (data.status === "disabled") {
+          btnStatus.html("");
+          piholeChanged("disabled");
+          if (duration > 0) {
+            enaT.html(Date.now() + duration * 1000);
+            setTimeout(countDown, 100);
+          }
+        }
+      });
+      break;
+
+    default:
+    // nothing
+  }
 }
 
-$( document ).ready(function() {
-    var enaT = $("#enableTimer");
-    var target = new Date(parseInt(enaT.html()));
-    var seconds = Math.round((target.getTime() - new Date().getTime()) / 1000);
-    if (seconds > 0)
-    {
-        setTimeout(countDown,100);
+function testCookies() {
+  if (navigator.cookieEnabled) {
+    return true;
+  }
+
+  // set and read cookie
+  document.cookie = "cookietest=1";
+  var ret = document.cookie.indexOf("cookietest=") !== -1;
+
+  // delete cookie
+  document.cookie = "cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT";
+
+  return ret;
+}
+
+function initCheckboxRadioStyle() {
+  function getCheckboxURL(style) {
+    var extra = style.startsWith("material-") ? "material" : "bootstrap";
+    return "style/vendor/icheck-" + extra + ".min.css";
+  }
+
+  function applyCheckboxRadioStyle(style) {
+    boxsheet.attr("href", getCheckboxURL(style));
+    // Get all radio/checkboxes for theming, with the exception of the two radio buttons on the custom disable timer,
+    // as well as every element with an id that starts with "status_"
+    var sel = $("input[type='radio'],input[type='checkbox']")
+      .not("#selSec")
+      .not("#selMin")
+      .not("[id^=status_]");
+    sel.parent().removeClass();
+    sel.parent().addClass("icheck-" + style);
+  }
+
+  // Read from local storage, initialize if needed
+  var chkboxStyle = localStorage ? localStorage.getItem("theme_icheck") : null;
+  if (chkboxStyle === null) {
+    chkboxStyle = "primary";
+  }
+
+  var boxsheet = $('<link href="' + getCheckboxURL(chkboxStyle) + '" rel="stylesheet" />');
+  boxsheet.insertAfter($("link[href*='style/vendor/bootstrap/css/bootstrap.min.css']"));
+
+  applyCheckboxRadioStyle(chkboxStyle);
+
+  // Add handler when on settings page
+  var iCheckStyle = $("#iCheckStyle");
+  if (iCheckStyle !== null) {
+    iCheckStyle.val(chkboxStyle);
+    iCheckStyle.on("change", function () {
+      var themename = $(this).val();
+      localStorage.setItem("theme_icheck", themename);
+      applyCheckboxRadioStyle(themename);
+    });
+  }
+}
+
+function initCPUtemp() {
+  function setCPUtemp(unit) {
+    var temperature = parseFloat($("#rawtemp").text());
+    var displaytemp = $("#tempdisplay");
+    if (!isNaN(temperature)) {
+      switch (unit) {
+        case "K":
+          temperature += 273.15;
+          displaytemp.html(temperature.toFixed(1) + "&nbsp;K");
+          break;
+
+        case "F":
+          temperature = (temperature * 9) / 5 + 32;
+          displaytemp.html(temperature.toFixed(1) + "&nbsp;&deg;F");
+          break;
+
+        default:
+          displaytemp.html(temperature.toFixed(1) + "&nbsp;&deg;C");
+          break;
+      }
     }
+  }
+
+  function setSetupvarsTempUnit(unit, showmsg = true) {
+    var token = encodeURIComponent($("#token").text());
+    $.getJSON("api.php?setTempUnit=" + unit + "&token=" + token, function (data) {
+      if (showmsg === true) {
+        utils.showAlert("info", "", "Setting temperature unit...");
+        if ("result" in data && data.result === "success") {
+          utils.showAlert("success", "far fa-check-circle", "Temperature unit set to " + unit, "");
+        } else {
+          utils.showAlert("error", "", "", "Temperature unit not set");
+        }
+      }
+    });
+  }
+
+  // Read the temperature unit from HTML code
+  var tempunit = $("#tempunit").text();
+  if (!tempunit) {
+    // if no value was set in setupVars.conf, tries to retrieve the old config from localstorage
+    tempunit = localStorage ? localStorage.getItem("tempunit") : null;
+    if (tempunit === null) {
+      tempunit = "C";
+    } else {
+      // if some value was found on localstorage, set the value in setupVars.conf
+      setSetupvarsTempUnit(tempunit, false);
+    }
+  }
+
+  setCPUtemp(tempunit);
+
+  // Add handler when on settings page
+  var tempunitSelector = $("#tempunit-selector");
+  if (tempunitSelector !== null) {
+    tempunitSelector.val(tempunit);
+    tempunitSelector.on("change", function () {
+      tempunit = $(this).val();
+      setCPUtemp(tempunit);
+
+      // store the selected value on setupVars.conf
+      setSetupvarsTempUnit(tempunit);
+    });
+  }
+}
+
+$(function () {
+  var enaT = $("#enableTimer");
+  var target = new Date(parseInt(enaT.html(), 10));
+  var seconds = Math.round((target.getTime() - Date.now()) / 1000);
+  if (seconds > 0) {
+    setTimeout(countDown, 100);
+  }
+
+  if (!testCookies() && $("#cookieInfo").length > 0) {
+    $("#cookieInfo").show();
+  }
+
+  // Apply per-browser styling settings
+  initCheckboxRadioStyle();
+  initCPUtemp();
+
+  // Run check immediately after page loading ...
+  utils.checkMessages();
+  // ... and once again with five seconds delay
+  setTimeout(utils.checkMessages, 5000);
 });
 
 // Handle Enable/Disable
-$("#pihole-enable").on("click", function(e){
-    e.preventDefault();
-    localStorage.removeItem("countDownTarget");
-    piholeChange("enable","");
+$("#pihole-enable").on("click", function (e) {
+  e.preventDefault();
+  localStorage.removeItem("countDownTarget");
+  piholeChange("enable", "");
 });
-$("#pihole-disable-permanently").on("click", function(e){
-    e.preventDefault();
-    piholeChange("disable","0");
+$("#pihole-disable-indefinitely").on("click", function (e) {
+  e.preventDefault();
+  piholeChange("disable", "0");
 });
-$("#pihole-disable-10s").on("click", function(e){
-    e.preventDefault();
-    piholeChange("disable","10");
+$("#pihole-disable-10s").on("click", function (e) {
+  e.preventDefault();
+  piholeChange("disable", "10");
 });
-$("#pihole-disable-30s").on("click", function(e){
-    e.preventDefault();
-    piholeChange("disable","30");
+$("#pihole-disable-30s").on("click", function (e) {
+  e.preventDefault();
+  piholeChange("disable", "30");
 });
-$("#pihole-disable-5m").on("click", function(e){
-    e.preventDefault();
-    piholeChange("disable","300");
+$("#pihole-disable-5m").on("click", function (e) {
+  e.preventDefault();
+  piholeChange("disable", "300");
 });
-$("#pihole-disable-custom").on("click", function(e){
-    e.preventDefault();
-    var custVal = $("#customTimeout").val();
-    custVal = $("#btnMins").hasClass("active") ? custVal * 60 : custVal;
-    piholeChange("disable",custVal);
-});
-
-// Session timer
-var sessionvalidity = parseInt(document.getElementById("sessiontimercounter").textContent);
-var start = new Date;
-
-function updateSessionTimer()
-{
-    start = new Date;
-    start.setSeconds(start.getSeconds() + sessionvalidity);
-}
-
-if(sessionvalidity > 0)
-{
-    // setSeconds will correctly handle wrap-around cases
-    updateSessionTimer();
-
-    setInterval(function() {
-        var current = new Date;
-        var totalseconds = (start - current) / 1000;
-
-        // var hours = Math.floor(totalseconds / 3600);
-        // totalseconds = totalseconds % 3600;
-
-        var minutes = Math.floor(totalseconds / 60);
-        if(minutes < 10){ minutes = "0" + minutes; }
-
-        var seconds = Math.floor(totalseconds % 60);
-        if(seconds < 10){ seconds = "0" + seconds; }
-
-        if(totalseconds > 0)
-        {
-            document.getElementById("sessiontimercounter").textContent = minutes + ":" + seconds;
-        }
-        else
-        {
-            document.getElementById("sessiontimercounter").textContent = "-- : --";
-        }
-
-    }, 1000);
-}
-else
-{
-    document.getElementById("sessiontimer").style.display = "none";
-}
-
-// Handle Strg + Enter button on Login page
-$(document).keypress(function(e) {
-    if((e.keyCode === 10 || e.keyCode === 13) && e.ctrlKey && $("#loginpw").is(":focus")) {
-        $("#loginform").attr("action", "settings.php");
-        $("#loginform").submit();
-    }
+$("#pihole-disable-custom").on("click", function (e) {
+  e.preventDefault();
+  var custVal = $("#customTimeout").val();
+  custVal = $("#btnMins").hasClass("active") ? custVal * 60 : custVal;
+  piholeChange("disable", custVal);
 });
 
-function testCookies()
-{
-    if (navigator.cookieEnabled)
-    {
-        return true;
-    }
-
-    // set and read cookie
-    document.cookie = "cookietest=1";
-    var ret = document.cookie.indexOf("cookietest=") !== -1;
-
-    // delete cookie
-    document.cookie = "cookietest=1; expires=Thu, 01-Jan-1970 00:00:01 GMT";
-
-    return ret;
-}
-
-$(function() {
-    if(!testCookies() && $("#cookieInfo").length)
-    {
-        $("#cookieInfo").show();
-    }
+// Handle Ctrl + Enter button on Login page
+$(document).on("keypress", function (e) {
+  if ((e.keyCode === 10 || e.keyCode === 13) && e.ctrlKey && $("#loginpw").is(":focus")) {
+    $("#loginform").attr("action", "settings.php");
+    $("#loginform").submit();
+  }
 });
