@@ -664,12 +664,15 @@ if (isset($_POST['field'])) {
 
             if (isset($_POST['speedtestcli']) && whichSpeedtest() != $_POST['speedtestcli']) {
                 $run_mod_script = true;
+                $chosen_cli = '';
 
-                if ($_POST['speedtestcli'] == 'official') {
-                    $opt_mod_script .= ' -s';
-                } else {
-                    $opt_mod_script .= ' -s'.$_POST['speedtestcli'];
+                if ($_POST['speedtestcli'] == 'sivel\'s') {
+                    $chosen_cli = 'sivel';
+                } elseif ($_POST['speedtestcli'] == 'librespeed') {
+                    $chosen_cli = 'libre';
                 }
+
+                $opt_mod_script .= ' -s'.$chosen_cli;
             }
 
             if ($run_mod_script) {
